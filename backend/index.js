@@ -16,6 +16,8 @@ mongoose.connect(
   process.env.MONGO_DB_URL, { useNewUrlParser: true }
 );
 
+const port = process.env.PORT || 8000
+
 const db = mongoose.connection;
 db
   .on('error', e => console.log(e))
@@ -48,7 +50,7 @@ app.use(
 
 const server = http.createServer(app);
 
-server.listen(process.env.PORT, () => {
+server.listen(port, () => {
   new SubscriptionServer(
     {
       onConnect: connectionParams =>

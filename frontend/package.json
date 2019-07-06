@@ -1,0 +1,42 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "babel-plugin-relay": "^2.0.0-rc.2",
+    "core-js": "^2.6.9",
+    "graphql": "^14.4.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-relay": "^5.0.0",
+    "react-scripts": "3.0.1",
+    "reactstrap": "^8.0.0",
+    "relay-compiler": "^5.0.0",
+    "relay-devtools": "^1.4.0",
+    "relay-runtime": "^5.0.0",
+    "subscriptions-transport-ws": "^0.9.16",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "scripts": {
+    "relay": "relay-compiler --src ./src --schema build/schema.json",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
