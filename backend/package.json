@@ -4,21 +4,31 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:schema": "nodemon scripts/build-schema --exec babel-node --presets=@babel/preset-env  --plugins=@babel/plugin-transform-async-to-generator",
+    "start:server": "nodemon index --exec babel-node --presets=@babel/preset-env  --plugins=@babel/plugin-transform-async-to-generator"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.5.0",
+    "@babel/node": "^7.5.0",
+    "@babel/plugin-transform-async-to-generator": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
     "apollo-server-express": "^2.6.7",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "express-graphql": "^0.8.0",
     "faker": "^4.1.0",
     "graphql": "^14.4.2",
     "graphql-relay": "^0.6.0",
     "graphql-subscriptions": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.3",
+    "nodemon": "^1.19.1",
     "subscriptions-transport-ws": "^0.9.16"
-  }
+  },
+  "devDependencies": {}
 }

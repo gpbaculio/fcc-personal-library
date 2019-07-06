@@ -2,9 +2,13 @@
 import { nodeDefinitions, fromGlobalId } from 'graphql-relay'
 // local imports
 import { getDocument } from '../../database'
-import { User, Book, Comment } from '../../models'
-import { GraphQLUserType, GraphQLBookType, GraphQLCommetType } from '../query/objectTypes'
+import Comment from '../../models/Comment'
+import Book from '../../models/Book'
+import User from '../../models/User'
 import { UserType, BookType, CommentType } from './constants';
+import GraphQLCommentType from '../query/objectTypes/comment';
+import GraphQLBookType from '../query/objectTypes/book';
+import GraphQLUserType from '../query/objectTypes/user';
 
 export const { nodeInterface, nodeField } = nodeDefinitions(
   (globalId) => {
@@ -17,7 +21,7 @@ export const { nodeInterface, nodeField } = nodeDefinitions(
   obj => {
     if (obj instanceof User) return GraphQLUserType;
     else if (obj instanceof Book) return GraphQLBookType;
-    else if (obj instanceof Comment) return GraphQLCommetType;
+    else if (obj instanceof Comment) return GraphQLCommentType;
     else return null
   }
 );

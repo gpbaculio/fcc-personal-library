@@ -2,22 +2,18 @@ import express from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import { graphiqlExpress, graphqlExpress } from 'apollo-server-express';
+import graphqlHTTP from 'express-graphql'
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import http from 'http';
 require('dotenv').config();
 
 import schema from './modules/api/schema';
-// import { getUser } from './modules/utils';
+import { getUser } from './modules/database';
 
 mongoose.Promise = global.Promise;
 mongoose.connect(
-  process.env.MONGO_DB_URL,
-  {
-    server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
-    replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }
-  }
+  process.env.MONGO_DB_URL, { useNewUrlParser: true }
 );
 
 const db = mongoose.connection;
@@ -29,33 +25,30 @@ var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 // app.use('/public', express.static(path.join(__dirname, '../public')));
 // app.get('/*', function (_, res) {
 //   res.sendFile(path.join(__dirname, '../public/index.html'));
 // });
+
 app.use(
   '/graphql',
-  graphqlExpress(async (req, res, next) => {
-    // let { user } = await getUser(req.headers.authorization);
+  graphqlHTTP((req, res, next) => {
+    const { user } = getUser(req.headers.authorization);
     return {
       schema,
       pretty: true,
       graphiql: true,
-      // context: {
-      //   user
-      // }
+      context: {
+        user
+      }
     };
   })
 );
-app.use(
-  '/graphiql',
-  graphiqlExpress({
-    endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://${process.env.HOST}:${process.env.PORT}/subscriptions`
-  })
-);
+
 const server = http.createServer(app);
-server.listen(port, () => {
+
+server.listen(process.env.PORT, () => {
   new SubscriptionServer(
     {
       onConnect: connectionParams =>

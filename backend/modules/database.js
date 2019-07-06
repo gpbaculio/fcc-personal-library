@@ -1,9 +1,11 @@
 
-import {
-  User,
-  Book,
-  Comment
-} from './models'
+import Comment from './models/Comment'
+import Book from './models/Book'
+import User from './models/User'
+
+export const createBook = ({ text, userId }) => {
+  return Book.create({ text, userId }, (_err, book) => book.populate('userId'));
+}
 
 export const getDocument = (_id, model) => {
   if (model === 'User') return User.findOne({ _id })
@@ -12,10 +14,16 @@ export const getDocument = (_id, model) => {
   else null
 }
 
-export const getBooksByUser = (userId) => {
-  return Book.find({ userId })
+export const getUser = (userId) => {
+  return User.findOne({ _id: userId }, '_id displayName')
 }
 
-export const getCommentsByUser = (userId) => {
+export const getUserBooks = (userId) => {
+  return Book.find({ userId }).populate('userId')
+}
+
+export const getUserComments = (userId) => {
   return Comment.find({ userId })
 }
+
+export const getBookComments = (bookId) => Comment.find({ bookId }).populate('commentId');

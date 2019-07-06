@@ -6,8 +6,7 @@ const Book = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: UserType
-  },
-  comments: [{ type: Schema.Types.ObjectId, ref: CommentType }]
+  }
 });
 
 export default mongoose.model(BookType, Book)

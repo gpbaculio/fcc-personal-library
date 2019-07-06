@@ -7,7 +7,7 @@ const Comment = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: UserType
   },
-  books: [{ type: Schema.Types.ObjectId, ref: BookType }]
+  bookId: { type: mongoose.Schema.Types.ObjectId, ref: BookType }
 });
 
 export default mongoose.model(CommentType, Comment)

@@ -5,9 +5,11 @@ import {
   GraphQLBoolean
 } from 'graphql';
 
-import { globalIdField } from 'graphql-relay'
+import { globalIdField, connectionArgs } from 'graphql-relay'
 
 import { nodeInterface } from '../../definitions';
+import { commentsConnection } from './user';
+import { getBookComments } from '../../../database';
 
 const GraphQLBookType = new GraphQLObjectType({
   name: 'Book',
@@ -15,11 +17,7 @@ const GraphQLBookType = new GraphQLObjectType({
     id: globalIdField('Book'),
     title: {
       type: GraphQLString,
-      resolve: ({ likerId }) => likerId,
-    },
-    comments: {
-      type: GraphQLBoolean,
-      resolve: ({ seen }) => seen,
+      resolve: ({ title }) => title,
     },
   },
   interfaces: [nodeInterface],

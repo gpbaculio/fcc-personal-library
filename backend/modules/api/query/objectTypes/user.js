@@ -7,7 +7,10 @@ import {
   connectionDefinitions
 } from 'graphql-relay'
 
-import { getCommentsByUser, getBooksByUser } from '../../../database'
+import GraphQLBookType from './book'
+import GraphQLCommentType from './comment'
+
+import { getUserBooks, getUserComments } from '../../../database'
 import { nodeInterface } from '../../definitions'
 import { BookType, CommentType } from '../../definitions/constants';
 
@@ -24,7 +27,7 @@ export const {
 const GraphQLUserType = new GraphQLObjectType({
   name: 'User',
   interfaces: [nodeInterface],
-  fields: () => ({
+  fields: {
     id: globalIdField('User'),
     displayName: {
       type: GraphQLString,
@@ -35,14 +38,14 @@ const GraphQLUserType = new GraphQLObjectType({
       args: {
         ...connectionArgs,
       },
-      resolve: (_root, { ...args }, { user: { _id } }) => connectionFromArray(getBooksByUser(_id), args)
+      resolve: (_root, { ...args }, { user: { _id } }) => connectionFromArray(getUserBooks(_id), args)
     },
     comments: {
       type: commentsConnection,
-      args: { userId: { type: GraphQLString }, ...connectionArgs },
-      resolve: (_root, { ...args }, { user: { _id } }) => connectionFromArray(getCommentsByUser(_id), args)
+      args: { ...connectionArgs },
+      resolve: (_root, { ...args }, { user: { _id } }) => connectionFromArray(getUserComments(_id), args)
     }
-  })
+  }
 })
 
 export default GraphQLUserType
