@@ -6,6 +6,7 @@ import graphqlHTTP from 'express-graphql'
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import http from 'http';
+import cors from 'cors'
 require('dotenv').config();
 
 import schema from './modules/api/schema';
@@ -35,6 +36,7 @@ app.use(bodyParser.json());
 
 app.use(
   '/graphql',
+  cors(),
   graphqlHTTP((req, res, next) => {
     const { user } = getUser(req.headers.authorization);
     return {

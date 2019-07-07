@@ -9,6 +9,7 @@ import App from './App';
 
 import * as serviceWorker from './serviceWorker';
 import environment from './environment'
+
 const HomeRendererQuery = graphql`
   query srcQuery {
     viewer {
@@ -21,9 +22,6 @@ const HomeRendererQuery = graphql`
 ReactDOM.render(<QueryRenderer
   environment={environment}
   query={HomeRendererQuery}
-  variables={{
-    count: 30 // limit 30 nodes on first query
-  }}
   render={({ error, props }) => {
     if (error) {
       console.log(error);

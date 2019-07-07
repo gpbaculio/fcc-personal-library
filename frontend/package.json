@@ -15,15 +15,17 @@
     "relay-devtools": "^1.4.0",
     "relay-runtime": "^5.0.0",
     "subscriptions-transport-ws": "^0.9.16",
+    "watchman": "^1.0.0",
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
-    "relay": "relay-compiler --src ./src --schema build/schema.json",
+    "relay": "relay-compiler --src ./src --schema build/schema.json --watch",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://localhost:8000/",
   "eslintConfig": {
     "extends": "react-app"
   },
