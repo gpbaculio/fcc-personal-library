@@ -1,37 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { QueryRenderer } from 'react-relay';
-import graphql from 'babel-plugin-relay/macro';
+import { BrowserRouter } from 'react-router-dom';
+import { installRelayDevTools } from 'relay-devtools';
+
+import App from './App'
 
 import './index.css';
-import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import * as serviceWorker from './serviceWorker';
-import environment from './environment'
 
-const HomeRendererQuery = graphql`
-  query srcQuery {
-    viewer {
-      displayName
-    }
-  }
-`;
+// Useful for debugging, but remember to remove for a production deploy.
+installRelayDevTools();
 
 
-ReactDOM.render(<QueryRenderer
-  environment={environment}
-  query={HomeRendererQuery}
-  render={({ error, props }) => {
-    if (error) {
-      console.log(error);
-      return <div>{error.message}</div>
-    } else if (props) {
-      return <div>{props.viewer.displayName}</div>
-    }
-    return <div>Loading...</div>
-  }}
-/>, document.getElementById('root'));
+
+ReactDOM.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+  , document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

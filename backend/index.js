@@ -50,18 +50,18 @@ app.use(
   })
 );
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
-server.listen(port, () => {
-  new SubscriptionServer(
-    {
-      onConnect: connectionParams =>
-        console.log('client subscription connected!', connectionParams),
-      onDisconnect: () => console.log('client subscription disconnected!'),
-      execute,
-      subscribe,
-      schema
-    },
-    { server, path: '/subscriptions' }
-  );
-});
+// server.listen(port, () => {
+//   new SubscriptionServer(
+//     {
+//       onConnect: connectionParams =>
+//         console.log('client subscription connected!', connectionParams),
+//       onDisconnect: () => console.log('client subscription disconnected!'),
+//       execute,
+//       subscribe,
+//       schema
+//     },
+//     { server, path: '/subscriptions' }
+//   );
+// });
