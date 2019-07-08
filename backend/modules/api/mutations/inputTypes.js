@@ -1,14 +1,14 @@
 import { GraphQLNonNull, GraphQLString, GraphQLInputObjectType } from 'graphql';
 
 export const createBookInputType = new GraphQLInputObjectType({
-  name: 'CreateBookInputs',
+  name: 'CreateBookParams',
   description: 'Input book payload',
-  fields: () => ({
+  fields: {
     title: {
       type: new GraphQLNonNull(GraphQLString),
     },
     userId: {
       type: new GraphQLNonNull(GraphQLString),
     },
-  }),
+  },
 });

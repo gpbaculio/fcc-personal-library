@@ -50,6 +50,8 @@ app.use(
   })
 );
 
+app.listen(port, () => console.log(`Express server listening on port ${port}`))
+
 // const server = http.createServer(app);
 
 // server.listen(port, () => {

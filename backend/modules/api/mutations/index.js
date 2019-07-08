@@ -1,12 +1,14 @@
 // external imports
 import { GraphQLObjectType } from 'graphql'
 // local imports
-import createBook from './createBook'
+import signup from './signup'
+import login from './login'
 
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    createBook,
+    signup,
+    login
   }
 })
 

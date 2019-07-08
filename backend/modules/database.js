@@ -18,9 +18,13 @@ export const getUser = (userId) => {
   return User.findOne({ _id: userId }, '_id displayName')
 }
 
+export const findUsername = (username) => User.findOne({ username })
+
 export const getUserBooks = (userId) => {
   return Book.find({ userId }).populate('userId')
 }
+
+export const saveUser = ({ username, password }) => User.create({ username, password });
 
 export const getUserComments = (userId) => {
   return Comment.find({ userId })

@@ -29,9 +29,9 @@ const GraphQLUserType = new GraphQLObjectType({
   interfaces: [nodeInterface],
   fields: {
     id: globalIdField('User'),
-    displayName: {
+    username: {
       type: GraphQLString,
-      resolve: ({ displayName }) => displayName
+      resolve: ({ username }) => username
     },
     books: {
       type: booksConnection,
