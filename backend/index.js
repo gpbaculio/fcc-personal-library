@@ -10,7 +10,7 @@ import cors from 'cors'
 require('dotenv').config();
 
 import schema from './modules/api/schema';
-import { getUser } from './modules/database';
+import { getUserContext } from './modules/auth';
 
 mongoose.Promise = global.Promise;
 mongoose.connect(
@@ -37,8 +37,8 @@ app.use(bodyParser.json());
 app.use(
   '/graphql',
   cors(),
-  graphqlHTTP((req, res, next) => {
-    const { user } = getUser(req.headers.authorization);
+  graphqlHTTP(async (req, res, next) => {
+    const user = await getUserContext(req.headers.authorization);
     return {
       schema,
       pretty: true,

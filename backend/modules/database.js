@@ -15,7 +15,7 @@ export const getDocument = (_id, model) => {
 }
 
 export const getUser = (userId) => {
-  return User.findOne({ _id: userId }, '_id displayName')
+  return User.findById(userId, '_id username')
 }
 
 export const findUsername = (username) => User.findOne({ username })

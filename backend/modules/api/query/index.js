@@ -10,7 +10,8 @@ const query = new GraphQLObjectType({
     viewer: {
       type: GraphQLUserType,
       resolve: async (_root, _args, { user }) => {
-        return { displayName: 'Shela' }
+        console.log('user ', user)
+        return user
       },
     },
     node: nodeField,

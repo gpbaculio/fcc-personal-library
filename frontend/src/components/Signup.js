@@ -10,7 +10,8 @@ import {
   FormGroup,
   Label,
   Input,
-  Button
+  Button,
+  Alert
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { FaUserPlus } from 'react-icons/fa'
@@ -20,39 +21,54 @@ export class Signup extends Component {
   state = {
     username: '',
     password: '',
-    loading: false
+    loading: false,
+    message: '',
+    alertVisible: false,
+    error: false
   }
   handleChange = e => {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
-  _signUp = (e) => {
-    e.preventDefault();
+  signup = e => {
+    e.preventDefault()
     const { username, password } = this.state;
-    this.setState({
-      loading: true
-    });
+    this.setState({ loading: true });
     const mutation = signup(
       { username, password },
       {
-        onSuccess: ({ userRegistration }) => {
-          const { error, token } = userRegistration;
-          let state = { signUpClicked: false, displayName: '', email: '', password: '', };
-          if (!token && error) {
-            state = {
-              ...state,
-              signUpError: true,
-            }
+        onCompleted: ({ signup }) => {
+          let message = 'Signup successful', error = false;
+          if (signup.error) {
+            message = signup.error;
+            error = true
           }
-          this.setState({ ...state })
+          this.setState({
+            message,
+            error,
+            alertVisible: true,
+            loading: false,
+            username: '',
+            password: ''
+          })
         },
-        onFailure: transaction => this.setState({ signUpError: true, displayName: '', email: '', password: '', }),
+        onFailure: error => console.error(error),
       },
     );
     mutation.commit()
   }
+  closeAlert = () => {
+    this.setState({ alertVisible: false, error: false, message: '' });
+  };
   render() {
-    const { username, password } = this.state
+    const {
+      username,
+      password,
+      error,
+      alertVisible,
+      message,
+      loading
+    } = this.state
     return (
       <Container>
         <Row>
@@ -63,10 +79,19 @@ export class Signup extends Component {
                   <FaUserPlus className='mr-1' /> Signup
                 </CardHeader>
                 <CardBody>
-                  <Form>
+                  <Alert
+                    className='mt-2'
+                    color={error ? 'danger' : 'info'}
+                    isOpen={alertVisible}
+                    toggle={this.closeAlert}
+                    fade={false}>
+                    {message}
+                  </Alert>
+                  <Form onSubmit={this.signup}>
                     <FormGroup>
                       <Label for="login-username">Username</Label>
                       <Input
+                        required={true}
                         type="text"
                         value={username}
                         onChange={this.handleChange}
@@ -78,6 +103,7 @@ export class Signup extends Component {
                     <FormGroup>
                       <Label for="login-password">Password</Label>
                       <Input
+                        required={true}
                         type="password"
                         value={password}
                         onChange={this.handleChange}
@@ -86,10 +112,15 @@ export class Signup extends Component {
                         placeholder="Password"
                       />
                     </FormGroup>
-                    <Button color='primary' type='submit' className='btn-block'>
+                    <Button
+                      disabled={loading}
+                      color='primary'
+                      type='submit'
+                      className='btn-block'
+                    >
                       Signup
                     </Button>
-                    <small className='text-center form-text'>
+                    <small className='text-center form-text mt-2'>
                       Have an account? &nbsp;
                     <Link to='/login'>
                         Login

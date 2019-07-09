@@ -12,8 +12,11 @@ import {
   CardHeader,
   CardBody
 } from 'reactstrap'
+import jwt from 'jsonwebtoken'
 import { Link } from 'react-router-dom'
+import { fromGlobalId } from 'graphql-relay';
 import { FaUserCheck, FaSignInAlt } from 'react-icons/fa';
+import login from './mutations/login';
 
 export class Login extends Component {
   state = {
@@ -24,6 +27,38 @@ export class Login extends Component {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
+  login = e => {
+    e.preventDefault();
+    const { username, password } = this.state;
+    this.setState({ loading: true });
+    const mutation = login(
+      { username, password },
+      {
+        onCompleted: ({ login: { token, error } }) => {
+          if (error) {
+            this.setState({
+              message: error,
+              error,
+              alertVisible: true,
+              loading: false,
+              username: '',
+              password: ''
+            })
+          }
+          if (token) {
+            localStorage.setItem('token', token)
+            this.props.history.push('/home');
+            window.location.reload()
+          }
+        },
+        onFailure: error => console.error(error),
+      },
+    );
+    mutation.commit()
+  }
+  closeAlert = () => {
+    this.setState({ alertVisible: false, error: false, message: '' });
+  };
   render() {
     const { username, password } = this.state
     return (
@@ -53,10 +88,11 @@ export class Login extends Component {
                   Login
               </CardHeader>
                 <CardBody>
-                  <Form>
+                  <Form onSubmit={this.login}>
                     <FormGroup>
                       <Label for="login-username">Username</Label>
                       <Input
+                        required
                         type="text"
                         value={username}
                         onChange={this.handleChange}
@@ -68,6 +104,7 @@ export class Login extends Component {
                     <FormGroup>
                       <Label for="login-password">Password</Label>
                       <Input
+                        required
                         type="password"
                         value={password}
                         onChange={this.handleChange}
@@ -76,10 +113,10 @@ export class Login extends Component {
                         placeholder="Password"
                       />
                     </FormGroup>
-                    <Button color='primary' className='btn-block'>
+                    <Button type='submit' color='primary' className='btn-block'>
                       Login
-                  </Button>
-                    <small className='text-center form-text'>
+                    </Button>
+                    <small className='text-center form-text mt-2'>
                       No account? &nbsp;
                       <Link to='/signup'>
                         Signup

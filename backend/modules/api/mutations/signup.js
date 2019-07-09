@@ -18,7 +18,7 @@ const GraphQLSignupMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ username, password }) => {
     const user = await findUsername(username);
-    if (user) return ({ token: null, error: 'Email already taken' });
+    if (user) return ({ token: null, error: 'Username already taken' });
     const newUser = saveUser({ username, password })
     return ({ token: generateToken(newUser), error: null });
   },
