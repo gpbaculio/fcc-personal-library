@@ -34,7 +34,7 @@ export class Login extends Component {
     const mutation = login(
       { username, password },
       {
-        onCompleted: ({ login: { token, error } }) => {
+        onCompleted: async ({ login: { token, error } }) => {
           if (error) {
             this.setState({
               message: error,
@@ -48,7 +48,6 @@ export class Login extends Component {
           if (token) {
             localStorage.setItem('token', token)
             this.props.history.push('/home');
-            window.location.reload()
           }
         },
         onFailure: error => console.error(error),
@@ -60,7 +59,7 @@ export class Login extends Component {
     this.setState({ alertVisible: false, error: false, message: '' });
   };
   render() {
-    const { username, password } = this.state
+    const { username, password, loading } = this.state
     return (
       <Container>
         <Row>
@@ -113,7 +112,7 @@ export class Login extends Component {
                         placeholder="Password"
                       />
                     </FormGroup>
-                    <Button type='submit' color='primary' className='btn-block'>
+                    <Button disabled={loading} type='submit' color='primary' className='btn-block'>
                       Login
                     </Button>
                     <small className='text-center form-text mt-2'>

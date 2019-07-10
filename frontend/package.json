@@ -8,6 +8,7 @@
     "core-js": "^2.6.9",
     "graphql": "^14.4.2",
     "graphql-relay": "^0.6.0",
+    "hoist-non-react-statics": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
