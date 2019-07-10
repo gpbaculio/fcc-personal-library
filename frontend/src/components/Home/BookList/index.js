@@ -1,13 +1,13 @@
 import graphql from 'babel-plugin-relay/macro';
 import createQueryRenderer from "../createQueryRenderer";
-import { HomeFragmentContainer, Home } from './Home';
+import { BookListRefetchContainer, BookList } from './BookList';
 
 const HomeQR = createQueryRenderer(
-  HomeFragmentContainer,
-  Home,
+  BookListRefetchContainer,
+  BookList,
   {
     query: graphql`
-      query HomeQuery {
+      query BookListQuery {
         viewer {
           id
           username
@@ -15,7 +15,7 @@ const HomeQR = createQueryRenderer(
         }
       }
     `,
-    queriesParams: null,
+    variables: { count: 5 },
     getFragmentProps: ({ viewer }) => ({ viewer })
   })
 

@@ -12,9 +12,7 @@ import {
   CardHeader,
   CardBody
 } from 'reactstrap'
-import jwt from 'jsonwebtoken'
 import { Link } from 'react-router-dom'
-import { fromGlobalId } from 'graphql-relay';
 import { FaUserCheck, FaSignInAlt } from 'react-icons/fa';
 import login from './mutations/login';
 
@@ -34,7 +32,7 @@ export class Login extends Component {
     const mutation = login(
       { username, password },
       {
-        onCompleted: async ({ login: { token, error } }) => {
+        onCompleted: ({ login: { token, error } }) => {
           if (error) {
             this.setState({
               message: error,

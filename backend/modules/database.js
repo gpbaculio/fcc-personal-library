@@ -3,9 +3,7 @@ import Comment from './models/Comment'
 import Book from './models/Book'
 import User from './models/User'
 
-export const createBook = ({ text, userId }) => {
-  return Book.create({ text, userId }, (_err, book) => book.populate('userId'));
-}
+export const createBook = (title, userId) => Book.create({ title, userId });
 
 export const getDocument = (_id, model) => {
   if (model === 'User') return User.findOne({ _id })

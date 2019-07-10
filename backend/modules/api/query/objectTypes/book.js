@@ -8,16 +8,19 @@ import {
 import { globalIdField, connectionArgs } from 'graphql-relay'
 
 import { nodeInterface } from '../../definitions';
-import { commentsConnection } from './user';
-import { getBookComments } from '../../../database';
+import { BookType } from '../../../models/constants';
 
 const GraphQLBookType = new GraphQLObjectType({
-  name: 'Book',
+  name: BookType,
   fields: {
-    id: globalIdField('Book'),
+    id: globalIdField(BookType),
     title: {
       type: GraphQLString,
       resolve: ({ title }) => title,
+    },
+    userId: {
+      type: GraphQLString,
+      resolve: ({ userId }) => userId,
     },
   },
   interfaces: [nodeInterface],

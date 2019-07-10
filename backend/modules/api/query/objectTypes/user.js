@@ -1,5 +1,5 @@
 // external imports
-import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql'
 import {
   globalIdField,
   connectionArgs,
@@ -12,7 +12,7 @@ import GraphQLCommentType from './comment'
 
 import { getUserBooks, getUserComments } from '../../../database'
 import { nodeInterface } from '../../definitions'
-import { BookType, CommentType } from '../../definitions/constants';
+import { BookType, CommentType, UserType } from '../../definitions/constants';
 
 export const {
   connectionType: booksConnection,
@@ -25,10 +25,10 @@ export const {
 } = connectionDefinitions({ name: CommentType, nodeType: GraphQLCommentType });
 
 const GraphQLUserType = new GraphQLObjectType({
-  name: 'User',
+  name: UserType,
   interfaces: [nodeInterface],
   fields: {
-    id: globalIdField('User'),
+    id: globalIdField(UserType),
     username: {
       type: GraphQLString,
       resolve: ({ username }) => username
@@ -37,8 +37,14 @@ const GraphQLUserType = new GraphQLObjectType({
       type: booksConnection,
       args: {
         ...connectionArgs,
+        first: {
+          type: GraphQLInt
+        }
       },
-      resolve: (_root, { ...args }, { user: { _id } }) => connectionFromArray(getUserBooks(_id), args)
+      resolve: (_root, { first, ...args }, { user: { _id } }) => {
+        console.log('args ', first) // first = limit, after = skip/offset
+        return connectionFromArray(getUserBooks(_id), args)
+      }
     },
     comments: {
       type: commentsConnection,

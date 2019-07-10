@@ -9,10 +9,7 @@ const query = new GraphQLObjectType({
   fields: () => ({
     viewer: {
       type: GraphQLUserType,
-      resolve: async (_root, _args, { user }) => {
-        console.log('user ', user)
-        return user
-      },
+      resolve: (_root, _args, { user }) => user,
     },
     node: nodeField,
   })

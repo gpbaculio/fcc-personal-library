@@ -11,7 +11,6 @@ const App = () => (
   <Fragment>
     <Header />
     <Switch>
-      <Route path="empty" component={null} key="empty" />
       <Route
         exact
         path='/(home)?'

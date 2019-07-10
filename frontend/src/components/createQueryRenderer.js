@@ -10,12 +10,9 @@ const createQueryRenderer = (
   Component,
   config,
 ) => {
-  const { query, queriesParams } = config;
+  const { query, variables } = config;
   class QueryRendererWrapper extends React.Component {
     render() {
-      const variables = queriesParams
-        ? queriesParams(this.props) :
-        config.variables;
       return (
         <QueryRenderer
           environment={Environment}
