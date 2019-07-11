@@ -1,7 +1,7 @@
 import React from 'react';
 import { Spinner } from 'reactstrap';
 
-const Loader = () => (
+const LoadingView = () => (
   <div className='d-flex justify-content-center'>
     <div className='d-flex align-items-center'>
       <Spinner size='lg' className='m-auto loader' color='primary' />
@@ -10,4 +10,4 @@ const Loader = () => (
   </div>
 );
 
-export default Loader;
+export default LoadingView;

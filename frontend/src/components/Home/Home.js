@@ -29,7 +29,7 @@ class Home extends Component {
                     <h4>{viewer.username}</h4>
                   </div>
                   <AddBook userId={viewer.id} />
-                  <BookList />
+                  <BookList viewer={viewer} />
                 </React.Fragment>
               ) : <GuestView />}
             </div>
@@ -45,6 +45,7 @@ export default createFragmentContainer(
   {
     viewer: graphql`
       fragment Home_viewer on User {
+        ...BookList_viewer
         username
         id
       }

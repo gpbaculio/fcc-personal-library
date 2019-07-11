@@ -8,6 +8,7 @@ const HomeQR = createQueryRenderer(
     query: graphql`
       query HomeQuery {
         viewer {
+          id
           ...Home_viewer
         }
       }

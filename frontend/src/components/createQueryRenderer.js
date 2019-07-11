@@ -19,6 +19,9 @@ const createQueryRenderer = (
           variables={variables}
           render={({ error, props, retry }) => {
             if (error) {
+              if (config.ErrorView !== undefined) {
+                return <config.ErrorView error={error} retry={retry} />;
+              }
               return (
                 <ErrorView
                   error={error}
@@ -33,8 +36,8 @@ const createQueryRenderer = (
                 />
               );
             }
-            if (config.loadingView !== undefined) {
-              return config.loadingView;
+            if (config.LoadingView !== undefined) {
+              return <config.LoadingView />;
             }
             return <LoadingView />
           }}

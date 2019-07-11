@@ -4,7 +4,6 @@ import graphql from 'babel-plugin-relay/macro';
 
 class BookList extends Component {
   render() {
-    console.log('viewer ', this.props.viewer.books)
     return (
       <div>
         <ul>
