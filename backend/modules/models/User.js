@@ -1,20 +1,21 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { UserType } from './constants';
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      hidden: true
+    }
   },
-  password: {
-    type: String,
-    hidden: true
-  }
-},
   {
     timestamps: true
-  });
+  }
+);
 
 userSchema.pre('save', function (next) {
   if (this.isModified('password')) {

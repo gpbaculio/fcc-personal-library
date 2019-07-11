@@ -38,7 +38,7 @@ class AddBook extends Component {
         parentID: this.props.viewerId,
         connectionInfo: [
           {
-            key: 'Viewer_books',
+            key: 'BookList_books',
             rangeBehavior: 'prepend'
           }
         ],

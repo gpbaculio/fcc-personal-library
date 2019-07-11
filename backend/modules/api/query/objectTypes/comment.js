@@ -7,17 +7,22 @@ import {
 
 import { globalIdField } from 'graphql-relay'
 
-import { nodeInterface } from '../../definitions';
-import GraphQLUserType from './user';
-
 const GraphQLCommentType = new GraphQLObjectType({
   name: 'Comment',
   fields: {
     id: globalIdField('Comment'),
-    comment: {
+    text: {
       type: GraphQLString,
-      resolve: ({ comment }) => comment,
+      resolve: ({ text }) => text,
     },
+    owner: {
+      type: GraphQLString,
+      resolve: ({ userId: { username } }) => username,
+    },
+    createdAt: {
+      type: GraphQLString,
+      resolve: ({ createdAt }) => createdAt,
+    }
   },
 });
 

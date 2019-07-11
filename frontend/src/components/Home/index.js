@@ -6,7 +6,7 @@ const HomeQR = createQueryRenderer(
   Home,
   {
     query: graphql`
-      query HomeQuery {
+      query HomeQuery($count: Int, $cursor: String) {
         viewer {
           id
           ...Home_viewer
