@@ -20,7 +20,7 @@ export default createRefetchContainer(
     fragment BookList_viewer on User
     @argumentDefinitions(count: {type: "Int"}, cursor: {type: "String"}) {
       id
-      books(first: $count, after: $cursor) @connection(key: "User_books") {
+      books(first: $count, after: $cursor) @connection(key: "Viewer_books") {
         edges {
           node {
             id

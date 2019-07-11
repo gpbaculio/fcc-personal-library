@@ -8,6 +8,8 @@ const Comment = new mongoose.Schema({
     ref: UserType
   },
   bookId: { type: mongoose.Schema.Types.ObjectId, ref: BookType }
-});
+}, {
+    timestamps: true
+  });
 
 export default mongoose.model(CommentType, Comment)

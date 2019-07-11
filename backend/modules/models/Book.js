@@ -7,6 +7,8 @@ const Book = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: UserType
   }
-});
+}, {
+    timestamps: true
+  });
 
 export default mongoose.model(BookType, Book)

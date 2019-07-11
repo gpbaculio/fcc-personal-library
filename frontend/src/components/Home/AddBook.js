@@ -21,10 +21,10 @@ class AddBook extends Component {
   addBook = e => {
     e.preventDefault();
     const { bookTitle } = this.state;
-    const { userId } = this.props
+    const { viewerId } = this.props
     this.setState({ loading: true });
     const mutation = addBook(
-      { title: bookTitle, userId },
+      { title: bookTitle, userId: viewerId },
       {
         onCompleted: () => {
           this.setState({ loading: false, bookTitle: '' })
@@ -32,7 +32,19 @@ class AddBook extends Component {
         onFailure: error => console.error(error),
       },
     );
-    mutation.commit()
+    mutation.commit([
+      {
+        type: 'RANGE_ADD',
+        parentID: this.props.viewerId,
+        connectionInfo: [
+          {
+            key: 'Viewer_books',
+            rangeBehavior: 'prepend'
+          }
+        ],
+        edgeName: 'book'
+      }
+    ])
   }
   render() {
     const { loading, bookTitle } = this.state

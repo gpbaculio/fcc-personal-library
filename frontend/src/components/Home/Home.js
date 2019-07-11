@@ -28,7 +28,7 @@ class Home extends Component {
                   <div className='w-100 d-flex my-2 py-2 welcome-container'>
                     <h4>{viewer.username}</h4>
                   </div>
-                  <AddBook userId={viewer.id} />
+                  <AddBook viewerId={viewer.id} />
                   <BookList viewer={viewer} />
                 </React.Fragment>
               ) : <GuestView />}

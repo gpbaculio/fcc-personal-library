@@ -19,7 +19,7 @@ export const getUser = (userId) => {
 export const findUsername = (username) => User.findOne({ username })
 
 export const getUserBooks = (userId) => {
-  return Book.find({ userId }).populate('userId')
+  return Book.find({ userId }).populate('userId').sort('-createdAt')
 }
 
 export const saveUser = ({ username, password }) => User.create({ username, password });
