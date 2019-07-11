@@ -1,22 +1,22 @@
+import React from 'react'
 import graphql from 'babel-plugin-relay/macro';
-import createQueryRenderer from "../createQueryRenderer";
-import { BookListRefetchContainer, BookList } from './BookList';
+import BookList from './BookList';
+import createQueryRenderer from '../../createQueryRenderer';
+import LoadingView from './LoadingView'
 
-const HomeQR = createQueryRenderer(
-  BookListRefetchContainer,
+const BookListQuery = graphql`
+  query BookListQuery($count: Int, $cursor:String) {
+    viewer {
+      ...BookList_viewer
+    }
+  }
+`;
+
+
+export default createQueryRenderer(
   BookList,
   {
-    query: graphql`
-      query BookListQuery {
-        viewer {
-          id
-          username
-          ...Home_viewer
-        }
-      }
-    `,
+    query: BookListQuery,
     variables: { count: 5 },
-    getFragmentProps: ({ viewer }) => ({ viewer })
+    loadingView: <LoadingView />
   })
-
-export default HomeQR

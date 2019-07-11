@@ -10,15 +10,14 @@ import GuestView from './GuestView';
 import AddBook from './AddBook';
 import BookList from './BookList';
 
-
-
-export class Home extends Component {
+class Home extends Component {
   logout = () => {
     localStorage.removeItem('token')
     this.props.history.push(`/`)
   }
   render() {
     const { viewer } = this.props
+    console.log('viewer ', viewer);
     return (
       <Container>
         <Row>
@@ -41,7 +40,7 @@ export class Home extends Component {
   }
 }
 
-export const HomeFragmentContainer = createFragmentContainer(
+export default createFragmentContainer(
   Home,
   {
     viewer: graphql`

@@ -37,13 +37,12 @@ const GraphQLUserType = new GraphQLObjectType({
       type: booksConnection,
       args: {
         ...connectionArgs,
-        first: {
-          type: GraphQLInt
-        }
       },
-      resolve: (_root, { first, ...args }, { user: { _id } }) => {
-        console.log('args ', first) // first = limit, after = skip/offset
-        return connectionFromArray(getUserBooks(_id), args)
+      resolve: async (_root, { ...args }, { user: { _id } }) => {
+        console.log('args ', args) // first = limit, after = skip/offset
+        const books = await getUserBooks(_id)
+        console.log('getUserBooks(_id) ', books)
+        return connectionFromArray(books, args)
       }
     },
     comments: {

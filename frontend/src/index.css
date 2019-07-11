@@ -28,7 +28,8 @@ header {
   color: #fff;
 }
 
-.form-container {
+.form-container,
+.loading-view {
   height: calc(100vh - 62.4px);
 }
 

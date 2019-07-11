@@ -51,19 +51,3 @@ app.use(
 );
 
 app.listen(port, () => console.log(`Express server listening on port ${port}`))
-
-// const server = http.createServer(app);
-
-// server.listen(port, () => {
-//   new SubscriptionServer(
-//     {
-//       onConnect: connectionParams =>
-//         console.log('client subscription connected!', connectionParams),
-//       onDisconnect: () => console.log('client subscription disconnected!'),
-//       execute,
-//       subscribe,
-//       schema
-//     },
-//     { server, path: '/subscriptions' }
-//   );
-// });

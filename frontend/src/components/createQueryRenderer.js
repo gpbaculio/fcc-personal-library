@@ -6,7 +6,6 @@ import ErrorView from './ErrorView';
 import LoadingView from './LoadingView';
 
 const createQueryRenderer = (
-  FragmentComponent,
   Component,
   config,
 ) => {
@@ -27,13 +26,10 @@ const createQueryRenderer = (
               );
             }
             if (props) {
-              const fragmentProps = config.getFragmentProps
-                ? config.getFragmentProps(props)
-                : { query: props };
               return (
-                <FragmentComponent
+                <Component
                   {...this.props}
-                  {...fragmentProps}
+                  {...props}
                 />
               );
             }
