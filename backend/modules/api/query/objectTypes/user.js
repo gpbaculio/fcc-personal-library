@@ -1,5 +1,5 @@
 // external imports
-import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql'
 import {
   globalIdField,
   connectionArgs,
@@ -8,9 +8,8 @@ import {
 } from 'graphql-relay'
 
 import GraphQLBookType from './book'
-import GraphQLCommentType from './comment'
 
-import { getUserBooks } from '../../../database'
+import { getBooks, getBooksCount } from '../../../database'
 import { nodeInterface } from '../../definitions'
 import { BookType, CommentType, UserType } from '../../definitions/constants';
 
@@ -29,14 +28,24 @@ const GraphQLUserType = new GraphQLObjectType({
       resolve: ({ username }) => username
     },
     books: {
-      name: 'Books',
       type: booksConnection,
       args: {
         ...connectionArgs,
+        page: {
+          type: GraphQLInt
+        }
       },
-      resolve: async (_root, { ...args }, { user: { _id } }) => {
-        const books = await getUserBooks(_id)
+      resolve: async (_root, { page, ...args }) => {
+        const books = await getBooks({ page, limit: args.first })
+        console.log('books ', books.length)
+        console.log('args db', { page, limit: args.first })
         return connectionFromArray(books, args)
+      }
+    },
+    booksCount: {
+      type: GraphQLInt,
+      resolve: () => {
+        return getBooksCount()
       }
     }
   }

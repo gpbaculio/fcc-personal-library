@@ -6,8 +6,11 @@ import {
   Input,
   Button
 } from 'reactstrap'
+import { ConnectionHandler } from 'relay-runtime'
+import uuidv1 from 'uuid/v1'
 
 import addBook from '../mutations/AddBook';
+import { booksUpdater } from './utils';
 
 class AddBook extends Component {
   state = {
@@ -26,30 +29,23 @@ class AddBook extends Component {
     const mutation = addBook(
       { title: bookTitle, userId: viewerId },
       {
+        updater: (store) => {
+          const userProxy = store.get(viewerId)
+          const payload = store.getRootField('addBook');
+          booksUpdater(userProxy, payload.getLinkedRecord('book'));
+        },
         onCompleted: () => {
           this.setState({ loading: false, bookTitle: '' })
         },
         onFailure: error => console.error(error),
       },
     );
-    mutation.commit([
-      {
-        type: 'RANGE_ADD',
-        parentID: this.props.viewerId,
-        connectionInfo: [
-          {
-            key: 'BookList_books',
-            rangeBehavior: 'prepend'
-          }
-        ],
-        edgeName: 'book'
-      }
-    ])
+    mutation.commit()
   }
   render() {
     const { loading, bookTitle } = this.state
     return (
-      <div className='my-3 w-100 d-flex justify-content-center'>
+      <div className='my-3 w-100 d-flex justify-content-center addbook-container p-3'>
         <Form onSubmit={this.addBook} inline className='d-flex w-50 justify-content-between'>
           <FormGroup className='flex-grow-1 mr-2'>
             <Label for="bookTitle" className='mr-2'>Book Title</Label>

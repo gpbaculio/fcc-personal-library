@@ -26,8 +26,19 @@ export const getUser = (userId) => {
 
 export const findUsername = (username) => User.findOne({ username })
 
-export const getUserBooks = (userId) => {
-  return Book.find({ userId }).populate('userId', 'username').sort('-createdAt')
+export const getBooks = ({ page, limit }) => {
+  return Book.find(
+    {},
+    null,
+    { skip: parseInt(page - 1) * parseInt(limit), limit: parseInt(limit) }
+  ).populate({
+    path: 'userId',
+    select: 'username'
+  }).sort('-createdAt');
+}
+
+export const getBooksCount = () => {
+  return Book.countDocuments({});
 }
 
 export const saveUser = ({ username, password }) => User.create({ username, password });

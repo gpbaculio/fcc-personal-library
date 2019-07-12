@@ -1,3 +1,5 @@
+import { ConnectionHandler } from 'relay-runtime';
+
 function timeDifference(current, previous) {
 
   const milliSecondsPerMinute = 60 * 1000
@@ -41,4 +43,9 @@ export const timeDifferenceForDate = (date) => {
   const now = new Date().getTime()
   const updated = new Date(Number(date)).getTime()
   return timeDifference(now, updated)
+}
+
+export const commentUpdater = (bookProxy, commentEdge) => {
+  const connection = ConnectionHandler.getConnection(bookProxy, 'BookComments_comments');
+  ConnectionHandler.insertEdgeBefore(connection, commentEdge);
 }

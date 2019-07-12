@@ -8,7 +8,8 @@ import { createFragmentContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import GuestView from './GuestView';
 import AddBook from './AddBook';
-import BookListContainer from './BookList';
+import BookList from './BookList';
+import SubHeader from './SubHeader';
 
 class Home extends Component {
   logout = () => {
@@ -24,17 +25,15 @@ class Home extends Component {
             <div className='d-flex flex-column my-3 justify-content-center align-items-center'>
               {viewer ? (
                 <React.Fragment>
-                  <div className='w-100 d-flex my-2 py-2 welcome-container'>
-                    <h4>{viewer.username}</h4>
-                  </div>
-                  <AddBook viewerId={viewer.id} />
+                  <SubHeader username={viewer.username} />
+                  <AddBook username={viewer.username} viewerId={viewer.id} />
                 </React.Fragment>
               ) : <GuestView />}
             </div>
           </Col>
         </Row>
         <Row>
-          <BookListContainer viewer={viewer} />
+          <BookList viewer={viewer} />
         </Row>
       </Container>
     )
@@ -46,7 +45,7 @@ export default createFragmentContainer(
   {
     viewer: graphql`
       fragment Home_viewer on User {
-        ...BookListContainer_viewer
+        ...BookList_viewer
         username
         id
       }

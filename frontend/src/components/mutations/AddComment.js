@@ -9,7 +9,10 @@ export default mutationFromQuery(graphql`
         __typename
         cursor
         node {
+          id
           text
+          owner
+          createdAt
         }
       }
     }

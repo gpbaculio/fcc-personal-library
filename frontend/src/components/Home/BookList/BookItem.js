@@ -9,7 +9,7 @@ class BookItem extends Component {
   render() {
     const { book, viewerId } = this.props
     return (
-      <Col xs='4' className='mb-2'>
+      <Col xs='4' className='mb-4'>
         <Card>
           <CardHeader className='d-flex justify-content-between'>
             <span>{book.owner}</span>
@@ -41,7 +41,7 @@ export default createRefetchContainer(
         title
         owner
         createdAt
-        ...BookComments_book
+        ...BookComments_book  
       }
     `
   },

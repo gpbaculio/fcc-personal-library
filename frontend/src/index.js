@@ -6,15 +6,13 @@ import { installRelayDevTools } from 'relay-devtools';
 import App from './App'
 
 import './index.css';
+import './pagination.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 import * as serviceWorker from './serviceWorker';
 
 // Useful for debugging, but remember to remove for a production deploy.
 installRelayDevTools();
-
-
 
 ReactDOM.render(
   <BrowserRouter>

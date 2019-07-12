@@ -54,3 +54,8 @@ input[type="text"],
 textarea {
   background-color: #E9EBEE;
 }
+
+.addbook-container,
+.welcome-container {
+  background-color: #fff;
+}
