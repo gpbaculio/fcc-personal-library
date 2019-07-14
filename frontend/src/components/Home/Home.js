@@ -11,7 +11,7 @@ import AddBook from './AddBook';
 import BookList from './BookList';
 import SubHeader from './SubHeader';
 
-class Home extends Component {
+export class Home extends Component {
   logout = () => {
     localStorage.removeItem('token')
     this.props.history.push(`/`)
@@ -40,7 +40,7 @@ class Home extends Component {
   }
 }
 
-export default createFragmentContainer(
+export const HomeFC = createFragmentContainer(
   Home,
   {
     viewer: graphql`

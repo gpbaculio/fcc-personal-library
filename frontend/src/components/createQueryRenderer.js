@@ -5,13 +5,18 @@ import Environment from './Environment';
 import ErrorView from './ErrorView';
 import LoadingView from './LoadingView';
 
-const createQueryRenderer = (
+export default function createQueryRenderer(
+  FragmentComponent,
   Component,
-  config,
-) => {
-  const { query, variables } = config;
+  config
+) {
+  const { query, queriesParams } = config;
   class QueryRendererWrapper extends React.Component {
     render() {
+      const variables = queriesParams
+        ? queriesParams(this.props) :
+        config.variables;
+      console.log('variables ', variables)
       return (
         <QueryRenderer
           environment={Environment}
@@ -19,9 +24,6 @@ const createQueryRenderer = (
           variables={variables}
           render={({ error, props, retry }) => {
             if (error) {
-              if (config.ErrorView !== undefined) {
-                return <config.ErrorView error={error} retry={retry} />;
-              }
               return (
                 <ErrorView
                   error={error}
@@ -29,15 +31,20 @@ const createQueryRenderer = (
               );
             }
             if (props) {
+              console.log('props ', props);
+              const fragmentProps = config.getFragmentProps
+                ? config.getFragmentProps(props)
+                : { query: props };
+              console.log('fragmentProps ', fragmentProps);
               return (
-                <Component
+                <FragmentComponent
                   {...this.props}
-                  {...props}
+                  {...fragmentProps}
                 />
               );
             }
-            if (config.LoadingView !== undefined) {
-              return <config.LoadingView />;
+            if (config.loadingView !== undefined) {
+              return config.loadingView;
             }
             return <LoadingView />
           }}
@@ -45,8 +52,5 @@ const createQueryRenderer = (
       );
     }
   }
-
   return hoistStatics(QueryRendererWrapper, Component);
 }
-
-export default createQueryRenderer

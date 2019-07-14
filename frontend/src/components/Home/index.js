@@ -1,10 +1,11 @@
 import graphql from 'babel-plugin-relay/macro';
 import createQueryRenderer from "../createQueryRenderer";
-import Home from './Home';
+import { Home, HomeFC } from './Home';
 import ErrorView from './ErrorView'
 import LoadingView from './LoadingView'
 
 const HomeQR = createQueryRenderer(
+  HomeFC,
   Home,
   {
     query: graphql`
@@ -15,6 +16,9 @@ const HomeQR = createQueryRenderer(
         }
       }
     `,
+    getFragmentProps: ({ viewer }) => ({
+      viewer,
+    }),
     variables: {},
     ErrorView: ErrorView,
     LoadingView: LoadingView,

@@ -1,55 +1,31 @@
 import React, { Component } from 'react'
 import graphql from 'babel-plugin-relay/macro';
-import { fetchQuery } from 'relay-runtime';
 import { fromGlobalId } from 'graphql-relay'
-import environment from '../Environment';
+import createQueryRenderer from "../createQueryRenderer";
+import { BookDetailsFC, BookDetails } from './BookDetails';
 
-class BookDetails extends Component {
-  componentDidMount() {
-    const { bookId } = this.props.match.params
-    const query = graphql`
+const BookDetailsQR = createQueryRenderer(
+  BookDetailsFC,
+  BookDetails,
+  {
+    query: graphql`
       query BookDetailsQuery ($bookId: String, $count: Int, $cursor: String) {
-        viewer { 
+        viewer {
+          id
           book(bookId:$bookId) {
-            id
-            title
-            owner
-            createdAt
-            comments(first: $count, after: $cursor) @connection(key: "BookDetails_comments",filters: []) { 
-              edges {
-                node {  
-                  id
-                  text
-                  owner
-                  createdAt
-                }
-              }
-            }
+            ...BookDetails_book
           }
         }
       }
-    `;
-
-    const variables = {
-      bookId: fromGlobalId(bookId).id,
-      count: 3
-    };
-    console.log('variables ', variables)
-    fetchQuery(environment, query, variables)
-      .then(data => {
-        // access the graphql response
-        console.log('data ', data);
-      });
+    `,
+    queriesParams: ({ match }) => ({
+      bookId: fromGlobalId(match.params.bookId).id
+    }),
+    getFragmentProps: ({ viewer: { book } }) => ({
+      book,
+    }),
   }
+)
 
-  render() {
-    const { bookId } = this.props.match.params
-    return (
-      <div>
-        {bookId}
-      </div>
-    )
-  }
-}
 
-export default BookDetails
+export default BookDetailsQR
