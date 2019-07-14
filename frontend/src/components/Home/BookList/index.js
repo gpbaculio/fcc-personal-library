@@ -30,8 +30,11 @@ class BookList extends Component {
         {loading && <div className='d-flex w-100 justify-content-center'>
           <div className='mb-4'><Spinner size='lg' className='mr-2' color='primary' />Loading....</div>
         </div>}
-        {viewer.books.edges.map(({ node }) => (
-          <BookItem viewerId={viewer.id} key={node.id} book={node} />))}
+        {viewer.BookList_viewer_books.edges.map(({ node }) => {
+          console.log('node ', node);
+          return (
+            <BookItem viewerId={viewer.id} key={node.id} book={node} />)
+        })}
         <div className='d-flex w-100 justify-content-center'>
           <Pagination
             activePage={page}
@@ -58,8 +61,8 @@ export default createRefetchContainer(
       ){
         id
         booksCount
-        books(first: $count, page: $page, after: $cursor)
-          @connection(key: "BookList_books", filters: []) {
+        BookList_viewer_books: books(first: $count, page: $page, after: $cursor)
+          @connection(key: "Show_BookList_viewer_books", filters: []) {
           edges {
             cursor
             node {
@@ -74,7 +77,7 @@ export default createRefetchContainer(
   graphql`
     query BookListQuery($count: Int, $page: Int, $cursor: String) {
       viewer {
-        ...BookList_viewer  @arguments(count: $count, page:$page, cursor: $cursor)
+        ...BookList_viewer @arguments(count: $count, page:$page, cursor: $cursor)
       }
     }
   `

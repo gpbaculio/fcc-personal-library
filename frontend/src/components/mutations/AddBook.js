@@ -14,7 +14,7 @@ export default mutationFromQuery(graphql`
           owner
           createdAt
           comments(first: $count, after: $cursor)
-          @connection(key: "BookComments_comments", filters: []) {
+          @connection(key: "BookComments_comments") {
             __typename
             edges { 
               node { 

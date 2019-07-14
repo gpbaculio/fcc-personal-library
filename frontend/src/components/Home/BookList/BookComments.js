@@ -12,6 +12,7 @@ export class BookComments extends Component {
   }
   render() {
     const { book, viewerId } = this.props
+    console.log('book ', book.comments);
     return (
       <div className='p-3 comments-container'>
         <CommentInput viewerId={viewerId} bookId={book.id} />
@@ -38,7 +39,7 @@ export default createPaginationContainer(
         id
         title
         comments(first: $count, after: $cursor)
-          @connection(key: "BookComments_comments", filters: []) {
+          @connection(key: "BookComments_comments") {
             __typename
           edges {
             node {

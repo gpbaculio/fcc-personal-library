@@ -26,12 +26,24 @@ export const getUser = (userId) => {
 
 export const findUsername = (username) => User.findOne({ username })
 
-export const getBooks = ({ page, limit }) => {
+export const getBooks = ({ page, limit, searchText }) => {
+  const query = {}
+  if (searchText !== undefined) {
+    if (searchText === '') return []
+    query.title = { $regex: `${searchText}`, $options: 'i' }
+  }
   return Book.find(
-    {},
+    query,
     null,
     { skip: parseInt(page - 1) * parseInt(limit), limit: parseInt(limit) }
   ).populate({
+    path: 'userId',
+    select: 'username'
+  }).sort('-createdAt');
+}
+
+export const getBook = bookId => {
+  return Book.findById(bookId).populate({
     path: 'userId',
     select: 'username'
   }).sort('-createdAt');

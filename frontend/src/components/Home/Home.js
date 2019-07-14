@@ -25,7 +25,7 @@ class Home extends Component {
             <div className='d-flex flex-column my-3 justify-content-center align-items-center'>
               {viewer ? (
                 <React.Fragment>
-                  <SubHeader username={viewer.username} />
+                  <SubHeader viewer={viewer} username={viewer.username} />
                   <AddBook username={viewer.username} viewerId={viewer.id} />
                 </React.Fragment>
               ) : <GuestView />}
@@ -45,6 +45,7 @@ export default createFragmentContainer(
   {
     viewer: graphql`
       fragment Home_viewer on User {
+        ...SubHeader_viewer
         ...BookList_viewer
         username
         id

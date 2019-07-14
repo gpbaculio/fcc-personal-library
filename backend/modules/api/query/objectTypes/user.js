@@ -9,7 +9,7 @@ import {
 
 import GraphQLBookType from './book'
 
-import { getBooks, getBooksCount } from '../../../database'
+import { getBooks, getBooksCount, getBook } from '../../../database'
 import { nodeInterface } from '../../definitions'
 import { BookType, CommentType, UserType } from '../../definitions/constants';
 
@@ -33,13 +33,25 @@ const GraphQLUserType = new GraphQLObjectType({
         ...connectionArgs,
         page: {
           type: GraphQLInt
+        },
+        searchText: {
+          type: GraphQLString
         }
       },
-      resolve: async (_root, { page, ...args }) => {
-        const books = await getBooks({ page, limit: args.first })
-        console.log('books ', books.length)
-        console.log('args db', { page, limit: args.first })
+      resolve: async (_root, { page, searchText, ...args }) => {
+        const books = await getBooks({ page, limit: args.first, searchText })
         return connectionFromArray(books, args)
+      }
+    },
+    book: {
+      type: GraphQLBookType,
+      args: {
+        bookId: {
+          type: GraphQLString
+        }
+      },
+      resolve: async (_root, { bookId }) => {
+        return getBook(bookId)
       }
     },
     booksCount: {

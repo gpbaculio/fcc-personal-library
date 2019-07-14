@@ -4,7 +4,8 @@ import { Switch, Route } from 'react-router-dom';
 
 import {
   Header, Home, Signup,
-  Login
+  Login,
+  BookDetails
 } from './components';
 
 const App = () => (
@@ -16,6 +17,13 @@ const App = () => (
         path='/(home)?'
         render={renderProps => (
           <Home {...renderProps} />
+        )}
+      />
+      <Route
+        exact
+        path='/book/:bookId'
+        render={renderProps => (
+          <BookDetails {...renderProps} />
         )}
       />
       <Route

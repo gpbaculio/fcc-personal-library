@@ -32,7 +32,8 @@ class AddBook extends Component {
         updater: (store) => {
           const userProxy = store.get(viewerId)
           const payload = store.getRootField('addBook');
-          booksUpdater(userProxy, payload.getLinkedRecord('book'));
+          const connection = ConnectionHandler.getConnection(userProxy, 'Show_BookList_viewer_books');
+          ConnectionHandler.insertEdgeBefore(connection, payload.getLinkedRecord('book'));
         },
         onCompleted: () => {
           this.setState({ loading: false, bookTitle: '' })
