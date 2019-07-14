@@ -45,7 +45,7 @@ export const timeDifferenceForDate = (date) => {
   return timeDifference(now, updated)
 }
 
-export const commentUpdater = (bookProxy, commentEdge) => {
-  const connection = ConnectionHandler.getConnection(bookProxy, 'BookComments_comments');
+export const commentUpdater = (bookProxy, commentEdge, connectionKey) => {
+  const connection = ConnectionHandler.getConnection(bookProxy, connectionKey);
   ConnectionHandler.insertEdgeBefore(connection, commentEdge);
 }

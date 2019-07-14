@@ -19,7 +19,7 @@ class CommentInput extends Component {
   addComment = e => {
     e.preventDefault();
     const { commentText } = this.state;
-    const { viewerId, bookId } = this.props
+    const { viewerId, bookId, connectionKey } = this.props
     this.setState({ loading: true });
     const mutation = addComment(
       { text: commentText, userId: viewerId, bookId },
@@ -27,7 +27,7 @@ class CommentInput extends Component {
         updater: (store) => {
           const bookProxy = store.get(bookId)
           const payload = store.getRootField('addComment');
-          commentUpdater(bookProxy, payload.getLinkedRecord('comment'));
+          commentUpdater(bookProxy, payload.getLinkedRecord('comment'), connectionKey);
         },
         optimisticUpdater: (store) => {
           const userProxy = store.get(viewerId)
@@ -42,7 +42,7 @@ class CommentInput extends Component {
           const commentEdgeId = uuidv1()
           const commentEdge = store.create(commentEdgeId, 'CommentEdge');
           commentEdge.setLinkedRecord(comment, 'node');
-          commentUpdater(bookProxy, commentEdge);
+          commentUpdater(bookProxy, commentEdge, connectionKey);
         },
         onCompleted: () => {
           this.setState({ loading: false, commentText: '' })

@@ -7,7 +7,7 @@ import BookComments from './BookComments'
 
 class BookItem extends Component {
   render() {
-    const { book, viewerId } = this.props
+    const { book, viewerId, connectionKey } = this.props
     return (
       <Col xs='4' className='mb-4'>
         <Card>
@@ -22,7 +22,7 @@ class BookItem extends Component {
             Comment
           </CardFooter>
         </Card>
-        <BookComments viewerId={viewerId} book={book} />
+        <BookComments connectionKey={connectionKey} viewerId={viewerId} book={book} />
       </Col>
     )
   }
@@ -36,19 +36,19 @@ export default createRefetchContainer(
         @argumentDefinitions(
           count: { type: "Int", defaultValue: 5 }
           cursor: { type: "String", defaultValue: null }
-        ) {
+        ) @relay(mask: false) {
         id
         title
         owner
         createdAt
-        ...BookComments_book  
+        ...BookComments_book @relay(mask: false)
       }
     `
   },
   graphql`
     query BookItemQuery($id: ID!, $count: Int, $cursor: String) {
       book: node(id: $id) {
-        ...BookItem_book @arguments(count: $count, cursor: $cursor)
+        ...BookItem_book @arguments(count: $count, cursor: $cursor) @relay(mask: false)
       }
     }
   `

@@ -33,7 +33,7 @@ class BookList extends Component {
         {viewer.BookList_viewer_books.edges.map(({ node }) => {
           console.log('node ', node);
           return (
-            <BookItem viewerId={viewer.id} key={node.id} book={node} />)
+            <BookItem connectionKey={'BookComments_comments'} viewerId={viewer.id} key={node.id} book={node} />)
         })}
         <div className='d-flex w-100 justify-content-center'>
           <Pagination
@@ -62,12 +62,12 @@ export default createRefetchContainer(
         id
         booksCount
         BookList_viewer_books: books(first: $count, page: $page, after: $cursor)
-          @connection(key: "Show_BookList_viewer_books", filters: []) {
+          @connection(key: "Show_BookList_viewer_books", filters: []) @relay(mask:false) {
           edges {
             cursor
             node {
               id
-              ...BookItem_book
+              ...BookItem_book @relay(mask:false)
             }
           }
         }

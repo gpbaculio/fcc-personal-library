@@ -21,8 +21,9 @@ const BookDetailsQR = createQueryRenderer(
     queriesParams: ({ match }) => ({
       bookId: fromGlobalId(match.params.bookId).id
     }),
-    getFragmentProps: ({ viewer: { book } }) => ({
-      book,
+    getFragmentProps: ({ viewer }) => ({
+      viewerId: viewer.id,
+      book: viewer.book,
     }),
   }
 )
