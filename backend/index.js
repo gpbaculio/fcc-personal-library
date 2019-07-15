@@ -11,6 +11,7 @@ require('dotenv').config();
 
 import schema from './modules/api/schema';
 import { getUserContext } from './modules/auth';
+import uploadMiddleWare from './uploadMiddleware';
 
 mongoose.Promise = global.Promise;
 mongoose.connect(
@@ -29,15 +30,16 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// app.use('/public', express.static(path.join(__dirname, '../public')));
-// app.get('/*', function (_, res) {
-//   res.sendFile(path.join(__dirname, '../public/index.html'));
-// });
+app.use('/public', express.static(path.join(__dirname, '..', 'public', 'static')));
+app.get('/*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
 
+app.use('/graphql', cors(), uploadMiddleWare)
 app.use(
   '/graphql',
   cors(),
-  graphqlHTTP(async (req, res, next) => {
+  graphqlHTTP(async (req, _res, _next) => {
     const user = await getUserContext(req.headers.authorization);
     return {
       schema,

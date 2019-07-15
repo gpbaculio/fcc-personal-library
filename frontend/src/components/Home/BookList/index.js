@@ -67,7 +67,7 @@ export default createRefetchContainer(
             cursor
             node {
               id
-              ...BookItem_book @relay(mask:false)
+              ...BookItem_book
             }
           }
         }

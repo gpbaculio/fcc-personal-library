@@ -11,17 +11,20 @@ export class BookComments extends Component {
     this.props.relay.loadMore(3);
   }
   render() {
-    const { book, viewerId, connectionKey } = this.props
-    console.log('book ', book.comments);
+    const { book, viewerId } = this.props
     return (
       <div className='p-3 comments-container'>
-        <CommentInput connectionKey={connectionKey} viewerId={viewerId} bookId={book.id} />
-        {book.comments !== 'undefined' && book.comments.edges.length && <React.Fragment><ul>
-          {book.comments.edges.map(({ node }) => <li key={node.id}>{node.text}</li>)}
-        </ul>
-          <button
-            onClick={() => this.loadMore()}
-          >load more</button></React.Fragment>}
+        <CommentInput viewerId={viewerId} bookId={book.id} />
+        {book.comments.edges.length && (
+          <React.Fragment>
+            <ul>
+              {book.comments.edges.map(({ node }) => <li key={node.id}>{node.text}</li>)}
+            </ul>
+            <button onClick={() => this.loadMore()}>
+              load more
+            </button>
+          </React.Fragment>
+        )}
       </div>
     )
   }
@@ -35,7 +38,7 @@ export default createPaginationContainer(
       @argumentDefinitions(
         count: { type: "Int", defaultValue: 3 }
         cursor: { type: "String", defaultValue: null }
-      ) @relay(mask:false) {
+      ) {
         id
         title
         comments(first: $count, after: $cursor)

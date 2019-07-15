@@ -10,7 +10,7 @@ export class BookDetails extends React.Component {
     return (
       <Container>
         <Row>
-          <BookItem connectionKey={'BookDetails_comments'} viewerId={viewerId} key={book.id} book={book} />
+          <BookItem viewerId={viewerId} key={book.id} book={book} />
         </Row>
       </Container>
     );
@@ -24,20 +24,8 @@ export const BookDetailsFC = createFragmentContainer(
       @argumentDefinitions(
         count: { type: "Int", defaultValue: 3 }
         cursor: { type: "String", defaultValue: null }
-      ) @relay(mask: false) {
-        id
-        title
-        owner
-        createdAt
-        comments(first: $count, after: $cursor) @connection(key: "BookDetails_comments",filters: []) @relay(mask: false) { 
-          edges {
-            node {  
-              id
-              text
-              owner
-              createdAt
-            }
-          }
-        }
+      ) {
+        ...BookItem_book
+        ...BookComments_book
       }
     `});
