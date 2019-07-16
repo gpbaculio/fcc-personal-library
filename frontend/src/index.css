@@ -32,12 +32,14 @@ th {
 }
 
 .profile-picture-container {
+  display: flex;
   position: relative;
   width: 300px;
   height: 300px;
 }
 
 .profile-picture-container img {
+  align-self: flex-end;
   width: 100%;
   height: auto;
 }

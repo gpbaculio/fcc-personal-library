@@ -15,7 +15,7 @@ import {
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { FaUserPlus } from 'react-icons/fa'
-import signup from './mutations/signup';
+import signup from './mutations/Signup';
 
 export class Signup extends Component {
   state = {

@@ -14,7 +14,7 @@ import {
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { FaUserCheck, FaSignInAlt } from 'react-icons/fa';
-import login from './mutations/login';
+import login from './mutations/Login';
 
 export class Login extends Component {
   state = {
