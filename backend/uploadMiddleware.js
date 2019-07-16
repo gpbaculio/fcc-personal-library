@@ -11,6 +11,7 @@ const multerMiddleware = multer({ storage }).fields([{ name: 'image' }])
 
 const uploadMiddleWare = (req, res, next) => {
   multerMiddleware(req, res, () => {
+    console.log('req files', req.files)
     // request contains file data in req.files in format
     // {
     //   key: [{
@@ -61,7 +62,7 @@ const uploadMiddleWare = (req, res, next) => {
       // Add files to graphql input. We only support single images here.
       // In our case the image field for the CreatePostMutation is populated
       // with the uploaded images URL
-      req.body.variables.input[file.fieldname] = `/images/upload/${filename}`
+      req.body.variables.input[file.fieldname] = `/images/${filename}`
 
       // eslint-disable-next-line no-undef
       console.log(`upload middleware: uploaded file ${file.originalname} to ${req.body.variables.input[file.fieldname]}`)

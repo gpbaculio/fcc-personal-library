@@ -16,7 +16,6 @@ export default function createQueryRenderer(
       const variables = queriesParams
         ? queriesParams(this.props) :
         config.variables;
-      console.log('variables ', variables)
       return (
         <QueryRenderer
           environment={Environment}
@@ -31,11 +30,9 @@ export default function createQueryRenderer(
               );
             }
             if (props) {
-              console.log('props ', props);
               const fragmentProps = config.getFragmentProps
                 ? config.getFragmentProps(props)
                 : { query: props };
-              console.log('fragmentProps ', fragmentProps);
               return (
                 <FragmentComponent
                   {...this.props}

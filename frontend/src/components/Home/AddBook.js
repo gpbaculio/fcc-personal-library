@@ -7,10 +7,8 @@ import {
   Button
 } from 'reactstrap'
 import { ConnectionHandler } from 'relay-runtime'
-import uuidv1 from 'uuid/v1'
 
 import addBook from '../mutations/AddBook';
-import { booksUpdater } from './utils';
 
 class AddBook extends Component {
   state = {

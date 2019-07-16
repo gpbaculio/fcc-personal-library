@@ -4,4 +4,5 @@ export { default as Signup } from './Signup'
 export { default as Login } from './Login'
 export { default as BookList } from './Home/BookList'
 export { default as BookDetails } from './BookDetails'
+export { default as Profile } from './Profile'
 

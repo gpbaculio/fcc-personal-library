@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import {
-  Button, Form, Input, FormGroup, Spinner
+  Button, Form, Input, Spinner
 } from 'reactstrap'
+import { fromGlobalId } from 'graphql-relay'
 import { Link } from 'react-router-dom'
 import { createRefetchContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 
 class SubHeader extends Component {
   delayTimer = null
-  state = {
-    searchText: '',
-    loading: false
-  }
+  state = { searchText: '', loading: false }
   handleChange = e => {
     const { name, value } = e.target;
     this.setState(
@@ -39,45 +37,46 @@ class SubHeader extends Component {
     return (
       <div className='w-100 d-flex justify-content-between my-2 welcome-container p-3'>
         <Form className='d-flex w-50'>
-          <FormGroup className='w-75'>
-            <div className='w-100 d-flex flex-column position-relative'>
-              <Input
-                value={searchText}
-                onChange={this.handleChange}
-                className='flex-grow-1'
-                required
-                type="text"
-                name="searchText"
-                id="search-book"
-                placeholder="Search Books"
-              />
-              <div className='autocomplete-items'>
-                {!loading && searchText && !viewer.SubHeader_viewer_books.edges.length && <div>Book does not exist</div>}
-                {viewer.SubHeader_viewer_books.edges.map(({ node: { id, title } }) => {
-                  const bookTitle = title.replace(
-                    new RegExp(title, 'g'),
-                    `<strong>${title}</strong>`
-                  );
-                  return (
-                    <Link
-                      key={id}
-                      to={`/book/${id}`}
-                      dangerouslySetInnerHTML={{ __html: `<div>${bookTitle}</div>` }}
-                    />
-                  );
-                })}
-                {loading && (
-                  <div className='mx-auto d-flex justify-content-center'>
-                    <Spinner color='info' className='mr-2' /> Loading...
-                  </div>
-                )}
-              </div>
+          <div className='w-75 d-flex flex-column position-relative'>
+            <Input
+              value={searchText}
+              onChange={this.handleChange}
+              className='flex-grow-1'
+              required
+              type="text"
+              name="searchText"
+              id="search-book"
+              placeholder="Search Books"
+            />
+            <div className='autocomplete-items'>
+              {!loading && searchText && !viewer.SubHeader_viewer_books.edges.length && <div>Book does not exist</div>}
+              {viewer.SubHeader_viewer_books.edges.map(({ node: { id, title } }) => {
+                const bookTitle = title.replace(new RegExp(title, 'g'), `<strong>${title}</strong>`);
+                return (
+                  <Link
+                    key={id}
+                    to={`/book/${fromGlobalId(id).id}`}
+                    dangerouslySetInnerHTML={{ __html: `<div>${bookTitle}</div>` }}
+                  />
+                );
+              })}
+              {loading && (
+                <div className='mx-auto d-flex justify-content-center'>
+                  <Spinner color='info' className='mr-2' /> Loading...
+                </div>
+              )}
             </div>
-          </FormGroup>
+          </div>
         </Form>
-        <div>
-          <span className='mr-3'>{username}</span>
-          <Button color='primary'>Logout</Button>
+        <div className='d-flex align-items-center'>
+          <Link
+            className='profile-link-container mr-3'
+            to={`/profile/${fromGlobalId(viewer.id).id}`}
+          >
+            <img src={viewer.profilePicture} className="rounded mr-1" alt='' width='35' height='35' />
+            <span>{username}</span>
+          </Link>
+          <Button className='d-inline-block' color='primary'>Logout</Button>
         </div>
       </div>
     )
@@ -94,6 +93,7 @@ export default createRefetchContainer(
           searchText: { type: "String", defaultValue: "" }
         ) {
         id
+        profilePicture
         SubHeader_viewer_books: books(first: $count, searchText: $searchText)
           @connection(key: "Search_SubHeader_viewer_books") {
           edges {

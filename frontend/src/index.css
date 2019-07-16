@@ -18,6 +18,10 @@ th {
   padding: 8px;
 }
 
+img {
+  border: solid #e9e9e9 1px !important;
+}
+
 hr {
   border-color: #dddddd;
 }
@@ -27,13 +31,42 @@ th {
   font-weight: normal;
 }
 
+.profile-picture-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.profile-picture-container img {
+  width: 100%;
+  height: auto;
+}
+
+.update-profile-btn {
+  display: none !important;
+}
+
+.profile-picture-container img:hover+.update-profile-btn,
+.update-profile-btn:hover {
+  position: absolute;
+  bottom: 0;
+  display: block !important;
+  margin: auto;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+
 header {
   background-color: #006400;
   color: #fff;
 }
 
 .form-container,
-.loading-view {
+.loading-view,
+.profile-container {
   height: calc(100vh - 62.4px);
 }
 
@@ -51,7 +84,8 @@ header {
 }
 
 input[type="text"],
-textarea {
+textarea,
+.profile-link-container {
   background-color: #E9EBEE;
 }
 

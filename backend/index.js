@@ -14,9 +14,7 @@ import { getUserContext } from './modules/auth';
 import uploadMiddleWare from './uploadMiddleware';
 
 mongoose.Promise = global.Promise;
-mongoose.connect(
-  process.env.MONGO_DB_URL, { useNewUrlParser: true }
-);
+mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true });
 
 const port = process.env.PORT || 8000
 
@@ -25,14 +23,17 @@ db
   .on('error', e => console.log(e))
   .once('open', () => console.log('Connection to Database established.'));
 
-var app = express();
+const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/public', express.static(path.join(__dirname, '..', 'public', 'static')));
+const staticPath = path.join(__dirname, '..', 'frontend', 'public', 'static')
+const publicPath = path.join(__dirname, '..', 'frontend', 'public', 'index.html')
+
+app.use(express.static(staticPath));
 app.get('/*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(publicPath);
 });
 
 app.use('/graphql', cors(), uploadMiddleWare)

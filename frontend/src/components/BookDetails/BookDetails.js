@@ -1,18 +1,16 @@
 import React from 'react'
 import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay'
-import { Container, Col, Row } from 'reactstrap'
+import { Row } from 'reactstrap'
 import BookItem from '../Home/BookList/BookItem';
 
 export class BookDetails extends React.Component {
   render() {
     const { book, viewerId } = this.props
     return (
-      <Container>
-        <Row>
-          <BookItem viewerId={viewerId} key={book.id} book={book} />
-        </Row>
-      </Container>
+      <Row>
+        <BookItem viewerId={viewerId} key={book.id} book={book} />
+      </Row>
     );
   }
 }

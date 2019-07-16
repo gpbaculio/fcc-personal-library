@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import {
   Container,
   Row,
@@ -19,15 +19,15 @@ export class Home extends Component {
   render() {
     const { viewer } = this.props
     return (
-      <Container>
+      <Fragment>
         <Row>
           <Col>
             <div className='d-flex flex-column my-3 justify-content-center align-items-center'>
               {viewer ? (
-                <React.Fragment>
+                <Fragment>
                   <SubHeader viewer={viewer} username={viewer.username} />
                   <AddBook username={viewer.username} viewerId={viewer.id} />
-                </React.Fragment>
+                </Fragment>
               ) : <GuestView />}
             </div>
           </Col>
@@ -35,7 +35,7 @@ export class Home extends Component {
         <Row>
           <BookList viewer={viewer} />
         </Row>
-      </Container>
+      </Fragment>
     )
   }
 }

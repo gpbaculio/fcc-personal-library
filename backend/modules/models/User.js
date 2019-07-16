@@ -4,35 +4,27 @@ import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema(
   {
     username: {
-      type: String,
-      required: true
+      type: String, required: true
     },
     profilePicture: {
-      type: String,
-      required: false
+      type: String, required: false
     },
     password: {
-      type: String,
-      hidden: true
+      type: String, hidden: true
     }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
 userSchema.pre('save', function (next) {
   if (this.isModified('password')) {
-    this
-      .encryptPassword(this.password)
-      .then((hash) => {
+    this.encryptPassword(this.password)
+      .then(hash => {
         this.password = hash;
         next();
       })
       .catch(err => next(err));
-  } else {
-    return next();
-  }
+  } else return next();
 });
 
 userSchema.methods = {

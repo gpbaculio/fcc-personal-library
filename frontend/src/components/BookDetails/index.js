@@ -1,6 +1,4 @@
-import React, { Component } from 'react'
 import graphql from 'babel-plugin-relay/macro';
-import { fromGlobalId } from 'graphql-relay'
 import createQueryRenderer from "../createQueryRenderer";
 import { BookDetailsFC, BookDetails } from './BookDetails';
 
@@ -18,8 +16,8 @@ const BookDetailsQR = createQueryRenderer(
         }
       }
     `,
-    queriesParams: ({ match }) => ({
-      bookId: fromGlobalId(match.params.bookId).id
+    queriesParams: ({ match: { params: { bookId } } }) => ({
+      bookId
     }),
     getFragmentProps: ({ viewer }) => ({
       viewerId: viewer.id,

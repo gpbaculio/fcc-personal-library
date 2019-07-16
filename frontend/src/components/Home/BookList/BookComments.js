@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';
@@ -11,19 +11,22 @@ export class BookComments extends Component {
     this.props.relay.loadMore(3);
   }
   render() {
-    const { book, viewerId } = this.props
+    const {
+      book: { id: bookId, comments },
+      viewerId
+    } = this.props
     return (
       <div className='p-3 comments-container'>
-        <CommentInput viewerId={viewerId} bookId={book.id} />
-        {book.comments.edges.length && (
-          <React.Fragment>
+        <CommentInput viewerId={viewerId} bookId={bookId} />
+        {comments.edges.length && (
+          <Fragment>
             <ul>
-              {book.comments.edges.map(({ node }) => <li key={node.id}>{node.text}</li>)}
+              {comments.edges.map(({ node }) => <li key={node.id}>{node.text}</li>)}
             </ul>
             <button onClick={() => this.loadMore()}>
               load more
             </button>
-          </React.Fragment>
+          </Fragment>
         )}
       </div>
     )
