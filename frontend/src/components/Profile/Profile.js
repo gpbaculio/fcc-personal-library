@@ -97,12 +97,10 @@ export class Profile extends React.Component {
   }
   updateProfilePicture = e => {
     e.preventDefault();
-    const { croppedImageUrl } = this.state;
     const { viewer: { id: userId } } = this.props
     this.setState({ loading: true });
-    console.log('this.state.blob ', this.state.blob)
     const mutation = UpdateProfilePicture(
-      { profilePicture: croppedImageUrl, userId },
+      { userId },
       {
         uploadables: { image: this.state.blob },
         onCompleted: () => {
@@ -144,7 +142,7 @@ export class Profile extends React.Component {
           </Modal>
           <div className='profile-container d-flex flex-column align-items-center justify-content-center'>
             <div className='profile-picture-container'>
-              <img src={'/images/1563313044719_blob'} className="rounded" alt='' width='100%' height='100%' />
+              <img src={`/images/${profilePicture}`} className="rounded" alt='' width='100%' height='100%' />
               <Button color="secondary" onClick={this.toggleModal} className='update-profile-btn'>Update</Button>
             </div>
             <span className='mt-3'>{username}</span>

@@ -2,21 +2,18 @@ import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
 import { updateProfilePicture } from '../../database';
 import GraphQLUserType from '../query/objectTypes/user';
-
+import _values from 'lodash/values'
 
 const GraphQLUploadProfilePictureMutation = mutationWithClientMutationId({
   name: 'UploadProfilePicture',
   inputFields: {
-    profilePicture: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
     userId: {
       type: new GraphQLNonNull(GraphQLString)
     }
   },
-  mutateAndGetPayload: async (root, { request: { files } }, context) => {
-    console.log('mutateAndGetPayload args req ', files)
-    const viewer = await updateProfilePicture(fromGlobalId(root.userId).id, root.profilePicture);
+  mutateAndGetPayload: async ({ userId }, { request }) => {
+    const [imgFile] = _values(request.files)[0]
+    const { viewer } = await updateProfilePicture(fromGlobalId(userId).id, imgFile);
     return { viewer };
   },
   outputFields: {

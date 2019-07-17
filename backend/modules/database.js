@@ -1,3 +1,6 @@
+import sanitize from 'sanitize-filename'
+import path from 'path'
+import fs from 'fs'
 
 import Comment from './models/Comment'
 import Book from './models/Book'
@@ -26,22 +29,30 @@ export const getUser = (userId) => {
   return User.findById(userId)
 }
 
-export const updateProfilePicture = (userId, profilePicture) => {
-  const path = require('path')
-  const remove = path.join(__dirname, '..', '..', 'frontend', 'public', 'static')
-  const relPath = profilePicture.replace(remove, '')
-  // const newImage = new Image(req.body)
-  // newImage.logEntryId = req.params.log_entry_id
-  // newImage.path = relPath
-  // newImage.save(function(err, image) {
-  //   if (err) res.send(err)
-  //   res.json(image)
-  // })
-  return User.findOneAndUpdate(
-    { _id: userId },
-    { $set: { profilePicture } },
-    { new: true }
-  );
+export const updateProfilePicture = async (userId, imgFile) => {
+  try {
+    const uploadPath = path.resolve(
+      __dirname, '..', '..', 'frontend', 'public', 'static', 'images'
+    )
+    // add hash to sanitized file name
+    const fileName = `${Date.now()}_${sanitize(
+      imgFile.originalname.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>{}[]\\\/]/gi, ''),
+    )}`
+    const filePath = path.join(
+      uploadPath, fileName
+    )
+    const viewer = await User.findOneAndUpdate(
+      { _id: userId },
+      { $set: { profilePicture: fileName } },
+      { new: true }
+    );
+    // save file to disk
+    fs.writeFileSync(filePath, imgFile.buffer)
+    return { viewer }
+  } catch (e) {
+    console.log(e)
+    return { viewer: null }
+  }
 }
 
 export const findUsername = (username) => User.findOne({ username })
