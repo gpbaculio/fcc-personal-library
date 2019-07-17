@@ -8,15 +8,15 @@ const GraphQLUploadProfilePictureMutation = mutationWithClientMutationId({
   name: 'UploadProfilePicture',
   inputFields: {
     profilePicture: {
-      type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString),
     },
     userId: {
       type: new GraphQLNonNull(GraphQLString)
     }
   },
-  mutateAndGetPayload: async ({ userId, profilePicture }) => {
-    console.log('profilePicture ', profilePicture)
-    const viewer = await updateProfilePicture(fromGlobalId(userId).id, profilePicture);
+  mutateAndGetPayload: async (root, { request: { files } }, context) => {
+    console.log('mutateAndGetPayload args req ', files)
+    const viewer = await updateProfilePicture(fromGlobalId(root.userId).id, root.profilePicture);
     return { viewer };
   },
   outputFields: {

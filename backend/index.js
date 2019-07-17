@@ -7,11 +7,13 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
 import http from 'http';
 import cors from 'cors'
+import multer from 'multer'
 require('dotenv').config();
 
 import schema from './modules/api/schema';
 import { getUserContext } from './modules/auth';
-import uploadMiddleWare from './uploadMiddleware';
+
+const storage = multer.memoryStorage();
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true });
@@ -31,12 +33,12 @@ app.use(bodyParser.json());
 const staticPath = path.join(__dirname, '..', 'frontend', 'public', 'static')
 const publicPath = path.join(__dirname, '..', 'frontend', 'public', 'index.html')
 
+app.use(multer({ storage }).fields([{ name: 'image' }]));
 app.use(express.static(staticPath));
 app.get('/*', (_req, res) => {
   res.sendFile(publicPath);
 });
 
-app.use('/graphql', cors(), uploadMiddleWare)
 app.use(
   '/graphql',
   cors(),
@@ -47,8 +49,9 @@ app.use(
       pretty: true,
       graphiql: true,
       context: {
-        user
-      }
+        user,
+        request: req
+      },
     };
   })
 );
