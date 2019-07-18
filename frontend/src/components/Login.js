@@ -59,73 +59,65 @@ export class Login extends Component {
   render() {
     const { username, password, loading } = this.state
     return (
-      <Container>
-        <Row>
-          <Col>
-            <div className='form-container d-flex flex-column align-items-center justify-content-center'>
-              <table className='mb-4'>
-                <tbody>
-                  <tr>
-                    <th colSpan='2'>
-                      <div className='d-inline-flex align-items-center'>
-                        <FaUserCheck className='mr-1 ' />
-                        Login with test acount
+      <div className='form-container d-flex flex-column align-items-center justify-content-center'>
+        <table className='mb-4'>
+          <tbody>
+            <tr>
+              <th colSpan='2'>
+                <div className='d-inline-flex align-items-center'>
+                  Login with test acount
                     </div>
-                    </th>
-                  </tr>
-                  <tr>
-                    <td>username: gpbaculio </td>
-                    <td>password: abcd123</td>
-                  </tr>
-                </tbody>
-              </table>
-              <Card className='card-container'>
-                <CardHeader className='d-inline-flex align-items-center'>
-                  <FaSignInAlt className='mr-1' />
-                  Login
+              </th>
+            </tr>
+            <tr>
+              <td>username: gpbaculio </td>
+              <td>password: abcd123</td>
+            </tr>
+          </tbody>
+        </table>
+        <Card className='card-container'>
+          <CardHeader className='d-inline-flex align-items-center'>
+            Login
               </CardHeader>
-                <CardBody>
-                  <Form onSubmit={this.login}>
-                    <FormGroup>
-                      <Label for="login-username">Username</Label>
-                      <Input
-                        required
-                        type="text"
-                        value={username}
-                        onChange={this.handleChange}
-                        name="username"
-                        id="login-username"
-                        placeholder="Username"
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="login-password">Password</Label>
-                      <Input
-                        required
-                        type="password"
-                        value={password}
-                        onChange={this.handleChange}
-                        name="password"
-                        id="login-password"
-                        placeholder="Password"
-                      />
-                    </FormGroup>
-                    <Button disabled={loading} type='submit' color='primary' className='btn-block'>
-                      Login
+          <CardBody>
+            <Form onSubmit={this.login}>
+              <FormGroup>
+                <Label for="login-username">Username</Label>
+                <Input
+                  required
+                  type="text"
+                  value={username}
+                  onChange={this.handleChange}
+                  name="username"
+                  id="login-username"
+                  placeholder="Username"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="login-password">Password</Label>
+                <Input
+                  required
+                  type="password"
+                  value={password}
+                  onChange={this.handleChange}
+                  name="password"
+                  id="login-password"
+                  placeholder="Password"
+                />
+              </FormGroup>
+              <Button disabled={loading} type='submit' color='primary' className='btn-block'>
+                Login
                     </Button>
-                    <small className='text-center form-text mt-2'>
-                      No account? &nbsp;
+              <small className='text-center form-text mt-2'>
+                No account? &nbsp;
                       <Link to='/signup'>
-                        Signup
+                  Signup
                       </Link>
-                    </small>
-                  </Form>
-                </CardBody>
-              </Card>
-            </div>
-          </Col>
-        </Row>
-      </Container>
+              </small>
+            </Form>
+          </CardBody>
+        </Card>
+      </div>
     )
   }
 }

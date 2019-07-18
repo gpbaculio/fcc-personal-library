@@ -14,7 +14,6 @@ import {
   Alert
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { FaUserPlus } from 'react-icons/fa'
 import signup from './mutations/Signup';
 
 export class Signup extends Component {
@@ -76,7 +75,7 @@ export class Signup extends Component {
             <div className='form-container d-flex flex-column align-items-center justify-content-center'>
               <Card className='card-container'>
                 <CardHeader className='d-inline-flex align-items-center'>
-                  <FaUserPlus className='mr-1' /> Signup
+                  Signup
                 </CardHeader>
                 <CardBody>
                   <Alert

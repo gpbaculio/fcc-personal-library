@@ -3,6 +3,7 @@ import {
   Row,
   Col,
 } from 'reactstrap'
+import { fromGlobalId } from 'graphql-relay'
 import { createFragmentContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import AddBook from './AddBook';
@@ -15,16 +16,9 @@ export class Home extends Component {
   }
   render() {
     const { viewer } = this.props
-    if (!viewer) return null
     return (
       <Fragment>
-        <Row>
-          <Col>
-            <div className='d-flex flex-column my-3 justify-content-center align-items-center'>
-              <AddBook viewerId={viewer.id} />
-            </div>
-          </Col>
-        </Row>
+        <AddBook username={viewer.username} />
         <Row>
           <BookList viewer={viewer} />
         </Row>

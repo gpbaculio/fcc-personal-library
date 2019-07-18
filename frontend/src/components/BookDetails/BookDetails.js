@@ -16,7 +16,8 @@ export class BookDetails extends React.Component {
 }
 
 export const BookDetailsFC = createFragmentContainer(
-  BookDetails, {
+  BookDetails,
+  {
     book: graphql`
     fragment BookDetails_book on Book 
       @argumentDefinitions(
@@ -26,4 +27,6 @@ export const BookDetailsFC = createFragmentContainer(
         ...BookItem_book
         ...BookComments_book
       }
-    `});
+    `
+  }
+);

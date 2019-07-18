@@ -59,17 +59,25 @@ th {
   cursor: pointer;
 }
 
-
+tr {
+  background-color: #fff;
+}
 
 header {
   background-color: #006400;
   color: #fff;
 }
 
+button,
+input {
+  border-radius: 0 !important;
+}
+
 .form-container,
 .loading-view,
 .profile-container {
-  height: calc(100vh - 62.4px);
+  height: calc(100vh - 158.4px);
+  width: 100%;
 }
 
 .card-container {

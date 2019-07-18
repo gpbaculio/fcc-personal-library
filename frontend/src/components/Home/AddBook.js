@@ -41,27 +41,27 @@ class AddBook extends Component {
     mutation.commit()
   }
   render() {
+    const { username } = this.props
     const { loading, bookTitle } = this.state
-    const { viewerId } = this.props
+    if (!username) return null
     return (
-      <div className='my-3 w-100 d-flex justify-content-center addbook-container p-3'>
-        {viewerId ?
-          <Form onSubmit={this.addBook} inline className='d-flex w-50 justify-content-between'>
-            <FormGroup className='flex-grow-1 mr-2'>
-              <Label for="bookTitle" className='mr-2'>Book Title</Label>
-              <Input
-                value={bookTitle}
-                onChange={this.handleChange}
-                required
-                className='flex-grow-1'
-                type="text"
-                name="bookTitle"
-                id="bookTitle"
-                placeholder="Book Title"
-              />
-            </FormGroup>
-            <Button disabled={loading} type='submit' color='primary'>Add Book</Button>
-          </Form> : 'Please Login to add books'}
+      <div className='mb-4 w-100 d-flex justify-content-center addbook-container p-3'>
+        <Form onSubmit={this.addBook} inline className='d-flex w-50 justify-content-between'>
+          <FormGroup className='flex-grow-1 mr-2'>
+            <Label for="bookTitle" className='mr-2'>Book Title</Label>
+            <Input
+              value={bookTitle}
+              onChange={this.handleChange}
+              required
+              className='flex-grow-1'
+              type="text"
+              name="bookTitle"
+              id="bookTitle"
+              placeholder="Book Title"
+            />
+          </FormGroup>
+          <button disabled={loading} type='submit' className='btn btn-primary'>Add Book</button>
+        </Form>
       </div>
     )
   }
