@@ -29,7 +29,7 @@ const GraphQLUserType = new GraphQLObjectType({
     },
     profilePicture: {
       type: GraphQLString,
-      resolve: ({ profilePicture }) => profilePicture
+      resolve: ({ profilePicture }) => profilePicture || 'default'
     },
     books: {
       type: booksConnection,

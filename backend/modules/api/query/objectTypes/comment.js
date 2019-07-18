@@ -19,6 +19,10 @@ const GraphQLCommentType = new GraphQLObjectType({
       type: GraphQLString,
       resolve: ({ userId: { username } }) => username,
     },
+    ownerProfilePic: {
+      type: GraphQLString,
+      resolve: ({ userId: { profilePicture } }) => profilePicture || 'default',
+    },
     createdAt: {
       type: GraphQLString,
       resolve: ({ createdAt }) => createdAt,

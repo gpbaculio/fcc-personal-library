@@ -7,7 +7,6 @@ import {
   ModalFooter, Input,
   Form
 } from 'reactstrap'
-import { fromGlobalId } from 'graphql-relay'
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import UpdateProfilePicture from '../mutations/UploadProfilePicture';
@@ -17,7 +16,7 @@ export class Profile extends React.Component {
     crop: {
       unit: "%",
       width: 50,
-      aspect: 16 / 9
+      aspect: 1 / 1
     },
     modal: false,
     blob: null
@@ -44,23 +43,18 @@ export class Profile extends React.Component {
     this.makeClientCrop(crop);
   };
 
-  onCropChange = (crop, percentCrop) => {
-    // You could also use percentCrop:
-    // this.setState({ crop: percentCrop });
+  onCropChange = crop => {
     this.setState({ crop });
   };
   makeClientCrop = async (crop) => {
     if (this.imageRef && crop.width && crop.height) {
-      const croppedImageUrl = await this.getCroppedImg(
+      this.getCroppedImg(
         this.imageRef,
-        crop,
-        "newFile.jpeg"
+        crop
       );
-
-      this.setState({ croppedImageUrl });
     }
   }
-  getCroppedImg(image, crop, fileName) {
+  getCroppedImg = (image, crop) => {
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
@@ -80,31 +74,24 @@ export class Profile extends React.Component {
       crop.height
     );
 
-    return new Promise((resolve, _reject) => {
-      canvas.toBlob(blob => {
-        if (!blob) {
-          //reject(new Error('Canvas is empty'));
-          console.error("Canvas is empty");
-          return;
-        }
-        blob.name = fileName;
-        window.URL.revokeObjectURL(this.fileUrl);
-        this.fileUrl = window.URL.createObjectURL(blob);
-        resolve(this.fileUrl);
-        this.setState({ blob }) //added by SO huy nguyen 
-      }, "image/jpeg");
+    canvas.toBlob(blob => {
+      if (!blob) {
+        //reject(new Error('Canvas is empty'));
+        console.error("Canvas is empty");
+        return;
+      }
+      this.setState({ blob }) //added by SO huy nguyen 
     });
   }
   updateProfilePicture = e => {
     e.preventDefault();
-    const { viewer: { id: userId } } = this.props
     this.setState({ loading: true });
     const mutation = UpdateProfilePicture(
-      { userId },
+      {},
       {
         uploadables: { image: this.state.blob },
         onCompleted: () => {
-          this.setState({ loading: false, src: null })
+          this.setState({ loading: false, src: null, modal: false })
         },
         onFailure: error => console.error(error),
       },
@@ -112,14 +99,12 @@ export class Profile extends React.Component {
     mutation.commit()
   }
   render() {
-    const { crop, croppedImageUrl, src, modal } = this.state;
+    const { crop, src, modal, loading } = this.state;
     const { viewer: { username, profilePicture } } = this.props
-    console.log('croppedImageUrl ', croppedImageUrl)
     return (
       <Row>
         <Col>
           <Modal isOpen={modal} toggle={this.toggleModal}>
-
             <Form encType="multipart/form-data" id='upload-img-frm' onSubmit={this.updateProfilePicture}>
               <ModalHeader toggle={this.toggleModal}>Update Profile Picture</ModalHeader>
               <ModalBody>
@@ -135,14 +120,14 @@ export class Profile extends React.Component {
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button type='submit' color="primary">Save</Button>
+                <Button disabled={loading} type='submit' color="primary">Save</Button>
                 <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
               </ModalFooter>
             </Form>
           </Modal>
           <div className='profile-container d-flex flex-column align-items-center justify-content-center'>
             <div className='profile-picture-container'>
-              <img src={`/images/${profilePicture}`} className="rounded" alt='' width='100%' height='100%' />
+              <img src={`${process.env.PUBLIC_URL}/images/${profilePicture}`} className="rounded" alt='' width='100%' height='100%' />
               <Button color="secondary" onClick={this.toggleModal} className='update-profile-btn'>Update</Button>
             </div>
             <span className='mt-3'>{username}</span>

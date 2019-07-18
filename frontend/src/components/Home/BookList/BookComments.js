@@ -21,7 +21,12 @@ export class BookComments extends Component {
         {comments.edges.length && (
           <Fragment>
             <ul>
-              {comments.edges.map(({ node }) => <li key={node.id}>{node.text}</li>)}
+              {comments.edges.map(({ node }) => (
+                <li key={node.id}>
+                  <img alt='' src={`${process.env.PUBLIC_URL}/images/${node.ownerProfilePic}`} width='35' height='35' />
+                  {node.text}
+                </li>
+              ))}
             </ul>
             <button onClick={() => this.loadMore()}>
               load more
@@ -52,6 +57,7 @@ export default createPaginationContainer(
               id
               text
               owner
+              ownerProfilePic
               createdAt
             }
           }

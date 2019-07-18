@@ -1,15 +1,12 @@
 import React, { Component, Fragment } from 'react'
 import {
-  Container,
   Row,
   Col,
 } from 'reactstrap'
 import { createFragmentContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
-import GuestView from './GuestView';
 import AddBook from './AddBook';
 import BookList from './BookList';
-import SubHeader from './SubHeader';
 
 export class Home extends Component {
   logout = () => {
@@ -18,17 +15,13 @@ export class Home extends Component {
   }
   render() {
     const { viewer } = this.props
+    if (!viewer) return null
     return (
       <Fragment>
         <Row>
           <Col>
             <div className='d-flex flex-column my-3 justify-content-center align-items-center'>
-              {viewer ? (
-                <Fragment>
-                  <SubHeader viewer={viewer} username={viewer.username} />
-                  <AddBook username={viewer.username} viewerId={viewer.id} />
-                </Fragment>
-              ) : <GuestView />}
+              <AddBook viewerId={viewer.id} />
             </div>
           </Col>
         </Row>
@@ -45,7 +38,6 @@ export const HomeFC = createFragmentContainer(
   {
     viewer: graphql`
       fragment Home_viewer on User {
-        ...SubHeader_viewer
         ...BookList_viewer
         username
         id

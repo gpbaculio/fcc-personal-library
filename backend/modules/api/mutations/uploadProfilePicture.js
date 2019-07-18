@@ -6,14 +6,10 @@ import _values from 'lodash/values'
 
 const GraphQLUploadProfilePictureMutation = mutationWithClientMutationId({
   name: 'UploadProfilePicture',
-  inputFields: {
-    userId: {
-      type: new GraphQLNonNull(GraphQLString)
-    }
-  },
-  mutateAndGetPayload: async ({ userId }, { request }) => {
+  inputFields: {},
+  mutateAndGetPayload: async (_root, { request, user }) => {
     const [imgFile] = _values(request.files)[0]
-    const { viewer } = await updateProfilePicture(fromGlobalId(userId).id, imgFile);
+    const { viewer } = await updateProfilePicture(user._id, imgFile);
     return { viewer };
   },
   outputFields: {

@@ -10,6 +10,7 @@ const BookDetailsQR = createQueryRenderer(
       query BookDetailsQuery ($bookId: String, $count: Int, $cursor: String) {
         viewer {
           id
+          profilePicture
           book(bookId:$bookId) {
             ...BookDetails_book
           }

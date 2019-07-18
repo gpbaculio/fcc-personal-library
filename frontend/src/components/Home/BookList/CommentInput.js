@@ -35,6 +35,7 @@ class CommentInput extends Component {
           const owner = userProxy.getValue('username')
           const id = uuidv1();
           const comment = store.create(id, 'Comment');
+          comment.setValue(userProxy.getValue('profilePicture'), 'ownerProfilePic')
           comment.setValue(commentText, 'text');
           comment.setValue(id, 'id');
           comment.setValue(owner, 'owner');
@@ -57,6 +58,7 @@ class CommentInput extends Component {
     return (
       <Form onSubmit={this.addComment}>
         <Input
+          autoComplete='off'
           value={commentText}
           onChange={this.handleChange}
           required

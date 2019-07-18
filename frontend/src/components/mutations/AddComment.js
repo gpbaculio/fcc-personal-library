@@ -13,6 +13,7 @@ export default mutationFromQuery(graphql`
           text
           owner
           createdAt
+          ownerProfilePic
         }
       }
     }

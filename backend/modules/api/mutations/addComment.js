@@ -19,7 +19,6 @@ const GraphQLAddCommentMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ text, userId, bookId }) => {
     const comment = await createComment(text, fromGlobalId(userId).id, fromGlobalId(bookId).id);
-    console.log('comment ', comment);
     return ({ comment });
   },
   outputFields: {

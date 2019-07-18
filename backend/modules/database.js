@@ -10,12 +10,12 @@ export const createBook = (title, userId) => Book.create({ title, userId }).then
   return Book.populate(book, { path: "userId", select: "username" })
 });
 
-export const createComment = (text, userId, bookId) => {
-  return Comment.create({
-    text,
-    userId,
-    bookId,
-  });
+export const createComment = async (text, userId, bookId) => {
+  const comment = await Comment.create({
+    text, userId, bookId,
+  })
+  return Comment.findById(comment._id)
+    .populate({ path: 'userId', select: 'username profilePicture' })
 }
 
 export const getDocument = (_id, model) => {
@@ -30,10 +30,18 @@ export const getUser = (userId) => {
 }
 
 export const updateProfilePicture = async (userId, imgFile) => {
+  const user = await User.findById(userId)
   try {
     const uploadPath = path.resolve(
       __dirname, '..', '..', 'frontend', 'public', 'static', 'images'
     )
+    // delete on disk if existing
+    if (user.profilePicture) {
+      fs.unlink(`${uploadPath}/${user.profilePicture}`, (err) => {
+        console.log('uploadPath', `${uploadPath}/${user.profilePicture}`)
+        console.log('err ', err)
+      })
+    }
     // add hash to sanitized file name
     const fileName = `${Date.now()}_${sanitize(
       imgFile.originalname.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>{}[]\\\/]/gi, ''),
@@ -89,6 +97,6 @@ export const getUserComments = (userId) => {
 
 export const getBookComments = (bookId) => {
   return Comment.find({ bookId })
-    .populate({ path: 'userId', select: 'username' })
+    .populate({ path: 'userId', select: 'username profilePicture' })
     .sort('-createdAt')
 };

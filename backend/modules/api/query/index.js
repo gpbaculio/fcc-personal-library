@@ -14,10 +14,10 @@ const query = new GraphQLObjectType({
         userId: { type: GraphQLString }
       },
       resolve: (_root, { userId }, { user }) => {
-        if (userId && user) {
-          return getUser(userId)
-        }
-        return user
+        if (user)
+          return user
+        else
+          return 'guest'
       },
     },
     node: nodeField,
