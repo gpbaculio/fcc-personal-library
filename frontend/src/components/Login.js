@@ -59,7 +59,7 @@ export class Login extends Component {
   render() {
     const { username, password, loading } = this.state
     return (
-      <div className='form-container d-flex flex-column align-items-center justify-content-center'>
+      <div className='login-frm-container d-flex flex-column align-items-center justify-content-center'>
         <table className='mb-4'>
           <tbody>
             <tr>
@@ -107,12 +107,12 @@ export class Login extends Component {
               </FormGroup>
               <Button disabled={loading} type='submit' color='primary' className='btn-block'>
                 Login
-                    </Button>
+              </Button>
               <small className='text-center form-text mt-2'>
                 No account? &nbsp;
-                      <Link to='/signup'>
+                <Link to='/signup'>
                   Signup
-                      </Link>
+                </Link>
               </small>
             </Form>
           </CardBody>

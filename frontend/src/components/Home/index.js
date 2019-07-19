@@ -12,6 +12,7 @@ const HomeQR = createQueryRenderer(
       query HomeQuery($count: Int, $page: Int, $cursor: String) {
         viewer {
           id
+          ...Header_viewer
           ...Home_viewer
         }
       }

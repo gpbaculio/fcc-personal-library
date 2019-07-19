@@ -1,9 +1,17 @@
-import * as React from 'react';
+import React from 'react';
+import { Environment } from 'relay-runtime';
 import hoistStatics from 'hoist-non-react-statics';
 import { QueryRenderer } from 'react-relay';
-import Environment from './Environment';
 import ErrorView from './ErrorView';
 import LoadingView from './LoadingView';
+
+import { store, network } from './Environment'
+
+let environment = new Environment({ network, store })
+
+export const logout = () => {
+  environment = new Environment({ network, store })
+}
 
 export default function createQueryRenderer(
   FragmentComponent,
@@ -18,7 +26,7 @@ export default function createQueryRenderer(
         config.variables;
       return (
         <QueryRenderer
-          environment={Environment}
+          environment={environment}
           query={query}
           variables={variables}
           render={({ error, props, retry }) => {

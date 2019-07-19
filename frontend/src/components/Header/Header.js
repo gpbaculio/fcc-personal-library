@@ -3,10 +3,11 @@ import { fromGlobalId } from 'graphql-relay'
 import { withRouter, Link } from 'react-router-dom'
 import {
   Container, Form, Input,
-  Spinner, Button
+  Spinner
 } from 'reactstrap'
 import { createRefetchContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
+import { logout } from '../createQueryRenderer';
 
 export class Header extends Component {
   delayTimer = null
@@ -45,6 +46,7 @@ export class Header extends Component {
   }
   logout = () => {
     localStorage.removeItem('token')
+    logout()
     this.props.history.push('/')
   }
   render() {

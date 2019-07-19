@@ -72,7 +72,7 @@ export class Signup extends Component {
       <Container>
         <Row>
           <Col>
-            <div className='form-container d-flex flex-column align-items-center justify-content-center'>
+            <div className='signup-frm-container d-flex flex-column align-items-center justify-content-center'>
               <Card className='card-container'>
                 <CardHeader className='d-inline-flex align-items-center'>
                   Signup

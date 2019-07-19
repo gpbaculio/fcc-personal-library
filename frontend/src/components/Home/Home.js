@@ -1,9 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import {
-  Row,
-  Col,
-} from 'reactstrap'
-import { fromGlobalId } from 'graphql-relay'
+import { Row } from 'reactstrap'
 import { createFragmentContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import AddBook from './AddBook';
