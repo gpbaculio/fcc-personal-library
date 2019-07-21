@@ -80,7 +80,7 @@ input {
 
 .login-frm-container,
 .signup-frm-container,
-.todo-container {
+.profile-container {
   height: calc(100vh - 166.4px);
 }
 
@@ -88,6 +88,13 @@ input {
   width: 316px;
 }
 
+ul {
+  padding-left: 5px;
+}
+
+.comment {
+  list-style: none;
+}
 
 .comments-container {
   background-color: #fff;
@@ -95,9 +102,25 @@ input {
 }
 
 input[type="text"],
-textarea,
-.profile-link-container {
+textarea {
   background-color: #E9EBEE;
+}
+
+.nav-profile:hover,
+.nav-home:hover {
+  background-color: #E9EBEE;
+}
+
+.nav-container {
+  height: 35px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-home {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .addbook-container,

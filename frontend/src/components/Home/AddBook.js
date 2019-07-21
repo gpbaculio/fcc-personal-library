@@ -3,8 +3,7 @@ import {
   Form,
   FormGroup,
   Label,
-  Input,
-  Button
+  Input
 } from 'reactstrap'
 import { ConnectionHandler } from 'relay-runtime'
 

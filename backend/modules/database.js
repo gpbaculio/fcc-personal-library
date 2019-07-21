@@ -1,27 +1,71 @@
 import sanitize from 'sanitize-filename'
 import path from 'path'
 import fs from 'fs'
+import DataLoader from 'dataloader'
 
 import Comment from './models/Comment'
 import Book from './models/Book'
 import User from './models/User'
 
-export const createBook = (title, userId) => Book.create({ title, userId }).then(book => {
-  return Book.populate(book, { path: "userId", select: "username" })
-});
+const booksLoader = new DataLoader(async (bookIds) => {
+  const books = await Book.find({
+    _id: { $in: bookIds }
+  }).populate({
+    path: "userId", select: "username"
+  }).sort('-createdAt')
+  return books
+})
+const commentsLoader = new DataLoader(async (commentIds) => {
+  const comments = await Comment.find({
+    _id: { $in: commentIds }
+  }).populate({
+    path: "userId", select: "username"
+  }).sort('-createdAt')
+  return comments
+})
+const userLoader = new DataLoader(async (userIds) => {
+  const users = await User.find({
+    _id: { $in: userIds }
+  })
+  return users
+})
+const bookCommentsLoader = new DataLoader(async bookIds => {
+  const comments = await Comment.find({
+    bookId: { $in: bookIds }
+  }).populate({
+    path: 'userId', select: 'username profilePicture'
+  }).sort('-createdAt')
+
+  let bookKeys = comments.reduce((bookKeys, comment) => {
+    bookKeys[comment.bookId] = bookKeys[comment.bookId] || []
+    bookKeys[comment.bookId].push(comment)
+    return bookKeys
+  }, {})
+
+  const bookComments = bookIds.map(bId => {
+    const bidComments = bookKeys[bId]
+    if (bidComments)
+      return bidComments
+    else
+      return []
+  })
+  return bookComments
+})
 
 export const createComment = async (text, userId, bookId) => {
-  const comment = await Comment.create({
+  const newComment = await Comment.create({
     text, userId, bookId,
   })
-  return Comment.findById(comment._id)
-    .populate({ path: 'userId', select: 'username profilePicture' })
+  const comment = await Comment.findById(newComment._id).populate({
+    path: 'userId', select: 'username profilePicture'
+  })
+  return comment
 }
 
 export const getDocument = (_id, model) => {
-  if (model === 'User') return User.findOne({ _id })
-  else if (model === 'Book') return Book.findOne({ _id })
-  else if (model === 'Comment') return Comment.findOne({ _id })
+  if (model === 'User') return getUser(_id)
+  else if (model === 'Book') return getBook(_id)
+  else if (model === 'Comment') return getComment(_id)
   else null
 }
 
@@ -37,9 +81,8 @@ export const updateProfilePicture = async (userId, imgFile) => {
     )
     // delete on disk if existing
     if (user.profilePicture) {
-      fs.unlink(`${uploadPath}/${user.profilePicture}`, (err) => {
-        console.log('uploadPath', `${uploadPath}/${user.profilePicture}`)
-        console.log('err ', err)
+      fs.unlink(`${uploadPath}/${user.profilePicture}`, error => {
+        if (error) console.log(error)
       })
     }
     // add hash to sanitized file name
@@ -80,9 +123,11 @@ export const getBooks = ({ page, limit, searchText }) => {
 }
 
 export const getBook = bookId => {
-  return Book.findById(bookId)
-    .populate({ path: 'userId', select: 'username' })
-    .sort('-createdAt');
+  return Book.findById(bookId).populate({ path: 'userId', select: 'username' })
+}
+
+export const getComment = commentId => {
+  return Comment.findById(commentId).populate({ path: 'userId', select: 'username' })
 }
 
 export const getBooksCount = () => {
@@ -95,8 +140,8 @@ export const getUserComments = (userId) => {
   return Comment.find({ userId })
 }
 
-export const getBookComments = (bookId) => {
-  return Comment.find({ bookId })
-    .populate({ path: 'userId', select: 'username profilePicture' })
-    .sort('-createdAt')
+
+
+export const getBookComments = async (bookId) => {
+  return bookCommentsLoader.load(bookId)
 };

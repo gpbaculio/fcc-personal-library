@@ -11,7 +11,10 @@ import { logout } from '../createQueryRenderer';
 
 export class Header extends Component {
   delayTimer = null
-  state = { searchText: '', loading: false, showResult: true }
+  state = {
+    searchText: '', loading: false, showResult: true,
+    hasSearched: false
+  }
   handleChange = e => {
     const { name, value } = e.target;
     this.setState(
@@ -33,16 +36,16 @@ export class Header extends Component {
     this.props.relay.refetch(
       { count: 6, searchText },
       null,
-      () => this.setState({ loading: false })
+      () => this.setState({ loading: false, hasSearched: true })
     )
   }
   handleOnBlur = async (title, id) => {
     if (title) {
       await this.props.history.push(`/book/${fromGlobalId(id).id}`)
-      this.setState({ showResult: false, searchText: title })
+      this.setState({ showResult: false, searchText: title, hasSearched: false })
     }
     else
-      this.setState({ showResult: false })
+      this.setState({ showResult: false, hasSearched: false })
   }
   logout = () => {
     localStorage.removeItem('token')
@@ -58,7 +61,8 @@ export class Header extends Component {
     } = this.props
     const { id: userId } = fromGlobalId(id)
     const {
-      searchText, loading, showResult
+      searchText, loading, showResult,
+      hasSearched
     } = this.state
     return (
       <Fragment>
@@ -81,7 +85,7 @@ export class Header extends Component {
                   placeholder="Search Books"
                 />
                 <div className='autocomplete-items'>
-                  {!loading && searchText && !books.edges.length && <div>Book does not exist</div>}
+                  {!loading && hasSearched && !books.edges.length && <div>Book does not exist</div>}
                   {showResult && books.edges.map(({ node: { id, title } }) => {
                     const bookTitle = title.replace(new RegExp(searchText, 'g'), `<strong>${searchText}</strong>`);
                     return (
@@ -100,11 +104,17 @@ export class Header extends Component {
                 </div>
               </div>
             </Form>
-            <div className='d-flex align-items-center'>
+            <div className='nav-container d-flex align-items-center'>
               {userId ? (
                 <Fragment>
                   <Link
-                    className='profile-link-container mr-3'
+                    className='nav-home mr-3'
+                    to={'/'}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    className='nav-profile mr-3'
                     to={`/profile/${userId}`}
                   >
                     <img

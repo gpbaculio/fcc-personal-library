@@ -2,13 +2,15 @@ import React, { Component, Fragment } from 'react'
 import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';
+import { timeDifferenceForDate } from './utils';
 
 export class BookComments extends Component {
   loadMore = () => {
+    console.log('loadmore', this.props.relay.hasMore())
     if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
       return;
     }
-    this.props.relay.loadMore(3);
+    this.props.relay.loadMore(4);
   }
   render() {
     const {
@@ -20,11 +22,12 @@ export class BookComments extends Component {
         <CommentInput viewerId={viewerId} bookId={bookId} />
         {comments.edges.length && (
           <Fragment>
-            <ul>
+            <ul className='mt-1'>
               {comments.edges.map(({ node }) => (
-                <li key={node.id}>
+                <li className='comment d-flex w-100 justify-content-between' key={node.id}>
                   <img alt='' src={`${process.env.PUBLIC_URL}/images/${node.ownerProfilePic}`} width='35' height='35' />
-                  {node.text}
+                  <span>{node.text}</span>
+                  <p>{timeDifferenceForDate(node.createdAt)}</p>
                 </li>
               ))}
             </ul>

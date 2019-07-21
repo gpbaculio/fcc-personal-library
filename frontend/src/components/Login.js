@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import {
-  Container,
-  Row,
-  Col,
   Form,
   FormGroup,
   Label,
@@ -13,7 +10,6 @@ import {
   CardBody
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { FaUserCheck, FaSignInAlt } from 'react-icons/fa';
 import login from './mutations/Login';
 
 export class Login extends Component {

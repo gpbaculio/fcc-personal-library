@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createRefetchContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
-import { Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
+import { Col, Card, CardHeader, CardBody } from 'reactstrap'
 import { timeDifferenceForDate } from './utils'
 import BookComments from './BookComments'
 
@@ -16,11 +16,8 @@ class BookItem extends Component {
             <span>{timeDifferenceForDate(book.createdAt)}</span>
           </CardHeader>
           <CardBody>
-            {book.title}
+            <p>{book.title}</p>
           </CardBody>
-          <CardFooter className='text-center'>
-            Comment
-          </CardFooter>
         </Card>
         <BookComments viewerId={viewerId} book={book} />
       </Col>

@@ -41,8 +41,6 @@ export default function createQueryRenderer(
               const fragmentProps = config.getFragmentProps
                 ? config.getFragmentProps(props)
                 : { query: props };
-              console.log('this.props ', this.props)
-              console.log('fragmentProps ', fragmentProps)
               return (
                 <FragmentComponent
                   {...this.props}
