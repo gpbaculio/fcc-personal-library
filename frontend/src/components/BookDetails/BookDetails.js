@@ -9,9 +9,7 @@ export class BookDetails extends React.Component {
     const { book, viewerId } = this.props
     return (
       <Row>
-        <div className='todo-container w-100 d-flex align-items-center justify-content-center'>
-          <BookItem viewerId={viewerId} key={book.id} book={book} />
-        </div>
+        <BookItem viewerId={viewerId} key={book.id} book={book} />
       </Row>
     );
   }

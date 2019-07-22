@@ -14,10 +14,8 @@ export class Home extends Component {
     const { viewer } = this.props
     return (
       <Fragment>
-        <AddBook username={viewer.username} />
-        <Row>
-          <BookList viewer={viewer} />
-        </Row>
+        <AddBook viewerId={viewer.id} username={viewer.username} />
+        <BookList viewer={viewer} />
       </Fragment>
     )
   }

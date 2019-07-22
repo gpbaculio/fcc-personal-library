@@ -32,13 +32,18 @@ class CommentInput extends Component {
         optimisticUpdater: (store) => {
           const userProxy = store.get(viewerId)
           const bookProxy = store.get(bookId)
-          const owner = userProxy.getValue('username')
-          const id = uuidv1();
-          const comment = store.create(id, 'Comment');
-          comment.setValue(userProxy.getValue('profilePicture'), 'ownerProfilePic')
+          const username = userProxy.getValue('username')
+          const profilePicture = userProxy.getValue('profilePicture')
+          const commentId = uuidv1();
+          const comment = store.create(commentId, 'Comment');
           comment.setValue(commentText, 'text');
-          comment.setValue(id, 'id');
-          comment.setValue(owner, 'owner');
+          comment.setValue(commentId, 'id');
+          const commentOwnerId = uuidv1()
+          const commentOwner = store.create(commentOwnerId, 'CommentOwner');
+          commentOwner.setValue(commentOwnerId, 'id')
+          commentOwner.setValue(username, 'username')
+          commentOwner.setValue(profilePicture, 'profilePicture')
+          comment.setLinkedRecord(commentOwner, 'owner');
           comment.setValue(Date.now(), 'createdAt');
           const commentEdgeId = uuidv1()
           const commentEdge = store.create(commentEdgeId, 'CommentEdge');

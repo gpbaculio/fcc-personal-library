@@ -7,33 +7,11 @@ import Comment from './models/Comment'
 import Book from './models/Book'
 import User from './models/User'
 
-const booksLoader = new DataLoader(async (bookIds) => {
-  const books = await Book.find({
-    _id: { $in: bookIds }
-  }).populate({
-    path: "userId", select: "username"
-  }).sort('-createdAt')
-  return books
-})
-const commentsLoader = new DataLoader(async (commentIds) => {
-  const comments = await Comment.find({
-    _id: { $in: commentIds }
-  }).populate({
-    path: "userId", select: "username"
-  }).sort('-createdAt')
-  return comments
-})
-const userLoader = new DataLoader(async (userIds) => {
-  const users = await User.find({
-    _id: { $in: userIds }
-  })
-  return users
-})
 const bookCommentsLoader = new DataLoader(async bookIds => {
   const comments = await Comment.find({
     bookId: { $in: bookIds }
   }).populate({
-    path: 'userId', select: 'username profilePicture'
+    path: 'userId', select: 'username profilePicture id'
   }).sort('-createdAt')
 
   let bookKeys = comments.reduce((bookKeys, comment) => {
@@ -49,6 +27,7 @@ const bookCommentsLoader = new DataLoader(async bookIds => {
     else
       return []
   })
+  console.log('bookComments ', bookComments)
   return bookComments
 })
 
@@ -57,6 +36,16 @@ export const createComment = async (text, userId, bookId) => {
     text, userId, bookId,
   })
   const comment = await Comment.findById(newComment._id).populate({
+    path: 'userId', select: 'username profilePicture'
+  })
+  return comment
+}
+
+export const createBook = async (title, userId) => {
+  const newBookt = await Book.create({
+    title, userId
+  })
+  const comment = await Book.findById(newBookt._id).populate({
     path: 'userId', select: 'username profilePicture'
   })
   return comment
@@ -108,7 +97,7 @@ export const updateProfilePicture = async (userId, imgFile) => {
 
 export const findUsername = (username) => User.findOne({ username })
 
-export const getBooks = ({ page, limit, searchText }) => {
+export const getBooks = async ({ page, limit, searchText }) => {
   const query = {}
   if (searchText !== undefined) {
     if (searchText === '') return []
@@ -118,7 +107,7 @@ export const getBooks = ({ page, limit, searchText }) => {
     query,
     null,
     { skip: parseInt(page - 1) * parseInt(limit), limit: parseInt(limit) }
-  ).populate({ path: 'userId', select: 'username' })
+  ).populate({ path: 'userId', select: 'username profilePicture' })
     .sort('-createdAt');
 }
 
@@ -140,7 +129,9 @@ export const getUserComments = (userId) => {
   return Comment.find({ userId })
 }
 
-
+export const getBookCommentsCount = async bookId => {
+  return Comment.countDocuments({ bookId })
+}
 
 export const getBookComments = async (bookId) => {
   return bookCommentsLoader.load(bookId)

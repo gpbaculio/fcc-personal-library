@@ -13,29 +13,27 @@ function timeDifference(current, previous) {
   if (elapsed < milliSecondsPerMinute / 3) {
     return 'just now'
   }
-
   if (elapsed < milliSecondsPerMinute) {
-    return 'less than 1 min ago'
+    return '< 1 min'
   }
-
   else if (elapsed < milliSecondsPerHour) {
-    return Math.round(elapsed / milliSecondsPerMinute) + ' min ago'
+    return Math.round(elapsed / milliSecondsPerMinute) + ' min'
   }
 
   else if (elapsed < milliSecondsPerDay) {
-    return Math.round(elapsed / milliSecondsPerHour) + ' h ago'
+    return Math.round(elapsed / milliSecondsPerHour) + ' h'
   }
 
   else if (elapsed < milliSecondsPerMonth) {
-    return Math.round(elapsed / milliSecondsPerDay) + ' days ago'
+    return Math.round(elapsed / milliSecondsPerDay) + ' d'
   }
 
   else if (elapsed < milliSecondsPerYear) {
-    return Math.round(elapsed / milliSecondsPerMonth) + ' mo ago'
+    return Math.round(elapsed / milliSecondsPerMonth) + ' mo'
   }
 
   else {
-    return Math.round(elapsed / milliSecondsPerYear) + ' years ago'
+    return Math.round(elapsed / milliSecondsPerYear) + ' y'
   }
 }
 

@@ -2,21 +2,45 @@ import React, { Component, Fragment } from 'react'
 import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';
+import { Button } from 'reactstrap'
 import { timeDifferenceForDate } from './utils';
 
 export class BookComments extends Component {
-  loadMore = () => {
-    console.log('loadmore', this.props.relay.hasMore())
-    if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
-      return;
+  state = { hasMore: false, loading: false }
+
+  componentDidMount() {
+    const hasMore = this.props.relay.hasMore()
+    this.setState({ hasMore, loading: false })
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.book.id !== this.props.book.id) {
+      const hasMore = this.props.relay.hasMore()
+      this.setState({ hasMore, loading: false })
     }
-    this.props.relay.loadMore(4);
+  }
+  loadMore = () => {
+    const hasMore = this.props.relay.hasMore()
+    const isLoading = this.props.relay.isLoading()
+    this.setState({ hasMore, loading: true })
+    if (!hasMore || isLoading) {
+      this.setState({ loading: false })
+      return;
+    } else {
+      this.props.relay.loadMore(
+        4,
+        () => {
+          const hasMore = this.props.relay.hasMore()
+          this.setState({ loading: false, hasMore })
+        }
+      );
+    }
   }
   render() {
     const {
       book: { id: bookId, comments },
       viewerId
     } = this.props
+    const { hasMore, loading } = this.state
     return (
       <div className='p-3 comments-container'>
         <CommentInput viewerId={viewerId} bookId={bookId} />
@@ -24,16 +48,25 @@ export class BookComments extends Component {
           <Fragment>
             <ul className='mt-1'>
               {comments.edges.map(({ node }) => (
-                <li className='comment d-flex w-100 justify-content-between' key={node.id}>
-                  <img alt='' src={`${process.env.PUBLIC_URL}/images/${node.ownerProfilePic}`} width='35' height='35' />
-                  <span>{node.text}</span>
-                  <p>{timeDifferenceForDate(node.createdAt)}</p>
+                <li className='comment d-flex w-100 justify-content-between align-items-center' key={node.id}>
+                  <div>
+                    <img
+                      alt=''
+                      src={`${process.env.PUBLIC_URL}/images/${node.owner.profilePicture}`}
+                      width='35'
+                      height='35'
+                      className='mr-1'
+                    />
+                    <small className='font-weight-bold'>{node.owner.username}</small>
+                  </div>
+                  <small>{node.text}</small>
+                  <small>{timeDifferenceForDate(node.createdAt)}</small>
                 </li>
               ))}
             </ul>
-            <button onClick={() => this.loadMore()}>
-              load more
-            </button>
+            <Button disabled={!hasMore || loading} color="primary" size="sm" onClick={() => this.loadMore()}>
+              Load more
+            </Button>
           </Fragment>
         )}
       </div>
@@ -52,6 +85,7 @@ export default createPaginationContainer(
       ) {
         id
         title
+        commentsCount
         comments(first: $count, after: $cursor)
           @connection(key: "BookComments_comments") {
             __typename
@@ -59,8 +93,11 @@ export default createPaginationContainer(
             node {
               id
               text
-              owner
-              ownerProfilePic
+              owner {
+                id
+                username
+                profilePicture
+              }
               createdAt
             }
           }

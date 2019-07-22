@@ -6,28 +6,44 @@ import {
 } from 'graphql';
 
 import { globalIdField } from 'graphql-relay'
+import GraphQLUserType from './user';
+import { UserType } from '../../definitions/constants';
 
 const GraphQLCommentType = new GraphQLObjectType({
   name: 'Comment',
-  fields: {
+  fields: () => ({
     id: globalIdField('Comment'),
     text: {
       type: GraphQLString,
       resolve: ({ text }) => text,
     },
     owner: {
-      type: GraphQLString,
-      resolve: ({ userId: { username } }) => username,
-    },
-    ownerProfilePic: {
-      type: GraphQLString,
-      resolve: ({ userId: { profilePicture } }) => profilePicture || 'default',
+      name: 'CommentOwner',
+      type: GraphQLUserType,
+      resolve: ({
+        userId: {
+          _id, username, profilePicture
+        }
+      }) => {
+        return ({ id: `${_id}`, username, profilePicture })
+      },
+      fields: () => ({
+        id: globalIdField('CommentOwner'),
+        username: {
+          type: GraphQLString,
+          resolve: ({ username }) => username
+        },
+        profilePicture: {
+          type: GraphQLString,
+          resolve: ({ profilePicture }) => profilePicture || 'default'
+        },
+      })
     },
     createdAt: {
       type: GraphQLString,
       resolve: ({ createdAt }) => createdAt,
     }
-  },
+  }),
 });
 
 export default GraphQLCommentType;

@@ -11,9 +11,11 @@ export default mutationFromQuery(graphql`
         node {
           id
           text
-          owner
+          owner {
+            username
+            profilePicture
+          }
           createdAt
-          ownerProfilePic
         }
       }
     }

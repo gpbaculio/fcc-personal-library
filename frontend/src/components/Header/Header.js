@@ -66,7 +66,7 @@ export class Header extends Component {
     } = this.state
     return (
       <Fragment>
-        <header className='vw-100 py-2'>
+        <header className='w-100 py-2'>
           <h2 className='text-center'>ISQA Project - Personal Library</h2>
         </header>
         <Container>

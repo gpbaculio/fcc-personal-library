@@ -26,6 +26,7 @@ class BookList extends Component {
   render() {
     const { page, loading } = this.state
     const { viewer } = this.props
+    console.log('BookList_viewer_books ', viewer.BookList_viewer_books)
     return (
       <Fragment>
         {loading && (
@@ -36,21 +37,25 @@ class BookList extends Component {
             </div>
           </div>
         )}
-        {viewer.BookList_viewer_books.edges.map(({ node }) => (
-          <BookItem
-            viewerId={viewer.id}
-            key={node.id}
-            book={node}
-          />
-        ))}
-        <div className='d-flex w-100 justify-content-center'>
-          <Pagination
-            activePage={page}
-            itemsCountPerPage={6}
-            totalItemsCount={viewer.booksCount}
-            pageRangeDisplayed={5}
-            onChange={this.handlePageChange}
-          />
+        <div className='books-grid-container w-100 d-flex flex-column'>
+          <div className='grid-container'>
+            {viewer.BookList_viewer_books.edges.map(({ node }, idx) => (
+              <BookItem
+                key={idx}
+                viewerId={viewer.id}
+                book={node}
+              />
+            ))}
+          </div>
+          <div className='d-flex w-100 justify-content-center'>
+            <Pagination
+              activePage={page}
+              itemsCountPerPage={6}
+              totalItemsCount={viewer.booksCount}
+              pageRangeDisplayed={5}
+              onChange={this.handlePageChange}
+            />
+          </div>
         </div>
       </Fragment>
     );
@@ -68,13 +73,13 @@ export default createRefetchContainer(
         page: { type: "Int", defaultValue: 1 }
       ){
         id
+        profilePicture
         booksCount
         BookList_viewer_books: books(first: $count, page: $page, after: $cursor)
-          @connection(key: "Show_BookList_viewer_books", filters: []) @relay(mask:false) {
+          @connection(key: "Show_BookList_viewer_books", filters: []) {
           edges {
             cursor
             node {
-              id
               ...BookItem_book
             }
           }

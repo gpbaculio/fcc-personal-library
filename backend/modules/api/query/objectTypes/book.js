@@ -1,7 +1,8 @@
 // external imports
 import {
   GraphQLObjectType,
-  GraphQLString
+  GraphQLString,
+  GraphQLInt
 } from 'graphql';
 
 import {
@@ -14,9 +15,10 @@ import {
 
 import { nodeInterface } from '../../definitions';
 import { BookType } from '../../../models/constants';
-import { getBookComments } from '../../../database';
+import { getBookComments, getBookCommentsCount } from '../../../database';
 import GraphQLCommentType from './comment';
 import { CommentType } from '../../definitions/constants';
+import GraphQLUserType from './user';
 
 export const {
   connectionType: commentsConnection,
@@ -25,15 +27,33 @@ export const {
 
 const GraphQLBookType = new GraphQLObjectType({
   name: BookType,
-  fields: {
+  fields: () => ({
     id: globalIdField(BookType),
     title: {
       type: GraphQLString,
       resolve: ({ title }) => title,
     },
     owner: {
-      type: GraphQLString,
-      resolve: ({ userId: { username } }) => username,
+      name: 'BookOwner',
+      type: GraphQLUserType,
+      resolve: ({
+        userId: {
+          _id, username, profilePicture
+        }
+      }) => {
+        return ({ id: `${_id}`, username, profilePicture })
+      },
+      fields: () => ({
+        id: globalIdField('BookOwner'),
+        username: {
+          type: GraphQLString,
+          resolve: ({ username }) => username
+        },
+        profilePicture: {
+          type: GraphQLString,
+          resolve: ({ profilePicture }) => profilePicture || 'default'
+        },
+      })
     },
     comments: {
       type: commentsConnection,
@@ -45,11 +65,17 @@ const GraphQLBookType = new GraphQLObjectType({
         return connectionFromArray(comments, args)
       }
     },
+    commentsCount: {
+      type: GraphQLInt,
+      resolve: ({ _id }) => {
+        return getBookCommentsCount(_id)
+      }
+    },
     createdAt: {
       type: GraphQLString,
       resolve: ({ createdAt }) => createdAt,
     }
-  },
+  }),
   interfaces: [nodeInterface],
 });
 

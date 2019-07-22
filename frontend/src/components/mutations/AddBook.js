@@ -11,7 +11,10 @@ export default mutationFromQuery(graphql`
         node {
           id
           title
-          owner
+          owner {
+            username
+            profilePicture
+          }
           createdAt
           comments(first: $count, after: $cursor)
           @connection(key: "BookComments_comments") {

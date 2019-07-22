@@ -7,6 +7,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #E9EBEE !important;
 }
@@ -73,11 +77,27 @@ input {
   border-radius: 0 !important;
 }
 
-.loading-view,
-.profile-container {
-  height: calc(100vh - 158.4px);
+.books-grid-container {
+  height: auto;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
 }
 
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 15px;
+  width: 100%;
+}
+
+
+.books-container {
+  height: calc(100vh - 252.4px);
+}
+
+.loading-view,
 .login-frm-container,
 .signup-frm-container,
 .profile-container {
