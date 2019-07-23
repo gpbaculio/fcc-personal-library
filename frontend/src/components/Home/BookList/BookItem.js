@@ -5,10 +5,18 @@ import { Card, CardHeader, CardBody } from 'reactstrap'
 import { timeDifferenceForDate } from './utils'
 import BookComments from './BookComments'
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import EditBookTitle from './EditBookTitle';
 
 class BookItem extends Component {
+  state = {
+    isEditing: false
+  }
+  toggleIsEditing = () => {
+    this.setState(({ isEditing }) => ({ isEditing: !isEditing }))
+  }
   render() {
     const { book, viewerId } = this.props;
+    const { isEditing } = this.state
     return (
       <div className='book-item mx-auto'>
         <Card>
@@ -27,10 +35,11 @@ class BookItem extends Component {
           </CardHeader>
           <CardBody>
             <div className='d-flex w-100 justify-content-between'>
-              <p>{book.title}</p>
-              {book.owner.id === viewerId && (
+              {isEditing ?
+                <EditBookTitle /> : <p>{book.title}</p>}
+              {!isEditing && book.owner.id === viewerId && (
                 <div>
-                  <FaEdit className='mr-2 btn-edit' />
+                  <FaEdit onClick={this.toggleIsEditing} className='mr-2 btn-edit' />
                   <FaTrashAlt className='btn-delete' />
                 </div>
               )}
