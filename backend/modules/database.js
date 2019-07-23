@@ -27,7 +27,6 @@ const bookCommentsLoader = new DataLoader(async bookIds => {
     else
       return []
   })
-  console.log('bookComments ', bookComments)
   return bookComments
 })
 
@@ -97,11 +96,14 @@ export const updateProfilePicture = async (userId, imgFile) => {
 
 export const findUsername = (username) => User.findOne({ username })
 
-export const getBooks = async ({ page, limit, searchText }) => {
+export const getBooks = async ({ page, limit, searchText, userId }) => {
   const query = {}
   if (searchText !== undefined) {
     if (searchText === '') return []
     query.title = { $regex: `${searchText}`, $options: 'i' }
+  }
+  if (userId) {
+    query.userId = userId
   }
   return Book.find(
     query,
@@ -110,7 +112,13 @@ export const getBooks = async ({ page, limit, searchText }) => {
   ).populate({ path: 'userId', select: 'username profilePicture' })
     .sort('-createdAt');
 }
-
+export const updateBookTitle = (title, bookId) => {
+  return Book.findOneAndUpdate(
+    { _id: bookId },
+    { $set: { title } },
+    { new: true }
+  );
+}
 export const getBook = bookId => {
   return Book.findById(bookId).populate({ path: 'userId', select: 'username' })
 }
@@ -136,3 +144,20 @@ export const getBookCommentsCount = async bookId => {
 export const getBookComments = async (bookId) => {
   return bookCommentsLoader.load(bookId)
 };
+
+export const deleteBook = async bookId => {
+  try {
+    await Book.findOneAndRemove({ _id: bookId });
+    return bookId
+  } catch (e) {
+    return null
+  }
+}
+export const deleteComment = async commentId => {
+  try {
+    await Comment.findOneAndRemove({ _id: commentId });
+    return commentId
+  } catch (e) {
+    return null
+  }
+}

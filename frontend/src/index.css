@@ -35,11 +35,20 @@ th {
   font-weight: normal;
 }
 
+.profile-addbook-container {
+  width: 300px;
+}
+
 .profile-picture-container {
   display: flex;
   position: relative;
+  width: 180px;
+  height: 180px;
+}
+
+.book-item {
   width: 300px;
-  height: 300px;
+  height: auto;
 }
 
 .profile-picture-container img {
@@ -50,6 +59,19 @@ th {
 
 .update-profile-btn {
   display: none !important;
+}
+
+.btn-edit,
+.btn-delete {
+  cursor: pointer;
+}
+
+.btn-edit {
+  color: #218838;
+}
+
+.btn-delete {
+  color: #C82333;
 }
 
 .profile-picture-container img:hover+.update-profile-btn,
@@ -113,7 +135,9 @@ ul {
 }
 
 .comment {
+  padding: 3px;
   list-style: none;
+  border-bottom: 1px solid #F2F3F5;
 }
 
 .comments-container {

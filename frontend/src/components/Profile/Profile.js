@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay'
 import {
@@ -10,6 +10,8 @@ import {
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import UpdateProfilePicture from '../mutations/UploadProfilePicture';
+import ProfileBooks from './ProfileBooks';
+import AddBook from '../Home/AddBook';
 export class Profile extends React.Component {
   state = {
     src: null,
@@ -75,11 +77,7 @@ export class Profile extends React.Component {
     );
 
     canvas.toBlob(blob => {
-      if (!blob) {
-        //reject(new Error('Canvas is empty'));
-        console.error("Canvas is empty");
-        return;
-      }
+      if (!blob) return;
       this.setState({ blob }) //added by SO huy nguyen 
     });
   }
@@ -100,40 +98,60 @@ export class Profile extends React.Component {
   }
   render() {
     const { crop, src, modal, loading } = this.state;
-    const { viewer: { username, profilePicture } } = this.props
+    const { viewer } = this.props
     return (
-      <Row>
-        <Col>
-          <Modal isOpen={modal} toggle={this.toggleModal}>
-            <Form encType="multipart/form-data" id='upload-img-frm' onSubmit={this.updateProfilePicture}>
-              <ModalHeader toggle={this.toggleModal}>Update Profile Picture</ModalHeader>
-              <ModalBody>
-                <Input type="file" onChange={this.onSelectFile} />
-                {src && (
-                  <ReactCrop
-                    src={src}
-                    crop={crop}
-                    onImageLoaded={this.onImageLoaded}
-                    onComplete={this.onCropComplete}
-                    onChange={this.onCropChange}
-                  />
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button disabled={loading} type='submit' color="primary">Save</Button>
-                <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
-              </ModalFooter>
-            </Form>
-          </Modal>
-          <div className='profile-container d-flex flex-column align-items-center justify-content-center'>
-            <div className='profile-picture-container'>
-              <img src={`${process.env.PUBLIC_URL}/images/${profilePicture}`} className="rounded" alt='' width='100%' height='100%' />
-              <Button color="secondary" onClick={this.toggleModal} className='update-profile-btn'>Update</Button>
+      <Fragment>
+        <Row>
+          <Col>
+            <Modal isOpen={modal} toggle={this.toggleModal}>
+              <Form encType="multipart/form-data" id='upload-img-frm' onSubmit={this.updateProfilePicture}>
+                <ModalHeader toggle={this.toggleModal}>Update Profile Picture</ModalHeader>
+                <ModalBody>
+                  <Input type="file" onChange={this.onSelectFile} />
+                  {src && (
+                    <ReactCrop
+                      src={src}
+                      crop={crop}
+                      onImageLoaded={this.onImageLoaded}
+                      onComplete={this.onCropComplete}
+                      onChange={this.onCropChange}
+                    />
+                  )}
+                </ModalBody>
+                <ModalFooter>
+                  <Button disabled={loading} type='submit' color="primary">Save</Button>
+                  <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
+                </ModalFooter>
+              </Form>
+            </Modal>
+            <div className='mb-3 d-flex flex-column align-items-center justify-content-center'>
+              <div className='profile-picture-container'>
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/${viewer.profilePicture}`}
+                  className="rounded"
+                  alt=''
+                />
+                <Button
+                  size='sm'
+                  color="primary"
+                  onClick={this.toggleModal}
+                  className='update-profile-btn'
+                >
+                  Update
+              </Button>
+              </div>
             </div>
-            <span className='mt-3'>{username}</span>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+        <div className='profile-addbook-container mx-auto'>
+          <AddBook viewerId={viewer.id} username={viewer.username} />
+        </div>
+        <Row>
+          <Col>
+            <ProfileBooks viewer={viewer} />
+          </Col>
+        </Row>
+      </Fragment>
     );
   }
 }
@@ -146,6 +164,7 @@ export const ProfileFC = createFragmentContainer(
         id
         profilePicture
         username
+        ...ProfileBooks_viewer
       }
     `
   }

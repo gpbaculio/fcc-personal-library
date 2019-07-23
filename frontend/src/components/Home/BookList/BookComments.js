@@ -4,6 +4,8 @@ import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';
 import { Button } from 'reactstrap'
 import { timeDifferenceForDate } from './utils';
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import Comment from './Comment';
 
 export class BookComments extends Component {
   state = { hasMore: false, loading: false }
@@ -48,20 +50,11 @@ export class BookComments extends Component {
           <Fragment>
             <ul className='mt-1'>
               {comments.edges.map(({ node }) => (
-                <li className='comment d-flex w-100 justify-content-between align-items-center' key={node.id}>
-                  <div>
-                    <img
-                      alt=''
-                      src={`${process.env.PUBLIC_URL}/images/${node.owner.profilePicture}`}
-                      width='35'
-                      height='35'
-                      className='mr-1'
-                    />
-                    <small className='font-weight-bold'>{node.owner.username}</small>
-                  </div>
-                  <small>{node.text}</small>
-                  <small>{timeDifferenceForDate(node.createdAt)}</small>
-                </li>
+                <Comment
+                  key={node.id}
+                  node={node}
+                  viewerId={viewerId}
+                />
               ))}
             </ul>
             <Button disabled={!hasMore || loading} color="primary" size="sm" onClick={() => this.loadMore()}>
@@ -86,6 +79,9 @@ export default createPaginationContainer(
         id
         title
         commentsCount
+        owner {
+          id
+        }
         comments(first: $count, after: $cursor)
           @connection(key: "BookComments_comments") {
             __typename

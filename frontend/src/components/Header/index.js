@@ -15,11 +15,9 @@ const HeaderQR = createQueryRenderer(
         }
       }
     `,
-    getFragmentProps: ({ viewer }) => {
-      return ({
-        viewer
-      })
-    },
+    getFragmentProps: ({ viewer }) => ({
+      viewer
+    }),
     variables: { count: 5, searchText: '' },
   }
 );

@@ -26,7 +26,6 @@ class BookList extends Component {
   render() {
     const { page, loading } = this.state
     const { viewer } = this.props
-    console.log('BookList_viewer_books ', viewer.BookList_viewer_books)
     return (
       <Fragment>
         {loading && (
@@ -67,16 +66,17 @@ export default createRefetchContainer(
   {
     viewer: graphql`
       fragment BookList_viewer on User 
-      @argumentDefinitions(
-        count: { type: "Int", defaultValue: 6 }
-        cursor: { type: "String", defaultValue: null }
-        page: { type: "Int", defaultValue: 1 }
-      ){
+        @argumentDefinitions(
+          userId: { type: "String" }
+          count: { type: "Int", defaultValue: 6 }
+          cursor: { type: "String", defaultValue: null }
+          page: { type: "Int", defaultValue: 1 }
+        ) {
         id
         profilePicture
         booksCount
         BookList_viewer_books: books(first: $count, page: $page, after: $cursor)
-          @connection(key: "Show_BookList_viewer_books", filters: []) {
+          @connection(key: "Connection_BookList_viewer_books", filters: []) {
           edges {
             cursor
             node {

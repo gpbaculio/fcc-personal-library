@@ -28,7 +28,7 @@ class AddBook extends Component {
         updater: (store) => {
           const userProxy = store.get(viewerId)
           const payload = store.getRootField('addBook');
-          const connection = ConnectionHandler.getConnection(userProxy, 'Show_BookList_viewer_books');
+          const connection = ConnectionHandler.getConnection(userProxy, 'Connection_BookList_viewer_books');
           ConnectionHandler.insertEdgeBefore(connection, payload.getLinkedRecord('book'));
         },
         onCompleted: () => {
@@ -44,22 +44,19 @@ class AddBook extends Component {
     const { loading, bookTitle } = this.state
     if (!username) return null
     return (
-      <div className='mb-4 w-100 d-flex justify-content-center addbook-container p-3'>
-        <Form onSubmit={this.addBook} inline className='d-flex w-50 justify-content-between'>
-          <FormGroup className='flex-grow-1 mr-2'>
-            <Label for="bookTitle" className='mr-2'>Book Title</Label>
-            <Input
-              value={bookTitle}
-              onChange={this.handleChange}
-              required
-              className='flex-grow-1'
-              type="text"
-              name="bookTitle"
-              id="bookTitle"
-              placeholder="Book Title"
-            />
-          </FormGroup>
-          <button disabled={loading} type='submit' className='btn btn-primary'>Add Book</button>
+      <div className='mb-4 w-100 d-flex justify-content-center addbook-container py-3'>
+        <Form onSubmit={this.addBook} inline className='d-flex'>
+          <Input
+            value={bookTitle}
+            onChange={this.handleChange}
+            required
+            className='flex-grow-1 mr-2'
+            type="text"
+            name="bookTitle"
+            id="bookTitle"
+            placeholder="Book Title"
+          />
+          <button disabled={loading} type='submit' className='btn btn-primary'>Add</button>
         </Form>
       </div>
     )

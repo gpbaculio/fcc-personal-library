@@ -14,7 +14,9 @@ const query = new GraphQLObjectType({
         userId: { type: GraphQLString }
       },
       resolve: (_root, { userId }, { user }) => {
-        if (user)
+        if (userId)
+          return getUser(userId)
+        else if (user)
           return user
         else
           return 'guest'

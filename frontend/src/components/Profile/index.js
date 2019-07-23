@@ -10,6 +10,7 @@ const ProfileQR = createQueryRenderer(
       query ProfileQuery($userId: String) {
         viewer(userId:$userId) {
           ...Profile_viewer
+          ...Header_viewer
         }
       }
     `,

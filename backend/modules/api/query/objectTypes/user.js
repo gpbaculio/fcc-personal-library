@@ -21,7 +21,7 @@ export const {
 const GraphQLUserType = new GraphQLObjectType({
   name: UserType,
   interfaces: [nodeInterface],
-  fields: {
+  fields: () => ({
     id: globalIdField(UserType),
     username: {
       type: GraphQLString,
@@ -40,10 +40,13 @@ const GraphQLUserType = new GraphQLObjectType({
         },
         searchText: {
           type: GraphQLString
+        },
+        userId: {
+          type: GraphQLString
         }
       },
-      resolve: async (_root, { page, searchText, ...args }) => {
-        const books = await getBooks({ page, limit: args.first, searchText })
+      resolve: async (_root, { page, searchText, userId, ...args }) => {
+        const books = await getBooks({ page, limit: args.first, searchText, userId })
         return connectionFromArray(books, args)
       }
     },
@@ -64,7 +67,7 @@ const GraphQLUserType = new GraphQLObjectType({
         return getBooksCount()
       }
     }
-  }
+  })
 })
 
 export default GraphQLUserType
