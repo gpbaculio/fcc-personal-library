@@ -3,12 +3,12 @@ import { createRefetchContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import classNames from 'classnames'
 
 import { timeDifferenceForDate } from './utils'
 import BookComments from './BookComments'
 import UpdateBookTitleInput from './UpdateBookTitleInput';
 import UpdateBookTitleMutation from '../../mutations/UpdateBookTitle'
-
 
 class BookItem extends Component {
   state = { isEditingBook: false }
@@ -37,6 +37,7 @@ class BookItem extends Component {
   render() {
     const { book, viewer } = this.props;
     const { isEditingBook } = this.state
+    const bookOwnerViewer = book.owner.id === viewer.id
     return (
       <div className='book-item mx-auto'>
         <Card>
@@ -54,13 +55,10 @@ class BookItem extends Component {
             <span>{timeDifferenceForDate(book.createdAt)}</span>
           </CardHeader>
           <CardBody>
-            <div className='d-flex w-100 justify-content-between'>
-              {isEditingBook ?
-                <UpdateBookTitleInput
-                  onSave={this.onUpdateBookTitleSave}
-                  bookTitle={book.title}
-                /> : <p>{book.title}</p>}
-              {!isEditingBook && book.owner.id === viewer.id && (
+            <div className={classNames('d-flex w-100 justify-content-between', { 'isEditingBook': isEditingBook })}>
+              <p className='book-title'>{book.title}</p>
+              {!!isEditingBook && <UpdateBookTitleInput onSave={this.onUpdateBookTitleSave} bookTitle={book.title} />}
+              {!isEditingBook && bookOwnerViewer && (
                 <div>
                   <FaEdit onClick={this.onBookEditIconClick} className='mr-2 btn-edit' />
                   <FaTrashAlt className='btn-delete' />
@@ -84,6 +82,7 @@ export default createRefetchContainer(
     viewer: graphql`
       fragment BookItem_viewer on User {
         id
+        ...BookComments_viewer
       }`
     ,
     book: graphql`

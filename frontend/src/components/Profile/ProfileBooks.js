@@ -4,7 +4,6 @@ import React, { Component, Fragment } from 'react'
 import graphql from 'babel-plugin-relay/macro';
 import { Row, Col } from 'reactstrap'
 import BookItem from '../Home/BookList/BookItem';
-import AddBook from '../Home/AddBook';
 
 class ProfileBooks extends Component {
   render() {
@@ -12,11 +11,11 @@ class ProfileBooks extends Component {
     return (
       <Fragment>
         <Row>
-          {viewer.ProfileBooks_viewer_books.edges.map(({ node }, idx) => (
-            <Col xs='12' key={idx}>
+          {viewer.ProfileBooks_viewer_books.edges.map(({ node, cursor }) => (
+            <Col xs='12' key={cursor}>
               <div className='mx-auto my-2 profile-book-item d-flex justify-content-center'>
                 <BookItem
-                  viewerId={viewer.id}
+                  viewer={viewer}
                   book={node}
                 />
               </div>
@@ -40,6 +39,7 @@ export default createPaginationContainer(
           page: { type: "Int", defaultValue: 1 }
         ) {
         id
+        ...BookItem_viewer
         profilePicture
         booksCount
         username
@@ -75,9 +75,3 @@ export default createPaginationContainer(
     `
   }
 );
-
-// query ProfileBooksQuery($id: ID!, $count: Int, $cursor: String) {
-//   book: node(id: $id) {
-//     ...BookComments_book @arguments(count: $count, cursor: $cursor)
-//   }
-// }

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';

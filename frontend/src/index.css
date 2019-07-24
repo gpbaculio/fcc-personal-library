@@ -23,6 +23,14 @@ th {
 }
 
 .auth-nav {
+  display: none !important;
+}
+
+.isEditingBook .book-title {
+  display: none;
+}
+
+.isEditingComment .comment-info {
   display: none;
 }
 

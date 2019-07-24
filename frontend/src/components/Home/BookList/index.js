@@ -71,7 +71,6 @@ export default createRefetchContainer(
           page: { type: "Int", defaultValue: 1 }
         ) {
         ...BookItem_viewer
-        ...BookComments_viewer
         id
         profilePicture
         booksCount

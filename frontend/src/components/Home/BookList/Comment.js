@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { timeDifferenceForDate } from './utils';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import classNames from 'classnames'
+
+import { timeDifferenceForDate } from './utils';
 import UpdateCommentTextInput from './UpdateCommentTextInput';
 import UpdateCommentTextMutation from '../../mutations/UpdateCommentText'
 
@@ -35,7 +37,10 @@ export default class Comment extends Component {
     const { isEditingComment } = this.state
     return (
       <li
-        className='comment d-flex w-100 my-1 justify-content-between align-items-center'
+        className={classNames(
+          'comment d-flex w-100 my-1 justify-content-between align-items-center',
+          { 'isEditingComment': isEditingComment }
+        )}
         key={comment.id}
       >
         <div className='d-flex align-items-center'>
@@ -48,16 +53,15 @@ export default class Comment extends Component {
           />
           <small className='font-weight-bold'>{comment.owner.username}</small>
         </div>
-        {isEditingComment ?
+        {!!isEditingComment &&
           <UpdateCommentTextInput
             onSave={this.onUpdateBookTitleSave}
             commentText={comment.text}
-          /> : (
-            <div>
-              <small className='mr-2'>{comment.text} </small>
-              <small>{timeDifferenceForDate(comment.createdAt)}</small>
-            </div>
-          )}
+          />}
+        <div className='comment-info'>
+          <small className='mr-2'>{comment.text} </small>
+          <small>{timeDifferenceForDate(comment.createdAt)}</small>
+        </div>
         {!isEditingComment && viewerId === comment.owner.id && (
           <div>
             <FaEdit onClick={this.onCommentEditIconClick} className='mr-2 btn-edit' />
