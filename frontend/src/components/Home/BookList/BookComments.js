@@ -7,7 +7,6 @@ import Comment from './Comment';
 
 export class BookComments extends Component {
   state = { hasMore: false, loading: false }
-
   componentDidMount() {
     const hasMore = this.props.relay.hasMore()
     this.setState({ hasMore, loading: false })
@@ -36,31 +35,29 @@ export class BookComments extends Component {
     }
   }
   render() {
-    const {
-      book: { id: bookId, comments },
-      viewerId
-    } = this.props
+    const { book, viewer } = this.props
     const { hasMore, loading } = this.state
     return (
       <div className='p-3 comments-container'>
-        <CommentInput viewerId={viewerId} bookId={bookId} />
-        {comments.edges.length && (
-          <Fragment>
-            <ul className='mt-1'>
-              {comments.edges.map(({ node, cursor }) => (
-                <Comment
-                  cursor={cursor}
-                  key={cursor}
-                  comment={node}
-                  viewerId={viewerId}
-                />
-              ))}
-            </ul>
-            <Button disabled={!hasMore || loading} color="primary" size="sm" onClick={() => this.loadMore()}>
-              Load more
-            </Button>
-          </Fragment>
-        )}
+        <CommentInput viewerId={viewer.id} bookId={book.id} />
+        <ul className='mt-1'>
+          {book.comments.edges.map(({ node, cursor }) => (
+            <Comment
+              cursor={cursor}
+              key={cursor}
+              comment={node}
+              viewerId={viewer.id}
+            />
+          ))}
+        </ul>
+        <Button
+          disabled={!hasMore || loading}
+          color="primary"
+          size="sm"
+          onClick={this.loadMore}
+        >
+          Load more
+        </Button>
       </div>
     )
   }
@@ -69,6 +66,11 @@ export class BookComments extends Component {
 export default createPaginationContainer(
   BookComments,
   {
+    viewer: graphql`
+      fragment BookComments_viewer on User {
+        id
+      }
+    `,
     book: graphql`
       fragment BookComments_book on Book 
       @argumentDefinitions(
@@ -109,10 +111,7 @@ export default createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps: (props) => props.book && props.book.comments,
-    getFragmentVariables: (prevVars, totalCount) => ({
-      ...prevVars,
-      count: totalCount
-    }),
+    getFragmentVariables: (prevVars, totalCount) => ({ ...prevVars, count: totalCount }),
     getVariables: (props, { count, cursor }, _fragmentVariables) => ({
       count,
       cursor,

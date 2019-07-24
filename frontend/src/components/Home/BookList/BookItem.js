@@ -35,7 +35,7 @@ class BookItem extends Component {
     mutation.commit()
   }
   render() {
-    const { book, viewerId } = this.props;
+    const { book, viewer } = this.props;
     const { isEditingBook } = this.state
     return (
       <div className='book-item mx-auto'>
@@ -60,7 +60,7 @@ class BookItem extends Component {
                   onSave={this.onUpdateBookTitleSave}
                   bookTitle={book.title}
                 /> : <p>{book.title}</p>}
-              {!isEditingBook && book.owner.id === viewerId && (
+              {!isEditingBook && book.owner.id === viewer.id && (
                 <div>
                   <FaEdit onClick={this.onBookEditIconClick} className='mr-2 btn-edit' />
                   <FaTrashAlt className='btn-delete' />
@@ -72,7 +72,7 @@ class BookItem extends Component {
             </p>
           </CardBody>
         </Card>
-        <BookComments viewerId={viewerId} book={book} />
+        <BookComments viewer={viewer} book={book} />
       </div>
     )
   }
@@ -81,6 +81,11 @@ class BookItem extends Component {
 export default createRefetchContainer(
   BookItem,
   {
+    viewer: graphql`
+      fragment BookItem_viewer on User {
+        id
+      }`
+    ,
     book: graphql`
       fragment BookItem_book on Book
         @argumentDefinitions(

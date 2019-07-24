@@ -136,10 +136,10 @@ export class Header extends Component {
               <div className={classNames({ 'guest-nav': !userId, 'auth-nav': userId })}>
                 <Link className='nav-link btn-primary mr-3' to='/login'>
                   Login
-                    </Link>
+                </Link>
                 <Link className='nav-link btn-success' to='/signup'>
                   Signup
-                  </Link>
+                </Link>
               </div>
             </div>
           </div>

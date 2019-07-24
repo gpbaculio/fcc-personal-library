@@ -6,11 +6,8 @@ import { Spinner } from 'reactstrap'
 import BookItem from './BookItem'
 
 class BookList extends Component {
-  state = {
-    page: 1,
-    loading: false
-  }
-  handlePageChange = async (page) => {
+  state = { page: 1, loading: false }
+  handlePageChange = page => {
     const { loading } = this.state
     if (loading) return
     this.setState({ loading: true })
@@ -41,9 +38,9 @@ class BookList extends Component {
             {viewer.BookList_viewer_books.edges.map(({ cursor, node }) => (
               <BookItem
                 key={cursor}
-                viewerId={viewer.id}
                 book={node}
                 cursor={cursor}
+                viewer={viewer}
               />
             ))}
           </div>
@@ -73,6 +70,8 @@ export default createRefetchContainer(
           cursor: { type: "String", defaultValue: null }
           page: { type: "Int", defaultValue: 1 }
         ) {
+        ...BookItem_viewer
+        ...BookComments_viewer
         id
         profilePicture
         booksCount

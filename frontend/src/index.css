@@ -30,6 +30,18 @@ th {
   display: flex;
 }
 
+.hide-auth {
+  display: none;
+}
+
+.show-controllers {
+  display: flex;
+}
+
+.hide-controllers {
+  display: none;
+}
+
 img {
   border: solid #e9e9e9 1px !important;
 }
