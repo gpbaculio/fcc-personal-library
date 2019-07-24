@@ -16,7 +16,10 @@ import { getUserContext } from './modules/auth';
 const storage = multer.memoryStorage();
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGO_DB_URL, { useNewUrlParser: true });
+mongoose.connect(
+  process.env.MONGO_DB_URL,
+  { useNewUrlParser: true, findAndModify: false }
+);
 
 const port = process.env.PORT || 8000
 

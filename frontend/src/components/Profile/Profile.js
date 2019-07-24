@@ -12,6 +12,7 @@ import "react-image-crop/dist/ReactCrop.css";
 import UpdateProfilePicture from '../mutations/UploadProfilePicture';
 import ProfileBooks from './ProfileBooks';
 import AddBook from '../Home/AddBook';
+
 export class Profile extends React.Component {
   state = {
     src: null,

@@ -1,44 +1,66 @@
 import React, { Component } from 'react'
 import { timeDifferenceForDate } from './utils';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import EditCommentTextInput from './EditCommentTextInput';
-
+import UpdateCommentTextInput from './UpdateCommentTextInput';
+import UpdateCommentTextMutation from '../../mutations/UpdateCommentText'
 
 export default class Comment extends Component {
   state = {
-    isEditing: false
+    isEditingComment: false
   }
-  toggleIsEditing = () => {
-    this.setState(({ isEditing }) => ({ isEditing: !isEditing }))
+  setEditMode = isEditingComment => this.setState({ isEditingComment })
+  onCommentEditIconClick = () => this.setEditMode(true)
+  onUpdateBookTitleSave = text => {
+    const { comment: { id: commentId }, cursor } = this.props
+    this.setEditMode(false);
+    const mutation = UpdateCommentTextMutation(
+      { commentId, text },
+      {
+        optimisticResponse: {
+          updateCommentText: {
+            comment: {
+              __typename: 'CommentEdge',
+              cursor,
+              node: { id: commentId, text }
+            },
+          },
+        },
+        onFailure: error => console.error(error),
+      },
+    );
+    mutation.commit()
   }
   render() {
-    const { node, viewerId } = this.props
-    const { isEditing } = this.state
+    const { comment, viewerId } = this.props
+    const { isEditingComment } = this.state
     return (
       <li
         className='comment d-flex w-100 my-1 justify-content-between align-items-center'
-        key={node.id}
+        key={comment.id}
       >
         <div className='d-flex align-items-center'>
           <img
             alt=''
-            src={`${process.env.PUBLIC_URL}/images/${node.owner.profilePicture}`}
+            src={`${process.env.PUBLIC_URL}/images/${comment.owner.profilePicture}`}
             width='35'
             height='35'
             className='mr-2'
           />
-          <small className='font-weight-bold'>{node.owner.username}</small>
+          <small className='font-weight-bold'>{comment.owner.username}</small>
         </div>
-        {isEditing ?
-          <EditCommentTextInput /> : (
+        {isEditingComment ?
+          <UpdateCommentTextInput
+            onSave={this.onUpdateBookTitleSave}
+            commentText={comment.text}
+          /> : (
             <div>
-              <small className='mr-2'>{node.text} </small>
-              <small>{timeDifferenceForDate(node.createdAt)}</small>
+              <small className='mr-2'>{comment.text} </small>
+              <small>{timeDifferenceForDate(comment.createdAt)}</small>
             </div>
           )}
-        {!isEditing && viewerId === node.owner.id && (
+        {!isEditingComment && viewerId === comment.owner.id && (
           <div>
-            <FaEdit onClick={this.toggleIsEditing} className='mr-2 btn-edit' />
+            <FaEdit onClick={this.onCommentEditIconClick} className='mr-2 btn-edit' />
             <FaTrashAlt className='btn-delete' />
           </div>
         )}

@@ -38,11 +38,12 @@ class BookList extends Component {
         )}
         <div className='books-grid-container w-100 d-flex flex-column'>
           <div className='grid-container'>
-            {viewer.BookList_viewer_books.edges.map(({ node }, idx) => (
+            {viewer.BookList_viewer_books.edges.map(({ cursor, node }) => (
               <BookItem
-                key={idx}
+                key={cursor}
                 viewerId={viewer.id}
                 book={node}
+                cursor={cursor}
               />
             ))}
           </div>

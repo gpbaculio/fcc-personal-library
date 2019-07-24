@@ -3,8 +3,6 @@ import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';
 import { Button } from 'reactstrap'
-import { timeDifferenceForDate } from './utils';
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import Comment from './Comment';
 
 export class BookComments extends Component {
@@ -49,10 +47,11 @@ export class BookComments extends Component {
         {comments.edges.length && (
           <Fragment>
             <ul className='mt-1'>
-              {comments.edges.map(({ node }) => (
+              {comments.edges.map(({ node, cursor }) => (
                 <Comment
-                  key={node.id}
-                  node={node}
+                  cursor={cursor}
+                  key={cursor}
+                  comment={node}
                   viewerId={viewerId}
                 />
               ))}

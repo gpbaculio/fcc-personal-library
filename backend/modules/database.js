@@ -119,6 +119,13 @@ export const updateBookTitle = (title, bookId) => {
     { new: true }
   );
 }
+export const updateCommentText = (text, commentId) => {
+  return Comment.findOneAndUpdate(
+    { _id: commentId },
+    { $set: { text } },
+    { new: true }
+  );
+}
 export const getBook = bookId => {
   return Book.findById(bookId).populate({ path: 'userId', select: 'username' })
 }

@@ -16,15 +16,12 @@ const GraphQLUpdateBookTitleMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ title, bookId }) => {
     const book = await updateBookTitle(title, fromGlobalId(bookId).id);
-    return ({ book });
+    return { book };
   },
   outputFields: {
     book: {
       type: GraphQLBookEdge,
-      resolve: ({ book }) => ({
-        cursor: offsetToCursor(book.id),
-        node: book
-      }),
+      resolve: ({ book }) => ({ cursor: offsetToCursor(book.id), node: book }),
     }
   },
 });

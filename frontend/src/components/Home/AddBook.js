@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import {
   Form,
-  FormGroup,
-  Label,
   Input
 } from 'reactstrap'
 import { ConnectionHandler } from 'relay-runtime'
@@ -28,8 +26,14 @@ class AddBook extends Component {
         updater: (store) => {
           const userProxy = store.get(viewerId)
           const payload = store.getRootField('addBook');
-          const connection = ConnectionHandler.getConnection(userProxy, 'Connection_BookList_viewer_books');
-          ConnectionHandler.insertEdgeBefore(connection, payload.getLinkedRecord('book'));
+          const connection = ConnectionHandler.getConnection(
+            userProxy,
+            'Connection_BookList_viewer_books'
+          );
+          ConnectionHandler.insertEdgeBefore(
+            connection,
+            payload.getLinkedRecord('book')
+          );
         },
         onCompleted: () => {
           this.setState({ loading: false, bookTitle: '' })

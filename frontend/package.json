@@ -5,6 +5,7 @@
   "dependencies": {
     "babel-plugin-relay": "^2.0.0-rc.2",
     "bootstrap": "^4.3.1",
+    "classnames": "^2.2.6",
     "core-js": "^2.6.9",
     "graphql": "^14.4.2",
     "graphql-relay": "^0.6.0",

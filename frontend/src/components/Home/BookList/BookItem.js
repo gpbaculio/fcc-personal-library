@@ -1,22 +1,42 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { createRefetchContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import { Card, CardHeader, CardBody } from 'reactstrap'
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+
 import { timeDifferenceForDate } from './utils'
 import BookComments from './BookComments'
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import EditBookTitle from './EditBookTitle';
+import UpdateBookTitleInput from './UpdateBookTitleInput';
+import UpdateBookTitleMutation from '../../mutations/UpdateBookTitle'
+
 
 class BookItem extends Component {
-  state = {
-    isEditing: false
-  }
-  toggleIsEditing = () => {
-    this.setState(({ isEditing }) => ({ isEditing: !isEditing }))
+  state = { isEditingBook: false }
+  setEditMode = isEditingBook => this.setState({ isEditingBook })
+  onBookEditIconClick = () => this.setEditMode(true)
+  onUpdateBookTitleSave = title => {
+    const { book: { id: bookId }, cursor } = this.props
+    this.setEditMode(false);
+    const mutation = UpdateBookTitleMutation(
+      { title, bookId },
+      {
+        optimisticResponse: {
+          updateBookTitle: {
+            book: {
+              __typename: 'BookEdge',
+              cursor,
+              node: { id: bookId, title }
+            },
+          },
+        },
+        onFailure: error => console.error(error),
+      },
+    );
+    mutation.commit()
   }
   render() {
     const { book, viewerId } = this.props;
-    const { isEditing } = this.state
+    const { isEditingBook } = this.state
     return (
       <div className='book-item mx-auto'>
         <Card>
@@ -35,11 +55,14 @@ class BookItem extends Component {
           </CardHeader>
           <CardBody>
             <div className='d-flex w-100 justify-content-between'>
-              {isEditing ?
-                <EditBookTitle /> : <p>{book.title}</p>}
-              {!isEditing && book.owner.id === viewerId && (
+              {isEditingBook ?
+                <UpdateBookTitleInput
+                  onSave={this.onUpdateBookTitleSave}
+                  bookTitle={book.title}
+                /> : <p>{book.title}</p>}
+              {!isEditingBook && book.owner.id === viewerId && (
                 <div>
-                  <FaEdit onClick={this.toggleIsEditing} className='mr-2 btn-edit' />
+                  <FaEdit onClick={this.onBookEditIconClick} className='mr-2 btn-edit' />
                   <FaTrashAlt className='btn-delete' />
                 </div>
               )}
@@ -63,7 +86,7 @@ export default createRefetchContainer(
         @argumentDefinitions(
           count: { type: "Int", defaultValue: 5 }
           cursor: { type: "String", defaultValue: null }
-        )  {
+        ) {
         id
         title
         commentsCount
