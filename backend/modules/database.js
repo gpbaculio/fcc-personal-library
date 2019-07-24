@@ -102,9 +102,7 @@ export const getBooks = async ({ page, limit, searchText, userId }) => {
     if (searchText === '') return []
     query.title = { $regex: `${searchText}`, $options: 'i' }
   }
-  if (userId) {
-    query.userId = userId
-  }
+  if (userId) query.userId = userId
   return Book.find(
     query,
     null,

@@ -1,12 +1,17 @@
 import React, { Component, Fragment } from 'react'
 import { fromGlobalId } from 'graphql-relay'
 import { withRouter, Link } from 'react-router-dom'
-import {
-  Container, Form, Input,
-  Spinner
-} from 'reactstrap'
+import classNames from 'classnames';
 import { createRefetchContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
+import {
+  Container,
+  Form,
+  Input,
+  Spinner,
+  Button
+} from 'reactstrap'
+
 import { logout } from '../createQueryRenderer';
 
 export class Header extends Component {
@@ -26,8 +31,7 @@ export class Header extends Component {
           this.setState({ loading: true })
           this.delayTimer = setTimeout(async () => {
             await this.refetch(searchText)
-          }, 2000); // Will do the ajax stuff after 1000 ms, or 1 s
-
+          }, 2000);
         }
       }
     );
@@ -39,9 +43,9 @@ export class Header extends Component {
       () => this.setState({ loading: false, hasSearched: true })
     )
   }
-  handleOnBlur = async (title, id) => {
+  handleOnBlur = (title, id) => {
     if (title) {
-      await this.props.history.push(`/book/${fromGlobalId(id).id}`)
+      this.props.history.push(`/book/${fromGlobalId(id).id}`)
       this.setState({ showResult: false, searchText: title, hasSearched: false })
     }
     else
@@ -55,15 +59,19 @@ export class Header extends Component {
   render() {
     const {
       viewer: {
-        books, id, profilePicture,
+        books,
+        id,
+        profilePicture,
         username
       }
     } = this.props
-    const { id: userId } = fromGlobalId(id)
     const {
-      searchText, loading, showResult,
+      searchText,
+      loading,
+      showResult,
       hasSearched
     } = this.state
+    const { id: userId } = fromGlobalId(id)
     return (
       <Fragment>
         <header className='w-100 py-2'>
@@ -85,7 +93,7 @@ export class Header extends Component {
                   placeholder="Search Books"
                 />
                 <div className='autocomplete-items'>
-                  {!loading && hasSearched && !books.edges.length && <div>Book does not exist</div>}
+                  {hasSearched && !books.edges.length && <div>Book does not exist</div>}
                   {showResult && books.edges.map(({ node: { id, title } }) => {
                     const bookTitle = title.replace(new RegExp(searchText, 'g'), `<strong>${searchText}</strong>`);
                     return (
@@ -105,18 +113,12 @@ export class Header extends Component {
               </div>
             </Form>
             <div className='nav-container d-flex align-items-center'>
-              {userId ? (
+              {!!userId && (
                 <Fragment>
-                  <Link
-                    className='nav-home mr-3'
-                    to={'/'}
-                  >
+                  <Link className='nav-home mr-3' to={'/'}>
                     Home
                   </Link>
-                  <Link
-                    className='nav-profile mr-3'
-                    to={`/profile/${userId}`}
-                  >
+                  <Link className='nav-profile mr-3' to={`/profile/${userId}`}>
                     <img
                       src={`${process.env.PUBLIC_URL}/images/${profilePicture}`}
                       className="rounded mr-1"
@@ -126,20 +128,19 @@ export class Header extends Component {
                     />
                     <span>{username}</span>
                   </Link>
-                  <button onClick={this.logout} className='btn btn-primary'>
+                  <Button onClick={this.logout} color='primary'>
                     Logout
-                  </button>
+                  </Button>
                 </Fragment>
-              ) : (
-                  <div className='d-flex'>
-                    <Link className='nav-link btn-primary mr-3' to='/login'>
-                      Login
+              )}
+              <div className={classNames({ 'guest-nav': !userId, 'auth-nav': userId })}>
+                <Link className='nav-link btn-primary mr-3' to='/login'>
+                  Login
                     </Link>
-                    <Link className='nav-link btn-success' to='/signup'>
-                      Signup
+                <Link className='nav-link btn-success' to='/signup'>
+                  Signup
                   </Link>
-                  </div>
-                )}
+              </div>
             </div>
           </div>
         </Container>
