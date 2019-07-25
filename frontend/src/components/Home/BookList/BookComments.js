@@ -46,6 +46,7 @@ export class BookComments extends Component {
               cursor={cursor}
               key={cursor}
               comment={node}
+              bookId={book.id}
               viewerId={viewer.id}
             />
           ))}
