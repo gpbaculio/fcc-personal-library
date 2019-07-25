@@ -58,7 +58,9 @@ const GraphQLUserType = new GraphQLObjectType({
         }
       },
       resolve: async (_root, { bookId }) => {
-        return getBook(bookId)
+        const book = await getBook(bookId)
+        console.log('book ', book)
+        return book
       }
     },
     booksCount: {

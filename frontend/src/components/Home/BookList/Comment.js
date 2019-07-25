@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { ConnectionHandler } from 'relay-runtime';
+import { createFragmentContainer } from 'react-relay'
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import { toGlobalId } from 'graphql-relay'
+import graphql from 'babel-plugin-relay/macro';
 import classNames from 'classnames'
 import {
   Modal,
@@ -16,7 +17,7 @@ import UpdateCommentTextInput from './UpdateCommentTextInput';
 import UpdateCommentTextMutation from '../../mutations/UpdateCommentText'
 import DeleteCommentMutation from '../../mutations/DeleteComment'
 
-export default class Comment extends Component {
+class Comment extends Component {
   state = {
     isEditingComment: false,
     deletModal: false
@@ -46,8 +47,8 @@ export default class Comment extends Component {
     );
     mutation.commit()
   }
-  onDeleteCommentConfirm = () => {
-    const { comment: { id: commentId }, bookId } = this.props
+  onDeleteCommentConfirm = async () => {
+    const { comment: { id: commentId }, bookId, relay } = this.props
     this.setDeleteModalMode(false);
     const sharedUpdater = (bookProxy, deletedCommentId) => {
       const connection = ConnectionHandler.getConnection(
@@ -69,11 +70,15 @@ export default class Comment extends Component {
           const bookNode = bookEdge.getLinkedRecord('node')
           const newBookCommentsCount = bookNode.getValue('commentsCount')
           bookProxy.setValue(newBookCommentsCount, 'commentsCount')
-          sharedUpdater(bookProxy, payload.getValue('deletedCommentId'))
+          const deletedCommentId = payload.getValue('deletedCommentId')
+          sharedUpdater(bookProxy, deletedCommentId)
+          store.delete(deletedCommentId)
+          this.props.refetchedges()
         },
         optimisticUpdater: store => {
           const bookProxy = store.get(bookId)
           sharedUpdater(bookProxy, commentId)
+          store.delete(commentId)
           const bookProxyCommentsCount = bookProxy.getValue('commentsCount')
           if (bookProxyCommentsCount)
             bookProxy.setValue(bookProxyCommentsCount - 1, 'commentsCount')
@@ -84,8 +89,9 @@ export default class Comment extends Component {
     mutation.commit()
   }
   render() {
-    const { comment, viewerId } = this.props
+    const { comment, viewer } = this.props
     const { isEditingComment } = this.state
+    if (!comment) return null
     return (
       <Fragment>
         <Modal isOpen={this.state.deletModal} toggle={this.toggleDeleteModal}>
@@ -124,7 +130,7 @@ export default class Comment extends Component {
             <small className='mr-2'>{comment.text} </small>
             <small>{timeDifferenceForDate(comment.createdAt)}</small>
           </div>
-          {!isEditingComment && viewerId === comment.owner.id && (
+          {!isEditingComment && viewer.id === comment.owner.id && (
             <div>
               <FaEdit onClick={this.onCommentEditIconClick} className='mr-2 btn-edit' />
               <FaTrashAlt onClick={this.onDeleteIconClick} className='btn-delete' />
@@ -135,4 +141,24 @@ export default class Comment extends Component {
     )
   }
 }
+
+export default createFragmentContainer(Comment, {
+  viewer: graphql`
+    fragment Comment_viewer on User {
+      id
+    }`
+  ,
+  comment: graphql`
+    fragment Comment_comment on Comment {
+      id
+      text
+      owner {
+        id
+        username
+        profilePicture
+      }
+      createdAt
+    }
+  `,
+});
 

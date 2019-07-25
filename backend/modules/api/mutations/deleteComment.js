@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
 import { deleteComment, getBook } from '../../database';
 import { GraphQLBookEdge } from '../query/objectTypes/user';
@@ -8,7 +8,7 @@ const GraphQLDeleteCommentMutation = mutationWithClientMutationId({
   name: 'DeleteComment',
   inputFields: {
     commentId: { type: new GraphQLNonNull(GraphQLString) },
-    bookId: { type: new GraphQLNonNull(GraphQLString) }
+    bookId: { type: new GraphQLNonNull(GraphQLString) },
   },
   mutateAndGetPayload: async ({ commentId, bookId }) => {
     const deletedCommentId = await deleteComment(fromGlobalId(commentId).id);

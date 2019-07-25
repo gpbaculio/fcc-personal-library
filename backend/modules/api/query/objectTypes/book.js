@@ -62,6 +62,8 @@ const GraphQLBookType = new GraphQLObjectType({
       },
       resolve: async ({ _id }, { ...args }) => {
         const comments = await getBookComments(_id)
+        console.log('comments ', comments)
+        console.log('args ', args)
         return connectionFromArray(comments, args)
       }
     },

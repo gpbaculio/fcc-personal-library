@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { fromGlobalId } from 'graphql-relay'
 import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
 import CommentInput from './CommentInput';
@@ -34,6 +35,9 @@ export class BookComments extends Component {
       );
     }
   }
+  refetchEdges = () => {
+    this.props.relay.refetchConnection(this.props.book.comments.edges.length)
+  }
   render() {
     const { book, viewer } = this.props
     const { hasMore, loading } = this.state
@@ -43,11 +47,12 @@ export class BookComments extends Component {
         <ul className='mt-1'>
           {book.comments.edges.map(({ node, cursor }) => (
             <Comment
+              refetchedges={this.refetchEdges}
               cursor={cursor}
-              key={cursor}
+              key={node.id}
               comment={node}
               bookId={book.id}
-              viewerId={viewer.id}
+              viewer={viewer}
             />
           ))}
         </ul>
@@ -70,6 +75,7 @@ export default createPaginationContainer(
     viewer: graphql`
       fragment BookComments_viewer on User {
         id
+        ...Comment_viewer
       }
     `,
     book: graphql`
@@ -85,18 +91,12 @@ export default createPaginationContainer(
           id
         }
         comments(first: $count, after: $cursor)
-          @connection(key: "BookComments_comments") {
+          @connection(key: "BookComments_comments", filters: []) {
             __typename
           edges {
             node {
               id
-              text
-              owner {
-                id
-                username
-                profilePicture
-              }
-              createdAt
+              ...Comment_comment
             }
           }
           pageInfo {
@@ -112,16 +112,27 @@ export default createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps: (props) => props.book && props.book.comments,
-    getFragmentVariables: (prevVars, totalCount) => ({ ...prevVars, count: totalCount }),
-    getVariables: (props, { count, cursor }, _fragmentVariables) => ({
-      count,
-      cursor,
-      id: props.book.id
-    }),
+    getFragmentVariables: (prevVars, totalCount) => {
+      console.log('prevVars ', prevVars)
+      console.log('totalCount ', totalCount)
+      return ({ ...prevVars, count: totalCount })
+    },
+    getVariables: (props, args, _fragmentVariables) => {
+      console.log('args ', args)
+      console.log('_fragmentVariables ', _fragmentVariables);
+      console.log('fromGlobalId(props.book.id).id ', fromGlobalId(props.book.id).id);
+      return ({
+        count: args.count,
+        cursor: args.cursor,
+        bookId: fromGlobalId(props.book.id).id
+      })
+    },
     query: graphql`
-      query BookCommentsQuery($id: ID!, $count: Int, $cursor: String) {
-        book: node(id: $id) {
-          ...BookComments_book @arguments(count: $count, cursor: $cursor)
+      query BookCommentsQuery($bookId: String!, $count: Int, $cursor: String) {
+        viewer{
+          book(bookId: $bookId) {
+            ...BookComments_book @arguments(count: $count, cursor: $cursor)
+          }
         }
       }
     `
