@@ -2,6 +2,7 @@ import sanitize from 'sanitize-filename'
 import path from 'path'
 import fs from 'fs'
 import DataLoader from 'dataloader'
+import { fromGlobalId } from 'graphql-relay'
 
 import Comment from './models/Comment'
 import Book from './models/Book'
@@ -152,8 +153,8 @@ export const getBookComments = async (bookId) => {
 
 export const deleteBook = async bookId => {
   try {
-    await Book.findOneAndRemove({ _id: bookId });
-    return bookId
+    const bookDbId = fromGlobalId(bookId).id
+    return Book.findOneAndRemove({ _id: bookDbId })
   } catch (e) {
     return null
   }

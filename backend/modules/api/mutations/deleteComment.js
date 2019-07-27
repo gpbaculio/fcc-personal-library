@@ -11,7 +11,7 @@ const GraphQLDeleteCommentMutation = mutationWithClientMutationId({
     bookId: { type: new GraphQLNonNull(GraphQLString) },
   },
   mutateAndGetPayload: async ({ commentId, bookId }) => {
-    const deletedCommentId = await deleteComment(fromGlobalId(commentId).id);
+    await deleteComment(fromGlobalId(commentId).id);
     const book = await getBook(fromGlobalId(bookId).id)
     return { commentId, book };
   },

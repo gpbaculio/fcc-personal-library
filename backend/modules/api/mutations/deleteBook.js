@@ -1,6 +1,7 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
-import { deleteBook } from '../../database';
+import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
+import { deleteBook, getUser } from '../../database';
+import GraphQLUserType from '../query/objectTypes/user';
 
 
 const GraphQLDeleteBookMutation = mutationWithClientMutationId({
@@ -9,14 +10,18 @@ const GraphQLDeleteBookMutation = mutationWithClientMutationId({
     bookId: { type: new GraphQLNonNull(GraphQLString) },
   },
   mutateAndGetPayload: async ({ bookId }) => {
-    const deletedBookId = await deleteBook(fromGlobalId(bookId).id);
-    return { deletedBookId };
+    const book = await deleteBook(bookId);
+    return { book };
   },
   outputFields: {
     deletedBookId: {
       type: GraphQLString,
-      resolve: ({ deletedBookId }) => deletedBookId,
+      resolve: ({ book }) => toGlobalId('Book', book.id),
     },
+    viewer: {
+      type: GraphQLUserType,
+      resolve: ({ book }) => getUser(book.userId)
+    }
   },
 });
 

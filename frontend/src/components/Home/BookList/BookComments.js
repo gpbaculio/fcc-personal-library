@@ -112,24 +112,15 @@ export default createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps: (props) => props.book && props.book.comments,
-    getFragmentVariables: (prevVars, totalCount) => {
-      console.log('prevVars ', prevVars)
-      console.log('totalCount ', totalCount)
-      return ({ ...prevVars, count: totalCount })
-    },
-    getVariables: (props, args, _fragmentVariables) => {
-      console.log('args ', args)
-      console.log('_fragmentVariables ', _fragmentVariables);
-      console.log('fromGlobalId(props.book.id).id ', fromGlobalId(props.book.id).id);
-      return ({
-        count: args.count,
-        cursor: args.cursor,
-        bookId: fromGlobalId(props.book.id).id
-      })
-    },
+    getFragmentVariables: (prevVars, totalCount) => ({ ...prevVars, count: totalCount }),
+    getVariables: (props, args, _fragmentVariables) => ({
+      count: args.count,
+      cursor: args.cursor,
+      bookId: fromGlobalId(props.book.id).id
+    }),
     query: graphql`
       query BookCommentsQuery($bookId: String!, $count: Int, $cursor: String) {
-        viewer{
+        viewer {
           book(bookId: $bookId) {
             ...BookComments_book @arguments(count: $count, cursor: $cursor)
           }

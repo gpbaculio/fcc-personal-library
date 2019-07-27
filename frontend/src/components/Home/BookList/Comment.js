@@ -48,7 +48,7 @@ class Comment extends Component {
     mutation.commit()
   }
   onDeleteCommentConfirm = async () => {
-    const { comment: { id: commentId }, bookId, relay } = this.props
+    const { comment: { id: commentId }, bookId } = this.props
     this.setDeleteModalMode(false);
     const sharedUpdater = (bookProxy, deletedCommentId) => {
       const connection = ConnectionHandler.getConnection(
@@ -80,8 +80,7 @@ class Comment extends Component {
           sharedUpdater(bookProxy, commentId)
           store.delete(commentId)
           const bookProxyCommentsCount = bookProxy.getValue('commentsCount')
-          if (bookProxyCommentsCount)
-            bookProxy.setValue(bookProxyCommentsCount - 1, 'commentsCount')
+          if (bookProxyCommentsCount) bookProxy.setValue(bookProxyCommentsCount - 1, 'commentsCount')
         },
         onFailure: error => console.error(error),
       },
