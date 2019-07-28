@@ -4,7 +4,7 @@ import {
   Input
 } from 'reactstrap'
 import { ConnectionHandler } from 'relay-runtime'
-
+import uuidv1 from 'uuid/v1'
 import addBook from '../mutations/AddBook';
 
 class AddBook extends Component {
@@ -35,6 +35,45 @@ class AddBook extends Component {
             payload.getLinkedRecord('book')
           );
         },
+        // optimisticUpdater: (store) => {
+        //   const userProxy = store.get(viewerId)
+        //   const id = uuidv1();
+        //   const book = store.create(id, 'Book');
+        //   book.setValue(id, 'id');
+        //   book.setValue(bookTitle, 'title');
+        //   book.setValue(Date.now(), 'createdAt');
+
+        //   const bookOwner = store.create(uuidv1(), 'BookOwner')
+        //   bookOwner.setValue(userProxy.getValue('id'), 'id')
+        //   book.setLinkedRecord(bookOwner, 'owner')
+        //   //comments
+        //   const commentsId = uuidv1()
+        //   const comments = store.create(commentsId, 'CommentConnection')
+        //   comments.setLinkedRecords([], 'edges')
+        //   const commentsProxy = store.get(commentsId)
+        //   console.log('comments ', commentsProxy.getLinkedRecords('edges'))
+        //   const pageInfo = store.create(uuidv1(), 'PageInfo')
+        //   pageInfo.setValue(null, 'endCursor')
+        //   pageInfo.setValue(false, 'hasNextPage')
+        //   pageInfo.setValue(false, 'hasPreviousPage')
+        //   pageInfo.setValue(null, 'startCursor')
+
+        //   comments.setLinkedRecord(pageInfo, 'pageInfo')
+        //   book.setLinkedRecord(comments, 'comments', { first: 3, cursor: null })
+
+        //   const bookEdgeId = uuidv1()
+        //   const bookEdge = store.create(bookEdgeId, 'BookEdge');
+        //   bookEdge.setLinkedRecord(book, 'node');
+        //   bookEdge.setValue(bookEdgeId, 'id')
+        //   const connection = ConnectionHandler.getConnection(
+        //     userProxy,
+        //     'Connection_BookList_viewer_books'
+        //   );
+        //   ConnectionHandler.insertEdgeBefore(
+        //     connection,
+        //     bookEdge
+        //   );
+        // },
         onCompleted: () => {
           this.setState({ loading: false, bookTitle: '' })
         },

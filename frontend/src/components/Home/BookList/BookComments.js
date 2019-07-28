@@ -80,10 +80,10 @@ export default createPaginationContainer(
     `,
     book: graphql`
       fragment BookComments_book on Book 
-      @argumentDefinitions(
-        count: { type: "Int", defaultValue: 3 }
-        cursor: { type: "String", defaultValue: null }
-      ) {
+        @argumentDefinitions(
+          count: { type: "Int", defaultValue: 3 }
+          cursor: { type: "String", defaultValue: null }
+        ) {
         id
         title
         commentsCount

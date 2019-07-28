@@ -37,7 +37,7 @@ class BookList extends Component {
           <div className='grid-container'>
             {viewer.BookList_viewer_books.edges.map(({ cursor, node }) => (
               <BookItem
-                key={cursor}
+                key={node.id}
                 book={node}
                 cursor={cursor}
                 viewer={viewer}
@@ -79,6 +79,7 @@ export default createRefetchContainer(
           edges {
             cursor
             node {
+              id
               ...BookItem_book
             }
           }
