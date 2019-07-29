@@ -4,6 +4,8 @@ import {
   Input
 } from 'reactstrap'
 import uuidv1 from 'uuid/v1';
+import classNames from 'classnames'
+import { fromGlobalId } from 'graphql-relay'
 
 import addComment from '../../mutations/AddComment';
 import { commentUpdater } from './utils';
@@ -59,6 +61,7 @@ class CommentInput extends Component {
     mutation.commit()
   }
   render() {
+    const { viewerId } = this.props
     const { commentText } = this.state
     return (
       <Form onSubmit={this.addComment}>
