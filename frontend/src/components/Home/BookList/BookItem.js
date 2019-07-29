@@ -78,13 +78,13 @@ class BookItem extends Component {
       })
     mutation.commit()
   }
-
   onDeleteBookIconClick = () => this.setState({ deleteBookModal: true })
   toggleDeleteBookModal = () => this.setState(({ deleteBookModal }) => ({ deleteBookModal: !deleteBookModal }))
   render() {
     const { book, viewer } = this.props;
     const { isEditingBook } = this.state
     const bookOwnerViewer = book.owner.id === viewer.id
+    console.log('book ', book)
     return (
       <Fragment>
         <Modal isOpen={this.state.deleteBookModal} toggle={this.toggleDeleteBookModal}>

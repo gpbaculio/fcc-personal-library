@@ -16,6 +16,7 @@ export default mutationFromQuery(graphql`
             profilePicture
           }
           createdAt
+          commentsCount
           comments(first: $count, after: $cursor)
           @connection(key: "BookComments_comments") {
             __typename

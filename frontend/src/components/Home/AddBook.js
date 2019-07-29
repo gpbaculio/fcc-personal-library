@@ -43,6 +43,7 @@ class AddBook extends Component {
           book.setValue(id, 'id');
           book.setValue(bookTitle, 'title');
           book.setValue(Date.now(), 'createdAt');
+          book.setValue(0, 'commentsCount');
 
           const bookOwner = store.create(uuidv1(), 'BookOwner')
           bookOwner.setValue(userProxy.getValue('id'), 'id')
