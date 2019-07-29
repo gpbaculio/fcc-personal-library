@@ -124,7 +124,7 @@ class BookItem extends Component {
                 )}
               </div>
               <p className={classNames('w-100 text-right m-0', { 'hide': !book.commentsCount })}>
-                <small className='ml-auto'>{book.commentsCount} comments</small>
+                <small className='ml-auto'>{`${book.commentsCount} comment${book.commentsCount > 1 ? 's' : ''}`} </small>
               </p>
             </CardBody>
           </Card>

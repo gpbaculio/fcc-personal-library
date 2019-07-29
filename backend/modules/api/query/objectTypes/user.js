@@ -11,7 +11,7 @@ import GraphQLBookType from './book'
 
 import { getBooks, getBooksCount, getBook } from '../../../database'
 import { nodeInterface } from '../../definitions'
-import { BookType, CommentType, UserType } from '../../definitions/constants';
+import { BookType, UserType } from '../../definitions/constants';
 
 export const {
   connectionType: booksConnection,

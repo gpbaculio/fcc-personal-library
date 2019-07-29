@@ -34,6 +34,8 @@ class CommentInput extends Component {
         optimisticUpdater: (store) => {
           const userProxy = store.get(viewerId)
           const bookProxy = store.get(bookId)
+          const bookProxyCommentsCount = bookProxy.getValue('commentsCount')
+          bookProxy.setValue(bookProxyCommentsCount + 1, 'commentsCount')
           const username = userProxy.getValue('username')
           const profilePicture = userProxy.getValue('profilePicture')
           const commentId = uuidv1();
@@ -61,7 +63,6 @@ class CommentInput extends Component {
     mutation.commit()
   }
   render() {
-    const { viewerId } = this.props
     const { commentText } = this.state
     return (
       <Form onSubmit={this.addComment}>

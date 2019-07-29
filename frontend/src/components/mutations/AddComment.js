@@ -18,6 +18,14 @@ export default mutationFromQuery(graphql`
           createdAt
         }
       }
+      book {
+        __typename
+        cursor
+        node {
+          id
+          commentsCount
+        }
+      }
     }
   }
 `)

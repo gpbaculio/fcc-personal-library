@@ -1,7 +1,8 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
 import { GraphQLCommentEdge } from '../query/objectTypes/book';
-import { createComment } from '../../database';
+import { createComment, getBook } from '../../database';
+import { GraphQLBookEdge } from '../query/objectTypes/user';
 
 
 const GraphQLAddCommentMutation = mutationWithClientMutationId({
@@ -22,6 +23,16 @@ const GraphQLAddCommentMutation = mutationWithClientMutationId({
     return ({ comment });
   },
   outputFields: {
+    book: {
+      type: GraphQLBookEdge,
+      resolve: async ({ comment: { bookId } }) => {
+        const book = await getBook(`${bookId}`)
+        return ({
+          cursor: offsetToCursor(book.id),
+          node: book
+        })
+      },
+    },
     comment: {
       type: GraphQLCommentEdge,
       resolve: ({ comment }) => ({
