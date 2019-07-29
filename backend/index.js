@@ -38,9 +38,7 @@ const publicPath = path.join(__dirname, '..', 'frontend', 'public', 'index.html'
 
 app.use(multer({ storage }).fields([{ name: 'image' }]));
 app.use(express.static(staticPath));
-app.get('/*', (_req, res) => {
-  res.sendFile(publicPath);
-});
+app.get('/*', (_req, res) => res.sendFile(publicPath));
 
 app.use(
   '/graphql',

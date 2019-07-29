@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { fromGlobalId } from 'graphql-relay'
 import { createPaginationContainer } from 'react-relay'
 import graphql from 'babel-plugin-relay/macro';
+import classNames from 'classnames'
 import CommentInput from './CommentInput';
 import { Button } from 'reactstrap'
 import Comment from './Comment';
@@ -41,6 +42,7 @@ export class BookComments extends Component {
   render() {
     const { book, viewer } = this.props
     const { hasMore, loading } = this.state
+    console.log('!hasMore ', !hasMore)
     return (
       <div className='p-3 comments-container'>
         <CommentInput viewerId={viewer.id} bookId={book.id} />
@@ -57,7 +59,8 @@ export class BookComments extends Component {
           ))}
         </ul>
         <Button
-          disabled={!hasMore || loading}
+          className={classNames({ 'hide': !hasMore })}
+          disabled={loading}
           color="primary"
           size="sm"
           onClick={this.loadMore}

@@ -235,3 +235,7 @@ textarea {
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+
+.hide {
+  display: none !important;
+}
