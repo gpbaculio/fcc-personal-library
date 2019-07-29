@@ -2,6 +2,7 @@ import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
 import { createBook } from '../../database';
 import { GraphQLBookEdge } from '../query/objectTypes/user';
+import pubSub from '../../pubSub';
 
 
 const GraphQLAddBookMutation = mutationWithClientMutationId({
@@ -16,6 +17,7 @@ const GraphQLAddBookMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: ({ title, userId }) => {
     const book = createBook(title, fromGlobalId(userId).id);
+    pubSub.publish('bookAdded', { bookAdded: { book } })
     return ({ book });
   },
   outputFields: {

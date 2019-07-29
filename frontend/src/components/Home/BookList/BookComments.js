@@ -46,7 +46,7 @@ export class BookComments extends Component {
       <div className={classNames('p-3 comments-container', { 'hide': !fromGlobalId(viewer.id).id })}>
         <CommentInput viewerId={viewer.id} bookId={book.id} />
         <ul className='mt-1'>
-          {book.comments.edges.map(({ node, cursor }) => (
+          {book.comments && book.comments.edges.map(({ node, cursor }) => (
             <Comment
               refetchedges={this.refetchEdges}
               cursor={cursor}

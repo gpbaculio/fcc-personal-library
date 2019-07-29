@@ -21,7 +21,10 @@ const GraphQLUpdateBookTitleMutation = mutationWithClientMutationId({
   outputFields: {
     book: {
       type: GraphQLBookEdge,
-      resolve: ({ book }) => ({ cursor: offsetToCursor(book.id), node: book }),
+      resolve: ({ book }) => ({
+        cursor: offsetToCursor(book.id),
+        node: book
+      }),
     }
   },
 });

@@ -7,7 +7,7 @@ import BookList from './BookList';
 export const Home = ({ viewer }) => {
   return (
     <Fragment>
-      <AddBook viewerId={viewer.id} username={viewer.username} />
+      <AddBook viewerId={viewer.id} profilePicture={viewer.profilePicture} username={viewer.username} />
       <BookList viewer={viewer} />
     </Fragment>
   )
@@ -20,6 +20,7 @@ export const HomeFC = createFragmentContainer(
       fragment Home_viewer on User {
         ...BookList_viewer
         username
+        profilePicture
         id
       }
     `

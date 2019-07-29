@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import graphqlHTTP from 'express-graphql'
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
-import http from 'http';
+import { createServer } from 'http';
 import cors from 'cors'
 import multer from 'multer'
 require('dotenv').config();
@@ -22,6 +22,8 @@ mongoose.connect(
 );
 
 const port = process.env.PORT || 8000
+
+const subscriptionsEndpoint = `ws://localhost:${port}/subscriptions`;
 
 const db = mongoose.connection;
 db
@@ -53,8 +55,22 @@ app.use(
         user,
         request: req
       },
+      subscriptionsEndpoint
     };
   })
 );
 
-app.listen(port, () => console.log(`Express server listening on port ${port}`))
+const webServer = createServer(app);
+
+webServer.listen(port, () => {
+  console.log(`GraphQL is now running on http://localhost:${port}`);
+  // Set up the WebSocket for handling GraphQL subscriptions.
+  new SubscriptionServer({
+    execute,
+    subscribe,
+    schema
+  }, {
+      server: webServer,
+      path: '/subscriptions',
+    });
+});
