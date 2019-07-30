@@ -19,35 +19,45 @@ export class AddBook extends Component {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
-  subscribeBookAdded = viewerId => BookAddedSubscription({ viewerId }, {
-    updater: (store, { bookAdded: { book } }) => {
-      const { viewer } = this.props
-      const userProxy = store.get(viewer.id)
-      const subscriptionPayload = store.getRootField('bookAdded');
-      const bookEdge = subscriptionPayload.getLinkedRecord('book')
-      const connection = ConnectionHandler.getConnection(
-        userProxy,
-        'Connection_BookList_viewer_books'
-      )
-      const newEdge = ConnectionHandler.createEdge(
-        store,
-        connection,
-        bookEdge.getLinkedRecord('node'),
-        'BookEdge',
-      );
-      ConnectionHandler.insertEdgeBefore(connection, newEdge);
-    },
-    onNext: response => {
-      console.log('subscription response ', response)
-    }
-  })
+  subscribeBookAdded = viewerId => {
+    console.log('resubscriebe')
+    return BookAddedSubscription({ viewerId }, {
+      updater: (store, { bookAdded: { book } }) => {
+        const { viewer } = this.props
+        const userProxy = store.get(viewer.id)
+        const subscriptionPayload = store.getRootField('bookAdded');
+        const bookEdge = subscriptionPayload.getLinkedRecord('book')
+
+        if (store.get(bookEdge.getLinkedRecord('node').getValue('id')))
+          this.bookAddedSubscription.dispose()
+        const connection = ConnectionHandler.getConnection(
+          userProxy,
+          'Connection_BookList_viewer_books'
+        )
+        const newEdge = ConnectionHandler.createEdge(
+          store,
+          connection,
+          bookEdge.getLinkedRecord('node'),
+          'BookEdge',
+        );
+        ConnectionHandler.insertEdgeBefore(connection, newEdge);
+        this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
+      },
+      onNext: response => {
+        console.log('subscription response ', response)
+      }
+    })
+  }
 
   componentDidMount() {
     this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
   }
+  componentWillUnmount = () => {
+    this.bookAddedSubscription.dispose()
+  };
+
   addBook = e => {
     e.preventDefault();
-    this.bookAddedSubscription.dispose()
     const { bookTitle } = this.state;
     const { viewer } = this.props
     this.setState({ loading: true });
@@ -59,6 +69,8 @@ export class AddBook extends Component {
           const userProxy = store.get(viewer.id)
           const payload = store.getRootField('addBook');
           const bookEdge = payload.getOrCreateLinkedRecord('book')
+          if (store.get(bookEdge.getLinkedRecord('node').getValue('id')))
+            this.bookAddedSubscription.dispose()
           const connection = ConnectionHandler.getConnection(
             userProxy,
             'Connection_BookList_viewer_books'
@@ -70,6 +82,8 @@ export class AddBook extends Component {
             'BookEdge',
           );
           ConnectionHandler.insertEdgeBefore(connection, newEdge);
+
+          this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
         },
         optimisticUpdater: (store) => {
           const userProxy = store.get(viewer.id)
