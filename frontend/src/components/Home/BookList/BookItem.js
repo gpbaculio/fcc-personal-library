@@ -83,8 +83,6 @@ class BookItem extends Component {
   render() {
     const { book, viewer } = this.props;
     const { isEditingBook } = this.state
-    const bookOwnerViewer = book.owner.id === viewer.id
-    console.log('book ', book)
     return (
       <Fragment>
         <Modal isOpen={this.state.deleteBookModal} toggle={this.toggleDeleteBookModal}>
@@ -116,7 +114,7 @@ class BookItem extends Component {
               <div className={classNames('d-flex w-100 justify-content-between', { 'isEditingBook': isEditingBook })}>
                 <p className='book-title'>{book.title}</p>
                 {!!isEditingBook && <UpdateBookTitleInput onSave={this.onUpdateBookTitleSave} bookTitle={book.title} />}
-                {!isEditingBook && bookOwnerViewer && (
+                {!isEditingBook && book.owner.id === viewer.id && (
                   <div>
                     <FaEdit onClick={this.onBookEditIconClick} className='mr-2 btn-edit' />
                     <FaTrashAlt onClick={this.onDeleteBookIconClick} className='btn-delete' />

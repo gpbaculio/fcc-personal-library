@@ -3,11 +3,15 @@ import {
   Form,
   Input
 } from 'reactstrap'
+import graphql from 'babel-plugin-relay/macro';
+import { createFragmentContainer } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
 import uuidv1 from 'uuid/v1'
-import addBook from '../mutations/AddBook';
+import addBook from '../../mutations/AddBook';
 
-class AddBook extends Component {
+import BookAddedSubscription from '../../subscriptions/bookAdded'
+
+export class AddBook extends Component {
   state = {
     bookTitle: '',
   }
@@ -15,29 +19,60 @@ class AddBook extends Component {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
+  subscribeBookAdded = viewerId => BookAddedSubscription({ viewerId }, {
+    updater: (store, { bookAdded: { book } }) => {
+      const { viewer } = this.props
+      const userProxy = store.get(viewer.id)
+      const subscriptionPayload = store.getRootField('bookAdded');
+      const bookEdge = subscriptionPayload.getLinkedRecord('book')
+      const connection = ConnectionHandler.getConnection(
+        userProxy,
+        'Connection_BookList_viewer_books'
+      )
+      const newEdge = ConnectionHandler.createEdge(
+        store,
+        connection,
+        bookEdge.getLinkedRecord('node'),
+        'BookEdge',
+      );
+      ConnectionHandler.insertEdgeBefore(connection, newEdge);
+    },
+    onNext: response => {
+      console.log('subscription response ', response)
+    }
+  })
+
+  componentDidMount() {
+    this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
+  }
   addBook = e => {
     e.preventDefault();
+    this.bookAddedSubscription.dispose()
     const { bookTitle } = this.state;
-    const { viewerId, profilePicture,
-      username, } = this.props
+    const { viewer } = this.props
     this.setState({ loading: true });
     const mutation = addBook(
-      { title: bookTitle, userId: viewerId },
+      { title: bookTitle, userId: viewer.id },
+      this.props.relay.environment,
       {
         updater: (store) => {
-          const userProxy = store.get(viewerId)
+          const userProxy = store.get(viewer.id)
           const payload = store.getRootField('addBook');
+          const bookEdge = payload.getOrCreateLinkedRecord('book')
           const connection = ConnectionHandler.getConnection(
             userProxy,
             'Connection_BookList_viewer_books'
-          );
-          ConnectionHandler.insertEdgeBefore(
+          )
+          const newEdge = ConnectionHandler.createEdge(
+            store,
             connection,
-            payload.getLinkedRecord('book')
+            bookEdge.getLinkedRecord('node'),
+            'BookEdge',
           );
+          ConnectionHandler.insertEdgeBefore(connection, newEdge);
         },
         optimisticUpdater: (store) => {
-          const userProxy = store.get(viewerId)
+          const userProxy = store.get(viewer.id)
           const id = uuidv1();
           const book = store.create(id, 'Book');
           book.setValue(id, 'id');
@@ -50,16 +85,6 @@ class AddBook extends Component {
           bookOwner.setValue(userProxy.getValue('username'), 'username')
           bookOwner.setValue(userProxy.getValue('profilePicture'), 'profilePicture')
           book.setLinkedRecord(bookOwner, 'owner')
-          //comments
-          const commentsId = uuidv1()
-          const comments = store.create(commentsId, 'CommentConnection')
-          comments.setLinkedRecords([], 'edges')
-          const pageInfo = store.create(uuidv1(), 'pageInfo')
-          pageInfo.setValue(null, 'endCursor')
-          pageInfo.setValue(false, 'hasNextPage')
-
-          comments.setLinkedRecord(pageInfo, 'pageInfo')
-          book.setLinkedRecord(comments, 'comments', { first: 3, cursor: null })
 
           const bookEdgeId = uuidv1()
           const bookEdge = store.create(bookEdgeId, 'BookEdge');
@@ -83,9 +108,9 @@ class AddBook extends Component {
     mutation.commit()
   }
   render() {
-    const { username } = this.props
     const { loading, bookTitle } = this.state
-    if (!username) return null
+    const { viewer } = this.props
+    if (!viewer.username) return null
     return (
       <div className='mb-4 w-100 d-flex justify-content-center addbook-container py-3'>
         <Form onSubmit={this.addBook} inline className='d-flex'>
@@ -106,4 +131,15 @@ class AddBook extends Component {
   }
 }
 
-export default AddBook
+export const AddBookFC = createFragmentContainer(
+  AddBook,
+  {
+    viewer: graphql`
+    fragment AddBook_viewer on User {
+        id
+        profilePicture
+        username
+      }
+    `
+  }
+);

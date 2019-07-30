@@ -2,8 +2,8 @@ import { commitMutation } from 'react-relay'
 
 import environment from '../Environment'
 
-const mutationFromQuery = query => (input, callbacks) => ({
-  commit: (configs) => commitMutation(environment, {
+const mutationFromQuery = query => (input, env, callbacks) => ({
+  commit: (configs) => commitMutation(env || environment, {
     mutation: query,
     variables: { input },
     onError: callbacks.onFailure,

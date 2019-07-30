@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react'
 import { createFragmentContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
-import AddBook from './AddBook';
+import AddBook from './AddBook'
 import BookList from './BookList';
 
 export const Home = ({ viewer }) => {
   return (
     <Fragment>
-      <AddBook viewerId={viewer.id} profilePicture={viewer.profilePicture} username={viewer.username} />
+      <AddBook viewer={viewer} />
       <BookList viewer={viewer} />
     </Fragment>
   )

@@ -3,7 +3,7 @@ import graphql from 'babel-plugin-relay/macro';
 import mutationFromQuery from './mutationFromQuery'
 
 export default mutationFromQuery(graphql`
-  mutation AddBookMutation($input: AddBookInput! $count: Int $cursor: String ) {
+  mutation AddBookMutation($input: AddBookInput! $count: Int $cursor: String) {
     addBook(input: $input) {
       book {
         __typename

@@ -3,8 +3,8 @@ import graphql from 'babel-plugin-relay/macro';
 import subscriptionFromQuery from './subscriptionFromQuery'
 
 export default subscriptionFromQuery(graphql`
-  subscription bookAddedSubscription($count: Int = 3, $cursor: String = null)   {
-    bookAdded {
+  subscription bookAddedSubscription($viewerId: String, $count: Int, $cursor: String) {
+    bookAdded(viewerId: $viewerId) {
       book {
         __typename
         cursor
@@ -12,10 +12,12 @@ export default subscriptionFromQuery(graphql`
           id
           title
           owner {
+            id
             username
             profilePicture
           }
           createdAt
+          commentsCount
           comments(first: $count, after: $cursor)
           @connection(key: "BookComments_comments") {
             __typename

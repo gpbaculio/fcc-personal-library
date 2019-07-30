@@ -4,8 +4,6 @@ import {
   Input
 } from 'reactstrap'
 import uuidv1 from 'uuid/v1';
-import classNames from 'classnames'
-import { fromGlobalId } from 'graphql-relay'
 
 import addComment from '../../mutations/AddComment';
 import { commentUpdater } from './utils';

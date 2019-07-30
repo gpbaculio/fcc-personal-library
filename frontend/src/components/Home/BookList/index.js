@@ -3,7 +3,11 @@ import { createRefetchContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import Pagination from 'react-js-pagination';
 import { Spinner } from 'reactstrap'
+import { ConnectionHandler } from 'relay-runtime'
+
 import BookItem from './BookItem'
+
+import BookAddedSubscription from '../../subscriptions/bookAdded'
 
 class BookList extends Component {
   state = { page: 1, loading: false }
@@ -20,6 +24,7 @@ class BookList extends Component {
       () => this.setState({ page, loading: false })
     )
   }
+
   render() {
     const { page, loading } = this.state
     const { viewer } = this.props
