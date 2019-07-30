@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import { createRefetchContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import Pagination from 'react-js-pagination';
@@ -9,7 +9,7 @@ import BookItem from './BookItem'
 
 import BookAddedSubscription from '../../subscriptions/bookAdded'
 
-class BookList extends Component {
+class BookList extends PureComponent {
   state = { page: 1, loading: false }
   handlePageChange = page => {
     const { loading } = this.state

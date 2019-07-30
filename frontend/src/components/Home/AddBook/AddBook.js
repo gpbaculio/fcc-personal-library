@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import {
   Form,
   Input
@@ -11,7 +11,7 @@ import addBook from '../../mutations/AddBook';
 
 import BookAddedSubscription from '../../subscriptions/bookAdded'
 
-export class AddBook extends Component {
+export class AddBook extends PureComponent {
   state = {
     bookTitle: '',
   }
@@ -27,13 +27,17 @@ export class AddBook extends Component {
         const userProxy = store.get(viewer.id)
         const subscriptionPayload = store.getRootField('bookAdded');
         const bookEdge = subscriptionPayload.getLinkedRecord('book')
-
-        if (store.get(bookEdge.getLinkedRecord('node').getValue('id')))
-          this.bookAddedSubscription.dispose()
+        const viewerProxy = store.getRoot().getLinkedRecord('viewer');
         const connection = ConnectionHandler.getConnection(
-          userProxy,
+          viewerProxy,
           'Connection_BookList_viewer_books'
         )
+        if (store.get(bookEdge.getLinkedRecord('node').getValue('id'))) {
+          ConnectionHandler.deleteNode(
+            connection,
+            bookEdge.getLinkedRecord('node').getValue('id')
+          )
+        }
         const newEdge = ConnectionHandler.createEdge(
           store,
           connection,
@@ -41,7 +45,7 @@ export class AddBook extends Component {
           'BookEdge',
         );
         ConnectionHandler.insertEdgeBefore(connection, newEdge);
-        this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
+        // this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
       },
       onNext: response => {
         console.log('subscription response ', response)
@@ -67,14 +71,21 @@ export class AddBook extends Component {
       {
         updater: (store) => {
           const userProxy = store.get(viewer.id)
+          const viewerProxy = store.getRoot().getLinkedRecord('viewer');
           const payload = store.getRootField('addBook');
           const bookEdge = payload.getOrCreateLinkedRecord('book')
-          if (store.get(bookEdge.getLinkedRecord('node').getValue('id')))
-            this.bookAddedSubscription.dispose()
           const connection = ConnectionHandler.getConnection(
-            userProxy,
+            viewerProxy,
             'Connection_BookList_viewer_books'
           )
+          if (store.get(bookEdge.getLinkedRecord('node').getValue('id'))) {
+            ConnectionHandler.deleteNode(
+              connection,
+              bookEdge.getLinkedRecord('node').getValue('id')
+            )
+          }
+          //   this.bookAddedSubscription.dispose()
+
           const newEdge = ConnectionHandler.createEdge(
             store,
             connection,
@@ -83,7 +94,7 @@ export class AddBook extends Component {
           );
           ConnectionHandler.insertEdgeBefore(connection, newEdge);
 
-          this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
+          // this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
         },
         optimisticUpdater: (store) => {
           const userProxy = store.get(viewer.id)
