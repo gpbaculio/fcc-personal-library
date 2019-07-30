@@ -20,35 +20,27 @@ export class AddBook extends PureComponent {
     this.setState({ [name]: value })
   }
   subscribeBookAdded = viewerId => {
-    console.log('resubscriebe')
     return BookAddedSubscription({ viewerId }, {
       updater: (store, { bookAdded: { book } }) => {
         const { viewer } = this.props
-        const userProxy = store.get(viewer.id)
-        const subscriptionPayload = store.getRootField('bookAdded');
-        const bookEdge = subscriptionPayload.getLinkedRecord('book')
-        const viewerProxy = store.getRoot().getLinkedRecord('viewer');
+        const viewerProxy = store.get(viewer.id);
         const connection = ConnectionHandler.getConnection(
           viewerProxy,
           'Connection_BookList_viewer_books'
         )
-        if (store.get(bookEdge.getLinkedRecord('node').getValue('id'))) {
-          ConnectionHandler.deleteNode(
-            connection,
-            bookEdge.getLinkedRecord('node').getValue('id')
-          )
-        }
+        const subscriptionPayload = store.getRootField('bookAdded');
+        const bookEdge = subscriptionPayload.getLinkedRecord('book')
+        const bookNode = bookEdge.getLinkedRecord('node')
+
         const newEdge = ConnectionHandler.createEdge(
           store,
           connection,
-          bookEdge.getLinkedRecord('node'),
+          bookNode,
           'BookEdge',
         );
         ConnectionHandler.insertEdgeBefore(connection, newEdge);
+
         // this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
-      },
-      onNext: response => {
-        console.log('subscription response ', response)
       }
     })
   }
@@ -59,7 +51,8 @@ export class AddBook extends PureComponent {
   componentWillUnmount = () => {
     this.bookAddedSubscription.dispose()
   };
-
+  onFocus = () => this.bookAddedSubscription.dispose()
+  onBlur = () => this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
   addBook = e => {
     e.preventDefault();
     const { bookTitle } = this.state;
@@ -70,7 +63,6 @@ export class AddBook extends PureComponent {
       this.props.relay.environment,
       {
         updater: (store) => {
-          const userProxy = store.get(viewer.id)
           const viewerProxy = store.getRoot().getLinkedRecord('viewer');
           const payload = store.getRootField('addBook');
           const bookEdge = payload.getOrCreateLinkedRecord('book')
@@ -78,14 +70,6 @@ export class AddBook extends PureComponent {
             viewerProxy,
             'Connection_BookList_viewer_books'
           )
-          if (store.get(bookEdge.getLinkedRecord('node').getValue('id'))) {
-            ConnectionHandler.deleteNode(
-              connection,
-              bookEdge.getLinkedRecord('node').getValue('id')
-            )
-          }
-          //   this.bookAddedSubscription.dispose()
-
           const newEdge = ConnectionHandler.createEdge(
             store,
             connection,
@@ -97,6 +81,7 @@ export class AddBook extends PureComponent {
           // this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
         },
         optimisticUpdater: (store) => {
+          // this.bookAddedSubscription.dispose()
           const userProxy = store.get(viewer.id)
           const id = uuidv1();
           const book = store.create(id, 'Book');
@@ -140,6 +125,8 @@ export class AddBook extends PureComponent {
       <div className='mb-4 w-100 d-flex justify-content-center addbook-container py-3'>
         <Form onSubmit={this.addBook} inline className='d-flex'>
           <Input
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
             value={bookTitle}
             onChange={this.handleChange}
             required
