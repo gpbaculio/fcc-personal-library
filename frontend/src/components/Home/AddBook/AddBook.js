@@ -6,6 +6,7 @@ import {
 import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
+import { fromGlobalId } from 'graphql-relay'
 import uuidv1 from 'uuid/v1'
 import addBook from '../../mutations/AddBook';
 
@@ -19,31 +20,26 @@ export class AddBook extends PureComponent {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
-  subscribeBookAdded = viewerId => {
-    return BookAddedSubscription({ viewerId }, {
-      updater: (store, { bookAdded: { book } }) => {
-        const { viewer } = this.props
-        const viewerProxy = store.get(viewer.id);
-        const connection = ConnectionHandler.getConnection(
-          viewerProxy,
-          'Connection_BookList_viewer_books'
-        )
-        const subscriptionPayload = store.getRootField('bookAdded');
-        const bookEdge = subscriptionPayload.getLinkedRecord('book')
-        const bookNode = bookEdge.getLinkedRecord('node')
+  subscribeBookAdded = viewerId => BookAddedSubscription({ viewerId }, {
+    updater: (store, { bookAdded: { book } }) => {
+      const { viewer } = this.props
+      const viewerProxy = store.get(viewer.id);
+      const connection = ConnectionHandler.getConnection(
+        viewerProxy,
+        'Connection_BookList_viewer_books'
+      )
+      const subscriptionPayload = store.getRootField('bookAdded');
+      const bookEdge = subscriptionPayload.getLinkedRecord('book')
+      const newEdge = ConnectionHandler.createEdge(
+        store,
+        connection,
+        bookEdge.getLinkedRecord('node'),
+        'BookEdge',
+      );
+      ConnectionHandler.insertEdgeBefore(connection, newEdge);
+    }
+  })
 
-        const newEdge = ConnectionHandler.createEdge(
-          store,
-          connection,
-          bookNode,
-          'BookEdge',
-        );
-        ConnectionHandler.insertEdgeBefore(connection, newEdge);
-
-        // this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
-      }
-    })
-  }
 
   componentDidMount() {
     this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
@@ -51,8 +47,6 @@ export class AddBook extends PureComponent {
   componentWillUnmount = () => {
     this.bookAddedSubscription.dispose()
   };
-  onFocus = () => this.bookAddedSubscription.dispose()
-  onBlur = () => this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
   addBook = e => {
     e.preventDefault();
     const { bookTitle } = this.state;
@@ -62,7 +56,7 @@ export class AddBook extends PureComponent {
       { title: bookTitle, userId: viewer.id },
       this.props.relay.environment,
       {
-        updater: (store) => {
+        updater: store => {
           const viewerProxy = store.getRoot().getLinkedRecord('viewer');
           const payload = store.getRootField('addBook');
           const bookEdge = payload.getOrCreateLinkedRecord('book')
@@ -70,18 +64,18 @@ export class AddBook extends PureComponent {
             viewerProxy,
             'Connection_BookList_viewer_books'
           )
+          const node = bookEdge.getLinkedRecord('node')
           const newEdge = ConnectionHandler.createEdge(
             store,
             connection,
-            bookEdge.getLinkedRecord('node'),
+            node,
             'BookEdge',
           );
           ConnectionHandler.insertEdgeBefore(connection, newEdge);
-
-          // this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
+          this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
         },
         optimisticUpdater: (store) => {
-          // this.bookAddedSubscription.dispose()
+          this.bookAddedSubscription.dispose()
           const userProxy = store.get(viewer.id)
           const id = uuidv1();
           const book = store.create(id, 'Book');
@@ -125,8 +119,6 @@ export class AddBook extends PureComponent {
       <div className='mb-4 w-100 d-flex justify-content-center addbook-container py-3'>
         <Form onSubmit={this.addBook} inline className='d-flex'>
           <Input
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
             value={bookTitle}
             onChange={this.handleChange}
             required
