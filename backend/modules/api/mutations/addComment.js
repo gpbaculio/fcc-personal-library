@@ -3,6 +3,7 @@ import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'grap
 import { GraphQLCommentEdge } from '../query/objectTypes/book';
 import { createComment, getBook } from '../../database';
 import { GraphQLBookEdge } from '../query/objectTypes/user';
+import pubSub from '../../pubSub';
 
 
 const GraphQLAddCommentMutation = mutationWithClientMutationId({
@@ -20,6 +21,7 @@ const GraphQLAddCommentMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ text, userId, bookId }) => {
     const comment = await createComment(text, fromGlobalId(userId).id, fromGlobalId(bookId).id);
+    pubSub.publish('commentAdded', { commentAdded: { comment } })
     return ({ comment });
   },
   outputFields: {

@@ -8,6 +8,8 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import cors from 'cors'
 import multer from 'multer'
+
+require('events').EventEmitter.defaultMaxListeners = 0;
 require('dotenv').config();
 
 import schema from './modules/api/schema';

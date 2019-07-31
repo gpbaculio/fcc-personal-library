@@ -6,7 +6,7 @@ import {
 import graphql from 'babel-plugin-relay/macro';
 import { createFragmentContainer } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime'
-import { fromGlobalId } from 'graphql-relay'
+
 import uuidv1 from 'uuid/v1'
 import addBook from '../../mutations/AddBook';
 
@@ -20,8 +20,8 @@ export class AddBook extends PureComponent {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
-  subscribeBookAdded = viewerId => BookAddedSubscription({ viewerId }, {
-    updater: (store, { bookAdded: { book } }) => {
+  subscribeBookAdded = () => BookAddedSubscription({}, {
+    updater: store => {
       const { viewer } = this.props
       const viewerProxy = store.get(viewer.id);
       const connection = ConnectionHandler.getConnection(
@@ -39,10 +39,8 @@ export class AddBook extends PureComponent {
       ConnectionHandler.insertEdgeBefore(connection, newEdge);
     }
   })
-
-
-  componentDidMount() {
-    this.bookAddedSubscription = this.subscribeBookAdded(this.props.viewer.id).commit()
+  componentDidMount = () => {
+    this.bookAddedSubscription = this.subscribeBookAdded().commit()
   }
   componentWillUnmount = () => {
     this.bookAddedSubscription.dispose()
@@ -139,7 +137,7 @@ export const AddBookFC = createFragmentContainer(
   AddBook,
   {
     viewer: graphql`
-    fragment AddBook_viewer on User {
+      fragment AddBook_viewer on User {
         id
         profilePicture
         username

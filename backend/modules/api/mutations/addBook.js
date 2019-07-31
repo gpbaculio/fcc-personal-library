@@ -17,17 +17,16 @@ const GraphQLAddBookMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ title, userId }) => {
     const book = await createBook(title, fromGlobalId(userId).id);
-    const bookNode = ({
-      cursor: offsetToCursor(book.id),
-      node: book
-    })
-    pubSub.publish('bookAdded', { bookAdded: { book: bookNode } })
-    return ({ book: bookNode });
+    pubSub.publish('bookAdded', { bookAdded: { book } })
+    return ({ book });
   },
   outputFields: {
     book: {
       type: GraphQLBookEdge,
-      resolve: ({ book }) => book
+      resolve: ({ book }) => ({
+        cursor: offsetToCursor(book.id),
+        node: book
+      })
     }
   },
 });

@@ -4,9 +4,13 @@ import {
   Input
 } from 'reactstrap'
 import uuidv1 from 'uuid/v1';
+import graphql from 'babel-plugin-relay/macro';
+import { createFragmentContainer } from 'react-relay'
+
+import CommentAddedSubscription from '../../subscriptions/commentAdded'
+import { commentUpdater } from './utils';
 
 import addComment from '../../mutations/AddComment';
-import { commentUpdater } from './utils';
 
 class CommentInput extends Component {
   state = {
@@ -16,22 +20,60 @@ class CommentInput extends Component {
     const { name, value } = e.target
     this.setState({ [name]: value })
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.book.id !== this.props.book.id) {
+      this.commentAddedSubscription.dispose()
+      this.commentAddedSubscription = this.subscribeCommentAdded(this.props.book.id).commit()
+    }
+  }
+  subscribeCommentAdded = bookId => {
+    console.log('subscription subscribeCommentAdded ', bookId)
+    return CommentAddedSubscription({ bookId }, {
+      updater: (store, res) => {
+        console.log('subscription response ', res)
+        const { book } = this.props
+        const bookProxy = store.get(book.id)
+        const payload = store.getRootField('commentAdded');
+        const bookEdge = payload.getLinkedRecord('book')
+        bookProxy.setValue(
+          bookEdge.getLinkedRecord('node').getValue('commentsCount'),
+          'commentsCount'
+        )
+        commentUpdater(bookProxy, payload.getLinkedRecord('comment'));
+      }
+    })
+  }
+  componentDidMount = () => {
+    this.commentAddedSubscription = this.subscribeCommentAdded(this.props.book.id).commit()
+  }
+  componentWillUnmount = () => {
+    this.commentAddedSubscription.dispose()
+  };
   addComment = e => {
     e.preventDefault();
     const { commentText } = this.state;
-    const { viewerId, bookId } = this.props
+    const { viewer, book } = this.props
     this.setState({ loading: true });
     const mutation = addComment(
-      { text: commentText, userId: viewerId, bookId },
+      { text: commentText, userId: viewer.id, bookId: book.id },
+      this.props.relay.environment,
       {
-        updater: (store) => {
-          const bookProxy = store.get(bookId)
+        updater: store => {
+          const bookProxy = store.get(book.id)
           const payload = store.getRootField('addComment');
+          const bookEdge = payload.getLinkedRecord('book')
+          bookProxy.setValue(
+            bookEdge.getLinkedRecord('node').getValue('commentsCount'),
+            'commentsCount'
+          )
           commentUpdater(bookProxy, payload.getLinkedRecord('comment'));
+          this.commentAddedSubscription = this.subscribeCommentAdded(book.id).commit()
         },
-        optimisticUpdater: (store) => {
-          const userProxy = store.get(viewerId)
-          const bookProxy = store.get(bookId)
+        optimisticUpdater: store => {
+          this.commentAddedSubscription.dispose()
+          const userProxy = store.get(viewer.id)
+          const bookProxy = store.get(book.id)
           const bookProxyCommentsCount = bookProxy.getValue('commentsCount')
           bookProxy.setValue(bookProxyCommentsCount + 1, 'commentsCount')
           const username = userProxy.getValue('username')
@@ -52,9 +94,7 @@ class CommentInput extends Component {
           commentEdge.setLinkedRecord(comment, 'node');
           commentUpdater(bookProxy, commentEdge);
         },
-        onCompleted: () => {
-          this.setState({ loading: false, commentText: '' })
-        },
+        onCompleted: () => this.setState({ loading: false, commentText: '' }),
         onFailure: error => console.error(error),
       },
     );
@@ -80,4 +120,18 @@ class CommentInput extends Component {
   }
 }
 
-export default CommentInput
+export default createFragmentContainer(
+  CommentInput,
+  {
+    viewer: graphql`
+      fragment CommentInput_viewer on User {
+        id
+      }
+    `,
+    book: graphql`
+      fragment CommentInput_book on Book {
+        id
+      }
+    `
+  }
+);

@@ -7,14 +7,18 @@ import CommentInput from './CommentInput';
 import { Button } from 'reactstrap'
 import Comment from './Comment';
 
+
 export class BookComments extends Component {
   state = { hasMore: false, loading: false }
+  commentAddedSubscription = null
   componentDidMount() {
     const hasMore = this.props.relay.hasMore()
     this.setState({ hasMore, loading: false })
   }
   componentDidUpdate(prevProps) {
     if (prevProps.book.id !== this.props.book.id) {
+      this.commentAddedSubscription.dispose()
+      this.commentAddedSubscription = this.subscribeCommentAdded(this.props.book.id).commit()
       const hasMore = this.props.relay.hasMore()
       this.setState({ hasMore, loading: false })
     }
@@ -44,7 +48,7 @@ export class BookComments extends Component {
     const { hasMore, loading } = this.state
     return (
       <div className={classNames('p-3 comments-container', { 'hide': !fromGlobalId(viewer.id).id })}>
-        <CommentInput viewerId={viewer.id} bookId={book.id} />
+        <CommentInput commentAddedSubscription={this.commentAddedSubscription} viewer={viewer} book={book} />
         <ul className='mt-1'>
           {book.comments && book.comments.edges.map(({ node, cursor }) => (
             <Comment
@@ -78,6 +82,7 @@ export default createPaginationContainer(
       fragment BookComments_viewer on User {
         id
         ...Comment_viewer
+        ...CommentInput_viewer
       }
     `,
     book: graphql`
@@ -87,6 +92,7 @@ export default createPaginationContainer(
           cursor: { type: "String", defaultValue: null }
         ) {
         id
+        ...CommentInput_book
         title
         commentsCount
         owner {
@@ -113,7 +119,7 @@ export default createPaginationContainer(
   },
   {
     direction: 'forward',
-    getConnectionFromProps: (props) => props.book && props.book.comments,
+    getConnectionFromProps: props => props.book && props.book.comments,
     getFragmentVariables: (prevVars, totalCount) => ({ ...prevVars, count: totalCount }),
     getVariables: (props, args, _fragmentVariables) => ({
       count: args.count,
