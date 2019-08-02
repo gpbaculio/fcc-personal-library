@@ -10,8 +10,6 @@ import {
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import UpdateProfilePicture from '../mutations/UploadProfilePicture';
-import ProfileBooks from './ProfileBooks';
-import AddBook from '../Home/AddBook';
 
 export class Profile extends React.Component {
   state = {
@@ -144,14 +142,6 @@ export class Profile extends React.Component {
             </div>
           </Col>
         </Row>
-        <div className='profile-addbook-container mx-auto'>
-          <AddBook viewerId={viewer.id} username={viewer.username} />
-        </div>
-        <Row>
-          <Col>
-            <ProfileBooks viewer={viewer} />
-          </Col>
-        </Row>
       </Fragment>
     );
   }
@@ -165,7 +155,6 @@ export const ProfileFC = createFragmentContainer(
         id
         profilePicture
         username
-        ...ProfileBooks_viewer
       }
     `
   }

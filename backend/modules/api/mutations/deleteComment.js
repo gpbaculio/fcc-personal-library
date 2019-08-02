@@ -4,7 +4,6 @@ import { deleteComment, getBook } from '../../database';
 import { GraphQLBookEdge } from '../query/objectTypes/user';
 import pubSub from '../../pubSub';
 
-
 const GraphQLDeleteCommentMutation = mutationWithClientMutationId({
   name: 'DeleteComment',
   inputFields: {
