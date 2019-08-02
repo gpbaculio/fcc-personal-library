@@ -20,11 +20,35 @@ import {
 import { timeDifferenceForDate } from './utils'
 import BookComments from './BookComments'
 import UpdateBookTitleInput from './UpdateBookTitleInput';
+
 import UpdateBookTitleMutation from '../../mutations/UpdateBookTitle'
 import DeleteBookMutation from '../../mutations/DeleteBook'
 
+import BookTitleUpdatedSubscription from '../../subscriptions/bookTitleUpdated'
+
 class BookItem extends Component {
-  state = { isEditingBook: false, deleteBookModal: false }
+  state = {
+    isEditingBook: false,
+    deleteBookModal: false
+  }
+  subscribeBookTitleUpdated = bookId => BookTitleUpdatedSubscription({ bookId }, {
+    updater: (store, response) => {
+      console.log('response ', response)
+      const subscriptionPayload = store.getRootField('bookTitleUpdated');
+      const bookEdge = subscriptionPayload.getLinkedRecord('book')
+      const bookNode = bookEdge.getLinkedRecord('node')
+      const newTitle = bookNode.getValue('title')
+      const bookProxy = store.get(bookNode.getValue('id'))
+      if (bookProxy)
+        bookProxy.setValue(newTitle, 'title')
+    }
+  })
+  componentDidMount = () => {
+    this.bookTitleUpdatedSubscription = this.subscribeBookTitleUpdated(this.props.book.id).commit()
+  }
+  componentWillUnmount = () => {
+    this.bookTitleUpdatedSubscription.dispose()
+  };
   setEditMode = isEditingBook => this.setState({ isEditingBook })
   onBookEditIconClick = () => this.setEditMode(true)
   onUpdateBookTitleSave = title => {
@@ -32,6 +56,7 @@ class BookItem extends Component {
     this.setEditMode(false);
     const mutation = UpdateBookTitleMutation(
       { title, bookId },
+      this.props.relay.environment,
       {
         optimisticResponse: {
           updateBookTitle: {

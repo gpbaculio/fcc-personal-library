@@ -2,6 +2,7 @@ import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
 import { updateBookTitle } from '../../database';
 import { GraphQLBookEdge } from '../query/objectTypes/user';
+import pubSub from '../../pubSub';
 
 
 const GraphQLUpdateBookTitleMutation = mutationWithClientMutationId({
@@ -16,6 +17,7 @@ const GraphQLUpdateBookTitleMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ title, bookId }) => {
     const book = await updateBookTitle(title, fromGlobalId(bookId).id);
+    pubSub.publish('bookTitleUpdated', { bookTitleUpdated: { book } })
     return { book };
   },
   outputFields: {

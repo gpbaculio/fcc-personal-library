@@ -8,7 +8,7 @@ import BookDeletedSubscription from '../subscriptions/bookDeleted'
 
 export class Home extends Component {
   subscribeBookDeleted = () => BookDeletedSubscription({}, {
-    updater: (store, response) => {
+    updater: store => {
       const { viewer } = this.props
       const viewerProxy = store.get(viewer.id);
       const connection = ConnectionHandler.getConnection(

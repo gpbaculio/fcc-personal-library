@@ -27,23 +27,20 @@ class CommentInput extends Component {
       this.commentAddedSubscription = this.subscribeCommentAdded(this.props.book.id).commit()
     }
   }
-  subscribeCommentAdded = bookId => {
-    console.log('subscription subscribeCommentAdded ', bookId)
-    return CommentAddedSubscription({ bookId }, {
-      updater: (store, res) => {
-        console.log('subscription response ', res)
-        const { book } = this.props
-        const bookProxy = store.get(book.id)
-        const payload = store.getRootField('commentAdded');
-        const bookEdge = payload.getLinkedRecord('book')
-        bookProxy.setValue(
-          bookEdge.getLinkedRecord('node').getValue('commentsCount'),
-          'commentsCount'
-        )
-        commentUpdater(bookProxy, payload.getLinkedRecord('comment'));
-      }
-    })
-  }
+  subscribeCommentAdded = bookId => CommentAddedSubscription({ bookId }, {
+    updater: store => {
+      const { book } = this.props
+      const bookProxy = store.get(book.id)
+      const payload = store.getRootField('commentAdded');
+      const bookEdge = payload.getLinkedRecord('book')
+      bookProxy.setValue(
+        bookEdge.getLinkedRecord('node').getValue('commentsCount'),
+        'commentsCount'
+      )
+      commentUpdater(bookProxy, payload.getLinkedRecord('comment'));
+    }
+  })
+
   componentDidMount = () => {
     this.commentAddedSubscription = this.subscribeCommentAdded(this.props.book.id).commit()
   }

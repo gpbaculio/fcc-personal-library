@@ -22,13 +22,5 @@ const bookAdded = {
   type: BookAddedPayloadType,
   subscribe: () => pubSub.asyncIterator('bookAdded')
 }
-// subscribe: withFilter(
-//   () => pubSub.asyncIterator('bookAdded'),
-//   ({ bookAdded }, variables) => {
-//     console.log('node id ', `${bookAdded.book.node.userId._id}`);
-//     console.log('var id ', fromGlobalId(variables.viewerId).id)
-//     console.log('variables ', `${bookAdded.book.node.userId._id}` === fromGlobalId(variables.viewerId).id);
-//     return `${bookAdded.book.node.userId._id}` !== fromGlobalId(variables.viewerId).id
-//   }
-// )
+
 export default bookAdded
