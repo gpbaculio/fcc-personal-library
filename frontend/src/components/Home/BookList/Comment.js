@@ -60,6 +60,7 @@ class Comment extends Component {
     this.setEditMode(false);
     const mutation = UpdateCommentTextMutation(
       { commentId, text },
+      this.props.relay.environment,
       {
         optimisticResponse: {
           updateCommentText: {
