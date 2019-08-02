@@ -2,6 +2,7 @@ import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
 import { deleteBook, getUser } from '../../database';
 import GraphQLUserType from '../query/objectTypes/user';
+import pubSub from '../../pubSub';
 
 
 const GraphQLDeleteBookMutation = mutationWithClientMutationId({
@@ -11,6 +12,7 @@ const GraphQLDeleteBookMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ bookId }) => {
     const book = await deleteBook(bookId);
+    pubSub.publish('bookDeleted', { bookDeleted: { deletedBookId: book.id } })
     return { book };
   },
   outputFields: {

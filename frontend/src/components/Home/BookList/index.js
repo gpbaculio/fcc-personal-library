@@ -3,11 +3,9 @@ import { createRefetchContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import Pagination from 'react-js-pagination';
 import { Spinner } from 'reactstrap'
-import { ConnectionHandler } from 'relay-runtime'
 
 import BookItem from './BookItem'
 
-import BookAddedSubscription from '../../subscriptions/bookAdded'
 
 class BookList extends PureComponent {
   state = { page: 1, loading: false }

@@ -63,6 +63,7 @@ class BookItem extends Component {
     }
     const mutation = DeleteBookMutation(
       { bookId },
+      this.props.relay.environment,
       {
         updater: store => {
           const viewerProxy = store.get(viewer.id)

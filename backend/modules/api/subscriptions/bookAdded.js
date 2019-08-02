@@ -6,7 +6,7 @@ import { GraphQLBookEdge } from '../query/objectTypes/user';
 import pubSub from '../../pubSub';
 
 const BookAddedPayloadType = new GraphQLObjectType({
-  name: 'BookAddedPayloadType',
+  name: 'BookAddedPayload',
   fields: () => ({
     book: {
       type: GraphQLBookEdge,
