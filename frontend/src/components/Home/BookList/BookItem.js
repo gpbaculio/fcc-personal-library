@@ -42,6 +42,12 @@ class BookItem extends Component {
         bookProxy.setValue(newTitle, 'title')
     }
   })
+  componentDidUpdate(prevProps) {
+    if (prevProps.book.id !== this.props.book.id) {
+      this.bookTitleUpdatedSubscription.dispose()
+      this.bookTitleUpdatedSubscription = this.subscribeBookTitleUpdated(this.props.book.id).commit()
+    }
+  }
   componentDidMount = () => {
     this.bookTitleUpdatedSubscription = this.subscribeBookTitleUpdated(this.props.book.id).commit()
   }

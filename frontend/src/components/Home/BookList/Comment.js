@@ -17,11 +17,39 @@ import UpdateCommentTextInput from './UpdateCommentTextInput';
 import UpdateCommentTextMutation from '../../mutations/UpdateCommentText'
 import DeleteCommentMutation from '../../mutations/DeleteComment'
 
+import CommentTextUpdatedSubscription from '../../subscriptions/commentTextUpdated'
+
 class Comment extends Component {
   state = {
     isEditingComment: false,
     deletModal: false
   }
+  subscribeCommentTextUpdated = commentId => CommentTextUpdatedSubscription(
+    { commentId },
+    {
+      updater: store => {
+        const subscriptionPayload = store.getRootField('commentTextUpdated');
+        const commentEdge = subscriptionPayload.getLinkedRecord('comment')
+        const commentNode = commentEdge.getLinkedRecord('node')
+        const newText = commentNode.getValue('text')
+        const commentProxy = store.get(commentNode.getValue('id'))
+        if (commentProxy)
+          commentProxy.setValue(newText, 'text')
+      }
+    }
+  )
+  componentDidUpdate(prevProps) {
+    if (prevProps.comment.id !== this.props.comment.id) {
+      this.commentTextUpdatedSubscription.dispose()
+      this.commentTextUpdatedSubscription = this.subscribeCommentTextUpdated(this.props.comment.id).commit()
+    }
+  }
+  componentDidMount = () => {
+    this.commentTextUpdatedSubscription = this.subscribeCommentTextUpdated(this.props.comment.id).commit()
+  }
+  componentWillUnmount = () => {
+    this.commentTextUpdatedSubscription.dispose()
+  };
   toggleDeleteModal = () => this.setState(({ deletModal }) => ({ deletModal: !deletModal }))
   onDeleteIconClick = () => this.setState({ deletModal: true })
   setDeleteModalMode = deletModal => this.setState({ deletModal })

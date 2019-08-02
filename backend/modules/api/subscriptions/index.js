@@ -4,6 +4,7 @@ import bookAdded from './bookAdded'
 import bookDeleted from './bookDeleted'
 import bookTitleUpdated from './bookTitleUpdated'
 import commentAdded from './commentAdded'
+import commentTextUpdated from './commentTextUpdated'
 
 const subscription = new GraphQLObjectType({
   name: 'Subscription',
@@ -12,6 +13,7 @@ const subscription = new GraphQLObjectType({
     bookTitleUpdated,
     bookDeleted,
     commentAdded,
+    commentTextUpdated
   }
 })
 

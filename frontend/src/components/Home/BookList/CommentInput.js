@@ -39,7 +39,6 @@ class CommentInput extends Component {
         'commentsCount'
       )
       const connection = ConnectionHandler.getConnection(bookProxy, "BookComments_comments");
-
       const commentEdge = payload.getLinkedRecord('comment')
       const newEdge = ConnectionHandler.createEdge(
         store,

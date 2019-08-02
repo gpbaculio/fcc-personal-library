@@ -2,6 +2,7 @@ import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
 import { GraphQLCommentEdge } from '../query/objectTypes/book';
 import { updateCommentText } from '../../database';
+import pubSub from '../../pubSub';
 
 
 const GraphQLUpdateCommentTextMutation = mutationWithClientMutationId({
@@ -16,6 +17,7 @@ const GraphQLUpdateCommentTextMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: async ({ text, commentId }) => {
     const comment = await updateCommentText(text, fromGlobalId(commentId).id);
+    pubSub.publish('commentTextUpdated', { commentTextUpdated: { comment } })
     return ({ comment });
   },
   outputFields: {
