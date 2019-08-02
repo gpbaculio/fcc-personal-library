@@ -5,6 +5,7 @@ import {
 } from 'reactstrap'
 import uuidv1 from 'uuid/v1';
 import graphql from 'babel-plugin-relay/macro';
+import { ConnectionHandler } from 'relay-runtime';
 import { createFragmentContainer } from 'react-relay'
 
 import CommentAddedSubscription from '../../subscriptions/commentAdded'
@@ -37,7 +38,16 @@ class CommentInput extends Component {
         bookEdge.getLinkedRecord('node').getValue('commentsCount'),
         'commentsCount'
       )
-      commentUpdater(bookProxy, payload.getLinkedRecord('comment'));
+      const connection = ConnectionHandler.getConnection(bookProxy, "BookComments_comments");
+
+      const commentEdge = payload.getLinkedRecord('comment')
+      const newEdge = ConnectionHandler.createEdge(
+        store,
+        connection,
+        commentEdge.getLinkedRecord('node'),
+        'CommentEdge',
+      );
+      ConnectionHandler.insertEdgeBefore(connection, newEdge);
     }
   })
 

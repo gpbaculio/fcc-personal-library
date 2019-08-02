@@ -32,8 +32,7 @@ class BookItem extends Component {
     deleteBookModal: false
   }
   subscribeBookTitleUpdated = bookId => BookTitleUpdatedSubscription({ bookId }, {
-    updater: (store, response) => {
-      console.log('response ', response)
+    updater: store => {
       const subscriptionPayload = store.getRootField('bookTitleUpdated');
       const bookEdge = subscriptionPayload.getLinkedRecord('book')
       const bookNode = bookEdge.getLinkedRecord('node')
