@@ -9,6 +9,7 @@ const BookDetailsQR = createQueryRenderer(
     query: graphql`
       query BookDetailsQuery ($bookId: String, $count: Int, $cursor: String) {
         viewer {
+          ...BookDetails_viewer
           id
           profilePicture
           book(bookId:$bookId) {
@@ -21,7 +22,7 @@ const BookDetailsQR = createQueryRenderer(
       bookId
     }),
     getFragmentProps: ({ viewer }) => ({
-      viewerId: viewer.id,
+      viewer: viewer,
       book: viewer.book,
     }),
   }

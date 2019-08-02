@@ -6,10 +6,10 @@ import BookItem from '../Home/BookList/BookItem';
 
 export class BookDetails extends React.Component {
   render() {
-    const { book, viewerId } = this.props
+    const { book, viewer } = this.props
     return (
       <Row>
-        <BookItem viewerId={viewerId} key={book.id} book={book} />
+        <BookItem viewer={viewer} key={book.id} book={book} />
       </Row>
     );
   }
@@ -24,9 +24,21 @@ export const BookDetailsFC = createFragmentContainer(
         count: { type: "Int", defaultValue: 3 }
         cursor: { type: "String", defaultValue: null }
       ) {
+        owner {
+          id
+          username
+          profilePicture
+        }
         ...BookItem_book
         ...BookComments_book
       }
-    `
+    `,
+    viewer: graphql`
+      fragment BookDetails_viewer on User {
+        id
+        profilePicture
+        ...BookItem_viewer
+      }`
+    ,
   }
 );

@@ -126,7 +126,7 @@ export const updateCommentText = (text, commentId) => {
   );
 }
 export const getBook = bookId => {
-  return Book.findById(bookId).populate({ path: 'userId', select: 'username' })
+  return Book.findById(bookId).populate({ path: 'userId', select: 'username profilePicture' })
 }
 
 export const getComment = commentId => {
