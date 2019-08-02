@@ -18,6 +18,7 @@ import UpdateCommentTextMutation from '../../mutations/UpdateCommentText'
 import DeleteCommentMutation from '../../mutations/DeleteComment'
 
 import CommentTextUpdatedSubscription from '../../subscriptions/commentTextUpdated'
+import CommentDeletedSubscription from '../../subscriptions/commentDeleted'
 
 class Comment extends Component {
   state = {
@@ -43,12 +44,18 @@ class Comment extends Component {
       this.commentTextUpdatedSubscription.dispose()
       this.commentTextUpdatedSubscription = this.subscribeCommentTextUpdated(this.props.comment.id).commit()
     }
+    if (prevProps.bookId !== this.props.bookId) {
+      this.commentDeletedSubscription.dispose()
+      this.commentDeletedSubscription = this.subscribeCommentDeleted(this.props.bookId).commit()
+    }
   }
   componentDidMount = () => {
+    this.commentDeletedSubscription = this.subscribeCommentDeleted(this.props.bookId).commit()
     this.commentTextUpdatedSubscription = this.subscribeCommentTextUpdated(this.props.comment.id).commit()
   }
   componentWillUnmount = () => {
     this.commentTextUpdatedSubscription.dispose()
+    this.commentDeletedSubscription.dispose()
   };
   toggleDeleteModal = () => this.setState(({ deletModal }) => ({ deletModal: !deletModal }))
   onDeleteIconClick = () => this.setState({ deletModal: true })
@@ -76,6 +83,23 @@ class Comment extends Component {
     );
     mutation.commit()
   }
+  subscribeCommentDeleted = bookId => CommentDeletedSubscription({}, {
+    updater: (store, response) => {
+      const bookProxy = store.get(bookId);
+      console.log('del response ', response)
+      const connection = ConnectionHandler.getConnection(
+        bookProxy,
+        'BookComments_comments'
+      )
+      const subscriptionPayload = store.getRootField('commentDeleted');
+      const deletedBookId = subscriptionPayload.getValue('deletedCommentId')
+      if (deletedBookId)
+        ConnectionHandler.deleteNode(connection, deletedBookId);
+      const bookNodePayload = subscriptionPayload.getLinkedRecord('book').getLinkedRecord('node')
+      if (bookNodePayload)
+        bookProxy.setValue(bookNodePayload.getValue('commentsCount'), 'commentsCount')
+    }
+  })
   onDeleteCommentConfirm = async () => {
     const { comment: { id: commentId }, bookId } = this.props
     this.setDeleteModalMode(false);
@@ -84,6 +108,7 @@ class Comment extends Component {
         bookProxy,
         'BookComments_comments'
       );
+      console.log('connection edges length', connection.getLinkedRecords('edges').length)
       if (connection)
         ConnectionHandler.deleteNode(connection, deletedCommentId);
       else
@@ -91,8 +116,9 @@ class Comment extends Component {
     }
     const mutation = DeleteCommentMutation(
       { bookId, commentId },
+      this.props.relay.environment,
       {
-        updater: store => {
+        updater: async (store) => {
           const bookProxy = store.get(bookId)
           const payload = store.getRootField('deleteComment');
           const bookEdge = payload.getLinkedRecord('book')
@@ -100,14 +126,13 @@ class Comment extends Component {
           const newBookCommentsCount = bookNode.getValue('commentsCount')
           bookProxy.setValue(newBookCommentsCount, 'commentsCount')
           const deletedCommentId = payload.getValue('deletedCommentId')
+          console.log('deletedCommentId ', deletedCommentId);
           sharedUpdater(bookProxy, deletedCommentId)
-          store.delete(deletedCommentId)
           this.props.refetchedges()
         },
         optimisticUpdater: store => {
           const bookProxy = store.get(bookId)
           sharedUpdater(bookProxy, commentId)
-          store.delete(commentId)
           const bookProxyCommentsCount = bookProxy.getValue('commentsCount')
           if (bookProxyCommentsCount) bookProxy.setValue(bookProxyCommentsCount - 1, 'commentsCount')
         },

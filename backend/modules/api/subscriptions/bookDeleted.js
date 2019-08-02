@@ -7,9 +7,7 @@ const BookDeletedPayloadType = new GraphQLObjectType({
   fields: () => ({
     deletedBookId: {
       type: GraphQLString,
-      resolve: ({ deletedBookId }) => {
-        return toGlobalId('Book', deletedBookId)
-      },
+      resolve: ({ deletedBookId }) => toGlobalId('Book', deletedBookId),
     }
   })
 })

@@ -161,8 +161,7 @@ export const deleteBook = async bookId => {
 }
 export const deleteComment = async commentId => {
   try {
-    await Comment.findOneAndRemove({ _id: commentId });
-    return commentId
+    return Comment.findOneAndRemove({ _id: commentId });
   } catch (e) {
     return null
   }

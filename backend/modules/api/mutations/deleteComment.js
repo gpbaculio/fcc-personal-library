@@ -1,7 +1,8 @@
-import { GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
-import { mutationWithClientMutationId, fromGlobalId, offsetToCursor } from 'graphql-relay';
+import { GraphQLNonNull, GraphQLString } from 'graphql';
+import { mutationWithClientMutationId, fromGlobalId, offsetToCursor, toGlobalId } from 'graphql-relay';
 import { deleteComment, getBook } from '../../database';
 import { GraphQLBookEdge } from '../query/objectTypes/user';
+import pubSub from '../../pubSub';
 
 
 const GraphQLDeleteCommentMutation = mutationWithClientMutationId({
@@ -11,9 +12,10 @@ const GraphQLDeleteCommentMutation = mutationWithClientMutationId({
     bookId: { type: new GraphQLNonNull(GraphQLString) },
   },
   mutateAndGetPayload: async ({ commentId, bookId }) => {
-    await deleteComment(fromGlobalId(commentId).id);
+    const comment = await deleteComment(fromGlobalId(commentId).id);
     const book = await getBook(fromGlobalId(bookId).id)
-    return { commentId, book };
+    pubSub.publish('commentDeleted', { commentDeleted: { commentId: comment.id, book } })
+    return { commentId: comment.id, book };
   },
   outputFields: {
     book: {
@@ -25,7 +27,7 @@ const GraphQLDeleteCommentMutation = mutationWithClientMutationId({
     },
     deletedCommentId: {
       type: GraphQLString,
-      resolve: ({ commentId }) => commentId,
+      resolve: ({ commentId }) => toGlobalId('Comment', commentId),
     }
   },
 });
