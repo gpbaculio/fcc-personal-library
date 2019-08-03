@@ -21,8 +21,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(
   process.env.MONGO_DB_URL,
   {
-    useNewUrlParser: true, findAndModify: false,
-    server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+    useNewUrlParser: true
   }
 );
 

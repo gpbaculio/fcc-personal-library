@@ -28,11 +28,7 @@ export class Home extends Component {
     this.deleteBookSubscription.dispose()
   }
   render() {
-    const { viewer } = this.props
-    console.log('process.env.HOSTNAME', process.env.HOSTNAME);
-    console.log('process.env.PORT', process.env.PORT);
-    console.log('process.env.HOST', process.env.HOST);
-    console.log('process.env.HOST_NAME', process.env.HOST_NAME);
+    const { viewer } = this.props;
     return (
       <Fragment>
         <AddBook viewer={viewer} />

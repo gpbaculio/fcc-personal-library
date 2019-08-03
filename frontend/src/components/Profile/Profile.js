@@ -85,6 +85,7 @@ export class Profile extends React.Component {
     this.setState({ loading: true });
     const mutation = UpdateProfilePicture(
       {},
+      this.props.relay.environment,
       {
         uploadables: { image: this.state.blob },
         onCompleted: () => {
