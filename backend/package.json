@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "nodemon scripts/build-schema --exec babel-node --presets=@babel/preset-env  --plugins=@babel/plugin-transform-async-to-generator",
-    "start": "nodemon index --exec babel-node --presets=@babel/preset-env  --plugins=@babel/plugin-transform-async-to-generator"
+    "build": "babel-node scripts/build-schema --exec babel-node --presets=@babel/preset-env  --plugins=@babel/plugin-transform-async-to-generator",
+    "start": "babel-node index --presets=@babel/preset-env  --plugins=@babel/plugin-transform-async-to-generator"
   },
   "keywords": [],
   "author": "",
