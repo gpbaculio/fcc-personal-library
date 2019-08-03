@@ -68,7 +68,7 @@ webServer.listen(port, () => {
   console.log(`GraphQL is now running on http://localhost:${port}`);
   // Set up the WebSocket for handling GraphQL subscriptions.
   new SubscriptionServer({
-    onConnect: connectionParams => console.log('client subscription connected!', connectionParams),
+    onConnect: connectionParams => console.log('client subscription connected!'),
     onDisconnect: () => console.log('client subscription disconnected!'),
     execute,
     subscribe,

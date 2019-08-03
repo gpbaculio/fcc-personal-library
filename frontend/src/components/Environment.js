@@ -10,9 +10,6 @@ const getRequestBodyWithUploadables = (
   uploadables,
 ) => {
   let formData = new FormData();
-  formData.append('name', request.name);
-  formData.append('query', request.text);
-  formData.append('variables', JSON.stringify(variables));
   Object.keys(uploadables).forEach(key => {
     if (Object.prototype.hasOwnProperty
       .call(uploadables, key)) {
@@ -79,9 +76,10 @@ const setupSubscription = (config, variables, cacheConfig, observer) => {
   const query = config.text
 
   const subscriptionClient = new SubscriptionClient(
-    `wss://https://fcc-personal-lib.herokuapp.com/subscriptions`,
+    `wss://fcc-personal-lib.herokuapp.com/subscriptions`,
     {
-      reconnect: true
+      timeout: 60000,
+      reconnect: true,
     }
   )
 
