@@ -61,11 +61,12 @@ const fetchQuery = async (
   uploadables
 ) => {
   const body = getRequestBody(request, variables, uploadables);
-
+  console.log('body ', body)
   const headers = {
     ...getHeaders(uploadables),
     Authorization: getToken(),
   };
+  console.log('headers ', headers)
   const response = await fetch(
     GRAPHQL_URL, {
       method: 'POST',
