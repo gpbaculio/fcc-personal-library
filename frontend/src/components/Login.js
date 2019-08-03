@@ -68,7 +68,7 @@ export class Login extends Component {
               </th>
             </tr>
             <tr>
-              <td>username: gpbaculio </td>
+              <td>username: gpbaculio2019 </td>
               <td>password: abcd123</td>
             </tr>
           </tbody>

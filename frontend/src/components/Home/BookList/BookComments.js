@@ -47,7 +47,7 @@ export class BookComments extends Component {
     const { book, viewer } = this.props
     const { hasMore, loading } = this.state
     return (
-      <div className={classNames('p-3 comments-container', { 'hide': !book.comments.edges.length })}>
+      <div className={classNames('p-3 comments-container', { 'hide': !book.comments.edges.length && !fromGlobalId(viewer.id).id })}>
         <CommentInput commentAddedSubscription={this.commentAddedSubscription} viewer={viewer} book={book} />
         <ul className='mt-1'>
           {book.comments && book.comments.edges.map(({ node, cursor }) => (

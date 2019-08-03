@@ -125,7 +125,7 @@ class BookItem extends Component {
             <Button color="secondary" onClick={() => this.setDeleteBookModal(false)}>Cancel</Button>
           </ModalFooter>
         </Modal>
-        <Col className='p-2 m-2'>
+        <Col lg="4" md="6" xs="12" className='mb-4'>
           <Card className='book-card'>
             <CardHeader className='d-flex align-items-center justify-content-between'>
               <div className='d-flex align-items-center'>
