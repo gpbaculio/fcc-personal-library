@@ -79,7 +79,7 @@ const setupSubscription = (config, variables, cacheConfig, observer) => {
   const query = config.text
 
   const subscriptionClient = new SubscriptionClient(
-    `wss://fcc-personal-lib.herokuapp.com/subscriptions`,
+    `wss://https://fcc-personal-lib.herokuapp.com/subscriptions`,
     {
       reconnect: true
     }
