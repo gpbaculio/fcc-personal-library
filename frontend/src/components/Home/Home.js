@@ -29,6 +29,10 @@ export class Home extends Component {
   }
   render() {
     const { viewer } = this.props
+    console.log('process.env.HOSTNAME', process.env.HOSTNAME);
+    console.log('process.env.PORT', process.env.PORT);
+    console.log('process.env.HOST', process.env.HOST);
+    console.log('process.env.HOST_NAME', process.env.HOST_NAME);
     return (
       <Fragment>
         <AddBook viewer={viewer} />
