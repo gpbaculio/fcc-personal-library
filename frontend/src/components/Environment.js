@@ -51,7 +51,7 @@ const getHeaders = uploadables => {
   if (uploadables) return { Accept: '*/*' };
   return { Accept: 'application/json', 'Content-type': 'application/json' };
 };
-const GRAPHQL_URL = 'http://localhost:8000/graphql'
+const GRAPHQL_URL = 'https://fcc-personal-lib.herokuapp.com/graphql'
 const TOKEN_KEY = 'token';
 const getToken = () => localStorage.getItem(TOKEN_KEY);
 const fetchQuery = async (
@@ -79,7 +79,7 @@ const setupSubscription = (config, variables, cacheConfig, observer) => {
   const query = config.text
 
   const subscriptionClient = new SubscriptionClient(
-    'ws://localhost:8000/subscriptions',
+    `ws://https://fcc-personal-lib.herokuapp.com/subscriptions`,
     {
       reconnect: true
     }
