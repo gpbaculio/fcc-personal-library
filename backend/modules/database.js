@@ -74,10 +74,12 @@ export const updateProfilePicture = async (userId, imgFile) => {
         if (error) console.log(error)
       })
     }
+    console.log(`deleted ${uploadPath}/${user.profilePicture}`);
     // add hash to sanitized file name
     const fileName = `${Date.now()}_${sanitize(
       imgFile.originalname.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>{}[]\\\/]/gi, ''),
     )}`
+    console.log(`filename ${fileName}`);
     const filePath = path.join(
       uploadPath, fileName
     )
@@ -88,6 +90,7 @@ export const updateProfilePicture = async (userId, imgFile) => {
     );
     // save file to disk
     fs.writeFileSync(filePath, imgFile.buffer)
+    console.log('filePath ', filePath);
     return { viewer }
   } catch (e) {
     console.log(e)
