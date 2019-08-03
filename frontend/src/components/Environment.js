@@ -45,7 +45,10 @@ const getRequestBody = (
   );
 };
 const getHeaders = uploadables => {
-  if (uploadables) return { Accept: '*/*' };
+  console.log('uploadables ', uploadables)
+  if (uploadables) {
+    return { Accept: '*/*' };
+  }
   return { Accept: 'application/json', 'Content-type': 'application/json' };
 };
 const GRAPHQL_URL = 'https://fcc-personal-lib.herokuapp.com/graphql'
