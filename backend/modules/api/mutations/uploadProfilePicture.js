@@ -9,6 +9,7 @@ const GraphQLUploadProfilePictureMutation = mutationWithClientMutationId({
   inputFields: {},
   mutateAndGetPayload: async (_root, { request, user }) => {
     const [imgFile] = _values(request.files)[0]
+    console.log('imgFile ', imgFile)
     const { viewer } = await updateProfilePicture(user._id, imgFile);
     return { viewer };
   },
