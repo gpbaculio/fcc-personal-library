@@ -20,7 +20,10 @@ const storage = multer.memoryStorage();
 mongoose.Promise = global.Promise;
 mongoose.connect(
   process.env.MONGO_DB_URL,
-  { useNewUrlParser: true, findAndModify: false }
+  {
+    useNewUrlParser: true, findAndModify: false,
+    server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+  }
 );
 
 const port = process.env.PORT || 8000
