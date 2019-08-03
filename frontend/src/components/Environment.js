@@ -78,7 +78,8 @@ const setupSubscription = (config, variables, cacheConfig, observer) => {
   const subscriptionClient = new SubscriptionClient(
     `wss://fcc-personal-lib.herokuapp.com/subscriptions`,
     {
-      timeout: 30000,
+      timeout: 60000,
+      lazy: true,
       reconnect: true,
     }
   )
