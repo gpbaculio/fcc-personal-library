@@ -7,6 +7,9 @@ import uuidv1 from 'uuid/v1';
 import graphql from 'babel-plugin-relay/macro';
 import { ConnectionHandler } from 'relay-runtime';
 import { createFragmentContainer } from 'react-relay'
+import { fromGlobalId } from 'graphql-relay'
+
+import classNames from 'classnames'
 
 import CommentAddedSubscription from '../../subscriptions/commentAdded'
 import { commentUpdater } from './utils';
@@ -108,8 +111,9 @@ class CommentInput extends Component {
   }
   render() {
     const { commentText } = this.state
+    const { viewer } = this.props
     return (
-      <Form onSubmit={this.addComment}>
+      <Form className={classNames({ 'hide': !fromGlobalId(viewer.id).id })} onSubmit={this.addComment}>
         <Input
           autoComplete='off'
           value={commentText}

@@ -11,6 +11,7 @@ import {
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import login from './mutations/Login';
+import environment from './Environment';
 
 export class Login extends Component {
   state = {
@@ -27,6 +28,7 @@ export class Login extends Component {
     this.setState({ loading: true });
     const mutation = login(
       { username, password },
+      environment,
       {
         onCompleted: ({ login: { token, error } }) => {
           if (error) {

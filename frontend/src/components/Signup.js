@@ -15,6 +15,7 @@ import {
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import signup from './mutations/Signup';
+import environment from './Environment';
 
 export class Signup extends Component {
   state = {
@@ -35,6 +36,7 @@ export class Signup extends Component {
     this.setState({ loading: true });
     const mutation = signup(
       { username, password },
+      environment,
       {
         onCompleted: ({ signup }) => {
           let message = 'Signup successful', error = false;

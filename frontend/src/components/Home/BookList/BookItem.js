@@ -145,7 +145,7 @@ class BookItem extends Component {
                 <p className='book-title'>{book.title}</p>
                 {!!isEditingBook && <UpdateBookTitleInput onSave={this.onUpdateBookTitleSave} bookTitle={book.title} />}
                 {!isEditingBook && book.owner.id === viewer.id && (
-                  <div>
+                  <div className='d-flex'>
                     <FaEdit onClick={this.onBookEditIconClick} className='mr-2 btn-edit' />
                     <FaTrashAlt onClick={this.onDeleteBookIconClick} className='btn-delete' />
                   </div>
