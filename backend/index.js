@@ -25,8 +25,6 @@ mongoose.connect(
 
 const port = process.env.PORT || 8000
 
-const subscriptionsEndpoint = `ws://localhost:${port}/subscriptions`;
-
 const db = mongoose.connection;
 db
   .on('error', e => console.log(e))
@@ -57,7 +55,7 @@ app.use(
         user,
         request: req
       },
-      subscriptionsEndpoint
+      subscriptionsEndpoint: `wss://fcc-personal-lib.herokuapp.com/subscriptions`
     };
   })
 );
