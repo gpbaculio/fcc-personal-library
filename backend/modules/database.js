@@ -66,7 +66,7 @@ export const updateProfilePicture = async (userId, imgFile) => {
   const user = await User.findById(userId)
   try {
     const uploadPath = path.resolve(
-      __dirname, '..', '..', 'frontend', 'public', 'static', 'images'
+      __dirname, '..', '..', 'frontend', 'build', 'static', 'images'
     )
     // delete on disk if existing
     if (user.profilePicture) {
