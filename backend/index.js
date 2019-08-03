@@ -54,8 +54,7 @@ app.use(
       context: {
         user,
         request: req
-      },
-      subscriptionsEndpoint: `wss://fcc-personal-lib.herokuapp.com/subscriptions`
+      }
     };
   })
 );
