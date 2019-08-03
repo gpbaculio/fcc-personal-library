@@ -239,3 +239,49 @@ textarea {
 .hide {
   display: none !important;
 }
+
+.search-input {
+  width: 75% !important;
+}
+
+.nav-home,
+.nav-profile {
+  margin-right: 1rem;
+  padding: 5px;
+}
+
+@media (max-width: 992px) {
+  .header-nav-container {
+    flex-direction: column;
+  }
+
+  .nav-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .search-form {
+    margin: 0px auto;
+  }
+
+  .search-input {
+    width: 100% !important;
+  }
+
+  .nav-home,
+  .nav-profile {
+    margin: 3px 8px;
+    width: 100%;
+    text-align: center !important;
+  }
+
+  .addbook-form {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 574px) {
+  .addbook-form button {
+    margin-top: 8px;
+  }
+}

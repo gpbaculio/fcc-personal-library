@@ -78,9 +78,9 @@ export class Header extends Component {
           <h2 className='text-center'>ISQA Project - Personal Library</h2>
         </header>
         <Container>
-          <div className='w-100 d-flex my-3 justify-content-between m welcome-container p-3'>
-            <Form className='d-flex w-50'>
-              <div className='w-75 d-flex flex-column position-relative'>
+          <div className='w-100 d-flex my-3 justify-content-between header-nav-container welcome-container p-3'>
+            <Form className='d-flex w-50 search-form'>
+              <div className='search-input d-flex flex-column position-relative'>
                 <Input
                   autoComplete='off'
                   value={searchText}
@@ -115,10 +115,10 @@ export class Header extends Component {
             <div className='nav-container d-flex align-items-center'>
               {!!userId && (
                 <Fragment>
-                  <Link className='nav-home mr-3' to={'/'}>
-                    Home
+                  <Link className='nav-home text-center d-inline-flex justify-content-center' to={'/'}>
+                    <span>Home</span>
                   </Link>
-                  <Link className='nav-profile mr-3' to={`/profile/${userId}`}>
+                  <Link className='nav-profile text-center' to={`/profile/${userId}`}>
                     <img
                       src={`${process.env.PUBLIC_URL}/images/${profilePicture}`}
                       className="rounded mr-1"

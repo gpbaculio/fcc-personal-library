@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react'
 import { createRefetchContainer } from 'react-relay';
 import graphql from 'babel-plugin-relay/macro';
 import Pagination from 'react-js-pagination';
-import { Spinner } from 'reactstrap'
+import { Spinner, Row } from 'reactstrap'
 
 import BookItem from './BookItem'
 
@@ -37,7 +37,7 @@ class BookList extends PureComponent {
           </div>
         )}
         <div className='books-grid-container w-100 d-flex flex-column'>
-          <div className='grid-container'>
+          <Row>
             {viewer.BookList_viewer_books.edges.map(({ cursor, node }) => (
               <BookItem
                 key={node.id}
@@ -46,7 +46,7 @@ class BookList extends PureComponent {
                 viewer={viewer}
               />
             ))}
-          </div>
+          </Row>
           <div className='d-flex w-100 justify-content-center'>
             <Pagination
               activePage={page}

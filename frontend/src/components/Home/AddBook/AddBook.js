@@ -115,7 +115,7 @@ export class AddBook extends PureComponent {
     if (!viewer.username) return null
     return (
       <div className='mb-4 w-100 d-flex justify-content-center addbook-container py-3'>
-        <Form onSubmit={this.addBook} inline className='d-flex'>
+        <Form onSubmit={this.addBook} inline className='addbook-form d-flex '>
           <Input
             value={bookTitle}
             onChange={this.handleChange}

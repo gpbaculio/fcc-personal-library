@@ -2,11 +2,6 @@ import React, { Component, Fragment } from 'react'
 import { createRefetchContainer } from 'react-relay'
 import { ConnectionHandler } from 'relay-runtime';
 import graphql from 'babel-plugin-relay/macro';
-import {
-  Card,
-  CardHeader,
-  CardBody
-} from 'reactstrap'
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import classNames from 'classnames'
 import {
@@ -14,7 +9,11 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  Col
 } from 'reactstrap'
 
 import { timeDifferenceForDate } from './utils'
@@ -126,8 +125,8 @@ class BookItem extends Component {
             <Button color="secondary" onClick={() => this.setDeleteBookModal(false)}>Cancel</Button>
           </ModalFooter>
         </Modal>
-        <div className='book-item mx-auto'>
-          <Card>
+        <Col className='p-2 m-2'>
+          <Card className='book-card'>
             <CardHeader className='d-flex align-items-center justify-content-between'>
               <div className='d-flex align-items-center'>
                 <img
@@ -158,7 +157,7 @@ class BookItem extends Component {
             </CardBody>
           </Card>
           <BookComments viewer={viewer} book={book} />
-        </div>
+        </Col>
       </Fragment>
     )
   }
