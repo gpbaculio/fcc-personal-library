@@ -37,7 +37,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const staticPath = path.join(__dirname, '..', 'frontend', 'build', 'static')
+const staticPath = path.join(__dirname, '..', 'frontend', 'build')
 const publicPath = path.join(__dirname, '..', 'frontend', 'build', 'index.html')
 
 app.use(multer({ storage }).fields([{ name: 'image' }]));
