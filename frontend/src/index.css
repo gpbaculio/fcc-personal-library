@@ -68,6 +68,7 @@ th {
 }
 
 .profile-picture-container {
+  border: solid #F7F7F7 1px;
   display: flex;
   position: relative;
   width: 180px;
