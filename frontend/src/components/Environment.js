@@ -47,7 +47,7 @@ const getRequestBody = (
 const getHeaders = uploadables => {
   console.log('uploadables ', uploadables)
   if (uploadables) {
-    return { Accept: '*/*' };
+    return { Accept: '*/*', 'Content-type': 'application/json' };
   }
   return { Accept: 'application/json', 'Content-type': 'application/json' };
 };
