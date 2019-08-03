@@ -30,7 +30,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
-    "relay": "relay-compiler --src ./src --schema build/schema.json --watch",
+    "relay": "relay-compiler --src ./src --schema gqlBuild/schema.json --watch",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

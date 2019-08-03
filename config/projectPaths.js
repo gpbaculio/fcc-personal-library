@@ -7,7 +7,7 @@
 var path = require('path')
 // directory structure
 var rootDir = path.join(__dirname, '..')
-var buildDir = path.join(rootDir, 'frontend', 'build')
+var buildDir = path.join(rootDir, 'frontend', 'gqBuild')
 
 module.exports = {
   buildDir,
