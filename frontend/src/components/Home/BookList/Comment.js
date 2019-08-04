@@ -167,7 +167,7 @@ class Comment extends Component {
           <div className='d-flex align-items-center'>
             <img
               alt=''
-              src={`${process.env.PUBLIC_URL}/images/${comment.owner.profilePicture}`}
+              src={`${process.env.PUBLIC_URL}/static/images/${comment.owner.profilePicture}`}
               width='35'
               height='35'
               className='mr-2'

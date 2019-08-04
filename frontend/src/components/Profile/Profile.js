@@ -130,7 +130,7 @@ export class Profile extends React.Component {
             <div className='mb-3 d-flex flex-column align-items-center justify-content-center'>
               <div className='profile-picture-container'>
                 <img
-                  src={`${process.env.PUBLIC_URL}/images/${viewer.profilePicture}`}
+                  src={`${process.env.PUBLIC_URL}/static/images/${viewer.profilePicture}`}
                   className="rounded"
                   alt=''
                 />

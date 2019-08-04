@@ -130,7 +130,7 @@ class BookItem extends Component {
             <CardHeader className='d-flex align-items-center justify-content-between'>
               <div className='d-flex align-items-center'>
                 <img
-                  src={`${process.env.PUBLIC_URL}/images/${book.owner.profilePicture}`}
+                  src={`${process.env.PUBLIC_URL}/static/images/${book.owner.profilePicture}`}
                   className="rounded mr-1"
                   alt=''
                   width='35'

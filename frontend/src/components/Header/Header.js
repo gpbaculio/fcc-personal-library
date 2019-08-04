@@ -120,7 +120,7 @@ export class Header extends Component {
                   </Link>
                   <Link className='nav-profile text-center' to={`/profile/${userId}`}>
                     <img
-                      src={`${process.env.PUBLIC_URL}/images/${profilePicture}`}
+                      src={`${process.env.PUBLIC_URL}/static/images/${profilePicture}`}
                       className="rounded mr-1"
                       alt=''
                       width='35'
