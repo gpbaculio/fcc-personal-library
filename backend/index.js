@@ -36,7 +36,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use(cors())
 const staticPath = path.join(__dirname, '..', 'frontend', 'build')
 const publicPath = path.join(__dirname, '..', 'frontend', 'build', 'index.html')
 

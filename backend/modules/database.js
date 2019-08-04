@@ -63,6 +63,7 @@ export const getUser = (userId) => {
 }
 
 export const updateProfilePicture = async (userId, imgFile) => {
+  console.log('updateProfilePicture')
   const user = await User.findById(userId)
   try {
     const uploadPath = path.resolve(

@@ -9,7 +9,7 @@ import {
 } from 'reactstrap'
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import UpdateProfilePicture from '../mutations/UploadProfilePicture';
+import UpdateProfilePictureMutation from '../mutations/UploadProfilePicture';
 import environment from '../Environment';
 
 export class Profile extends React.Component {
@@ -84,9 +84,11 @@ export class Profile extends React.Component {
   updateProfilePicture = e => {
     e.preventDefault();
     this.setState({ loading: true });
-    const mutation = UpdateProfilePicture(
-      {},
-      environment,
+    console.log('upload mutation')
+    const { viewer } = this.props
+    const mutation = UpdateProfilePictureMutation(
+      { userId: viewer.id },
+      this.props.relay.environment,
       {
         uploadables: { image: this.state.blob },
         onCompleted: () => {

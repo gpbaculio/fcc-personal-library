@@ -10,6 +10,9 @@ const getRequestBodyWithUploadables = (
   uploadables,
 ) => {
   let formData = new FormData();
+  formData.append('name', request.name);
+  formData.append('query', request.text);
+  formData.append('variables', JSON.stringify(variables));
   Object.keys(uploadables).forEach(key => {
     if (Object.prototype.hasOwnProperty
       .call(uploadables, key)) {
@@ -47,11 +50,11 @@ const getRequestBody = (
 const getHeaders = uploadables => {
   console.log('uploadables ', uploadables)
   if (uploadables) {
-    return { Accept: '*/*', 'Content-type': 'application/json' };
+    return { Accept: '*/*' };
   }
   return { Accept: 'application/json', 'Content-type': 'application/json' };
 };
-const GRAPHQL_URL = 'https://fcc-personal-lib.herokuapp.com/graphql'
+const GRAPHQL_URL = 'http://localhost:8000/graphql'
 const TOKEN_KEY = 'token';
 const getToken = () => localStorage.getItem(TOKEN_KEY);
 const fetchQuery = async (
@@ -80,7 +83,7 @@ const setupSubscription = (config, variables, cacheConfig, observer) => {
   const query = config.text
 
   const subscriptionClient = new SubscriptionClient(
-    `wss://fcc-personal-lib.herokuapp.com/subscriptions`,
+    `ws://localhost:8000/subscriptions`,
     {
       timeout: 60000,
       lazy: true,
